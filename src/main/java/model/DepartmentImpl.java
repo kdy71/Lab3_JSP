@@ -9,11 +9,17 @@ public class DepartmentImpl implements Department {
 
     private Integer id;
     private String name;
-    private String Description;
+    private String description;
+
+    public DepartmentImpl(Integer id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        description = description;
+    }
 
     @Override
     public Integer getId() {
-        return null;
+        return id;
     }
 
     @Override
@@ -23,7 +29,7 @@ public class DepartmentImpl implements Department {
 
     @Override
     public String getName() {
-        return null;
+        return name;
     }
 
     @Override
@@ -33,7 +39,7 @@ public class DepartmentImpl implements Department {
 
     @Override
     public String getDescription() {
-        return null;
+        return description;
     }
 
     @Override

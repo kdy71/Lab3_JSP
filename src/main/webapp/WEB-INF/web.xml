@@ -6,7 +6,7 @@
   <display-name>Archetype Created Web Application</display-name>
   <servlet>
     <servlet-name>ServletStart</servlet-name>
-    <servlet-class>servlets.ServletStart</servlet-class>
+    <servlet-class>controller.ServletStart</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ServletStart</servlet-name>

@@ -13,6 +13,9 @@ public class EmployeeImpl implements Employee {
     private String name;
     private String jobName;
     private Date dateIn;
+    private String managerName;
+    private String departmentName;
+
 
     public EmployeeImpl() {
         super();
@@ -28,6 +31,21 @@ public class EmployeeImpl implements Employee {
         this.name = name;
         this.jobName = jobName;
         this.dateIn = dateIn;
+    }
+
+
+    public EmployeeImpl(Integer id, String name, String jobName, Float salary,
+                        Integer departmentId, Integer managerId, Date dateIn,
+                        String managerName, String departmentName) {
+        this.id = id;
+        this.managerId = managerId;
+        this.departmentId = departmentId;
+        this.salary = salary;
+        this.name = name;
+        this.jobName = jobName;
+        this.dateIn = dateIn;
+        this.managerName = managerName;
+        this.departmentName = departmentName;
     }
 
 
@@ -99,5 +117,54 @@ public class EmployeeImpl implements Employee {
     @Override
     public void setDateIn(Date dateIn) {
 
+    }
+
+    public String getManagerName() {
+        return managerName;
+    }
+
+    public void setManagerName(String managerName) {
+        this.managerName = managerName;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EmployeeImpl)) return false;
+
+        EmployeeImpl employee = (EmployeeImpl) o;
+
+        if (getId() != null ? !getId().equals(employee.getId()) : employee.getId() != null) return false;
+        if (getManagerId() != null ? !getManagerId().equals(employee.getManagerId()) : employee.getManagerId() != null)
+            return false;
+        if (getDepartmentId() != null ? !getDepartmentId().equals(employee.getDepartmentId()) : employee.getDepartmentId() != null)
+            return false;
+        if (getSalary() != null ? !getSalary().equals(employee.getSalary()) : employee.getSalary() != null)
+            return false;
+        if (getName() != null ? !getName().equals(employee.getName()) : employee.getName() != null) return false;
+        if (getJobName() != null ? !getJobName().equals(employee.getJobName()) : employee.getJobName() != null)
+            return false;
+        return getDateIn() != null ? getDateIn().equals(employee.getDateIn()) : employee.getDateIn() == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getManagerId() != null ? getManagerId().hashCode() : 0);
+        result = 31 * result + (getDepartmentId() != null ? getDepartmentId().hashCode() : 0);
+        result = 31 * result + (getSalary() != null ? getSalary().hashCode() : 0);
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (getJobName() != null ? getJobName().hashCode() : 0);
+        result = 31 * result + (getDateIn() != null ? getDateIn().hashCode() : 0);
+        return result;
     }
 }

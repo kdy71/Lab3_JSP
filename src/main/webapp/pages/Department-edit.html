@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Редактировать отдел</title>
+    <script>
+        document.createElement('aside');
+        document.createElement('article');
+    </script>
+    <style>
+        header {
+            background: lightblue;
+            padding: 10px;
+            width: 650px;
+            position: absolute; /* Абсолютное позиционирование */
+            top: 10px; /* Положение от  края */
+            left: 200px; /* Положение от края */
+            font-family:Calibri;
+            text-align: center;
+        }
+
+        aside {
+            background: lightgreen;
+            padding: 10px;
+            width: 200px;
+            float: left;
+            position: absolute;
+            top: 100px;
+            left: 200px;
+            font-family:Calibri;
+        }
+        article {
+            background: lightgoldenrodyellow;
+            padding: 10px;
+            margin-left: 430px;
+            width: 410px;
+            display: block;
+            position: absolute;
+            top: 100px;
+            left: 10px;
+            font-family:Calibri;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h3>Редактирование информации об отделе:</h3>
+    <br/>
+    (здесь должно отображаться имя и описание редактируемого отдела)<br/>
+    <br/>
+</header>
+
+<aside>
+    <b>Опции: </b><br/>
+    <a href='EmployeesList.html'>Cписок сотрудников<br/></a>
+    <a href='DepartmentsList.html'>Список отделов<br/></a>
+    <a href='Employee-new.html'>Добавить сотрудника<br/></a>
+    <a href='Department-new.html'>Добавить отдел<br/></a>
+    <a href='Help.html'>Помощь<br/></a>
+</aside>
+<article>
+    <form action = '/aid/Servlet' method = 'post'> <!--исправить адрес к сервлету и метод-->
+
+
+        Название отдела:<br/>
+        <input type='text' size='50' name='departmentName'>
+        <br/>
+        <br/>
+        Описание отдела:<br/>
+        <textarea cols='50' rows='5' name='description'></textarea>
+
+        <p><input type='submit' value = 'Save changes'></p>
+
+    </form>
+</article>
+</body>
+</html>

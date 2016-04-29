@@ -1,4 +1,4 @@
-package servlets;
+package controller;
 
 import model.Employee;
 import model.EmployeeImpl;
@@ -35,7 +35,8 @@ public class ServletStart extends HttpServlet {
         response.setContentType("text/html; charset=UTF-8");
 
         try {
-            response.sendRedirect("pages/EmployeesMainJsp.jsp");
+//            response.sendRedirect("pages/EmployeesMainJsp.jsp");
+            response.sendRedirect("pages/EmployeesList.jsp");
         } catch (IOException e) {
             e.printStackTrace();
         }
