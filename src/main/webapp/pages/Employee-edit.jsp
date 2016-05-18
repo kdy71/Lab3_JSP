@@ -57,22 +57,27 @@
 
 <body>
 
+<jsp:include page="Menu.jsp"/>
+
 <header>
     <h3>Редактирование информации о сотруднике:</h3>
 </header>
 
 <aside>
     <b>Опции: </b><br/>
-    <a href='EmployeesList.html'>Cписок сотрудников<br/></a>
-    <a href='DepartmentsList.html'>Список отделов<br/></a>
-    <a href='Employee-new.html'>Добавить сотрудника<br/></a>
-    <a href='Department-new.html'>Добавить отдел<br/></a>
-    <a href='Help.html'>Помощь<br/></a>
+    <a href='html/EmployeesList.html'>Cписок сотрудников<br/></a>
+    <a href='html/DepartmentsList.html'>Список отделов<br/></a>
+    <a href='html/Employee-new.html'>Добавить сотрудника<br/></a>
+    <a href='html/Department-new.html'>Добавить отдел<br/></a>
+    <a href='html/Help.html'>Помощь<br/></a>
 </aside>
 <article>
     <form action = 'controller/ServletStart' method = 'post'> <!--исправить адрес к сервлету и метод-->
 
         <%
+            System.out.println("--- We are into Employee-edit.jsp  ---");
+            String action1 = (String)session.getAttribute("action1");
+            System.out.println("action1= "+action1);
 //            Integer empId = (Integer) session.getAttribute("empId");
             Employee employeeForEdit = (Employee) session.getAttribute("employeeForEdit");
             if (employeeForEdit == null) {

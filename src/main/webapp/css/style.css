@@ -1,0 +1,58 @@
+div {
+    font-family: Calibri;
+}
+
+
+.header {
+    background: lightblue;
+    padding: 10px; /*отступ края рамки от текста*/
+
+    position: absolute;
+    top: 2%; /*!*Положение от  края*!*/
+    bottom: 86%; /*высота блока*/
+    right: 10%;
+    left: 10%;
+
+    text-align: center;
+
+
+
+}
+
+.menu { /*вместо aside*/
+    background: lightgreen;
+    padding: 10px;
+
+    position: absolute;
+    top: 14%;
+    bottom: 6%;
+    left: 10%;
+    right: 82%;
+
+}
+
+article {
+    background: lightgoldenrodyellow;
+    padding: 10px;
+
+    position: absolute;
+    top: 14%;
+    bottom: 6%;
+    left: 18%;
+    right: 10%;
+}
+
+.footer {
+    background: lightsteelblue;
+    padding: 10px;
+
+    position: absolute;
+    top: 94%;
+    bottom: 1%;
+    left:10%;
+    right:10%;
+    font-size: small;
+    text-align: center;
+}
+
+

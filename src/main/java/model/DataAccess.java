@@ -30,8 +30,8 @@ public interface DataAccess {
      * @return  - возвращает список работников, для которых выполняются все условия фильтрации
      */
     List<Employee> getEmployeesFiltered(String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
-                                       Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
-                                       String pManagerName, String pDepartmentName);
+                                        Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
+                                        String pManagerName, String pDepartmentName);
 
     void insertEmployee(Employee employee);
 
@@ -53,4 +53,4 @@ public interface DataAccess {
 
     void deleteDepartment (Integer departmentId);
 
-    }
+}

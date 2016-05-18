@@ -1,5 +1,7 @@
 package model;
 
+import oracle.jdbc.driver.OracleDriver;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -7,8 +9,6 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
-
-import oracle.jdbc.driver.OracleDriver;
 
 
 /**
@@ -54,8 +54,9 @@ public class OracleDataAccess implements DataAccess {
         Connection connection = null;
         try {
             DriverManager.registerDriver(driver);
+//            connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XE", "Alef", "student");
             connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XE", "dima", "student");
-        } catch (SQLException e) {
+            } catch (SQLException e) {
             e.printStackTrace();
             // log4j
         }
@@ -144,12 +145,12 @@ public class OracleDataAccess implements DataAccess {
                 String  depName      = result.getString("depName");
 
 //              employee = new EmployeeImpl(employeeId, name, jobName, salary, departmentId, managerId, date_in);
-                System.out.println("--- 1 -----");
+//                System.out.println("--- 1 -----");
                 employee = new EmployeeImpl(employeeId, name, jobName, salary,
                         departmentId, managerId, date_in, managerName, depName);
-                System.out.println("--- 2 -----");
+//                System.out.println("--- 2 -----");
                 listEmpl.add(employee);
-                System.out.println("--- 3 -----");
+//                System.out.println("--- 3 -----");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,8 +178,8 @@ public class OracleDataAccess implements DataAccess {
      * @return  - возвращает список работников, для которых выполняются все условия фильтрации
      */
     public List<Employee> getEmployeesFiltered(String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
-                                       Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
-                                       String pManagerName, String pDepartmentName) {
+                                               Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
+                                               String pManagerName, String pDepartmentName) {
         Connection connection = connect_JDBC();
         ResultSet result = null;
         PreparedStatement statement = null;
@@ -254,7 +255,7 @@ public class OracleDataAccess implements DataAccess {
                 String  managerName  = result.getString("manName");
                 String  depName      = result.getString("depName");
                 employee = new EmployeeImpl(employeeId, name, jobName, salary,
-                                            departmentId, managerId, date_in, managerName, depName);
+                        departmentId, managerId, date_in, managerName, depName);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -297,31 +298,31 @@ public class OracleDataAccess implements DataAccess {
 
     @Override
     public Department getDepartmentById(Integer id) {
-            Connection connection = connect_JDBC();
-            ResultSet result = null;
-            PreparedStatement statement = null;
-            DepartmentImpl department = null;
-            try {
-                statement = connection.prepareStatement("" +
-                        "select  * " +
-                        "from LAB3_DEPARTMENTS   " +
-                        "where DEPARTMENT_ID = :1 ");
-                statement.setInt(1, id);
-                result = statement.executeQuery();
-                while(result.next()){
-                    Integer departmentId   = Integer.parseInt(result.getString("DEPARTMENT_ID"));
-                    String  name         = result.getString("DEPARTMENT_NAME");
-                    String  description  = result.getString("DESCRIPTION");
-                    department = new DepartmentImpl(departmentId, name, description);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                // log4j
+        Connection connection = connect_JDBC();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        DepartmentImpl department = null;
+        try {
+            statement = connection.prepareStatement("" +
+                    "select  * " +
+                    "from LAB3_DEPARTMENTS   " +
+                    "where DEPARTMENT_ID = :1 ");
+            statement.setInt(1, id);
+            result = statement.executeQuery();
+            while(result.next()){
+                Integer departmentId   = Integer.parseInt(result.getString("DEPARTMENT_ID"));
+                String  name         = result.getString("DEPARTMENT_NAME");
+                String  description  = result.getString("DESCRIPTION");
+                department = new DepartmentImpl(departmentId, name, description);
             }
-            finally {
-                disconnect(connection, result, statement);
-            }
-            return department;
+        } catch (Exception e) {
+            e.printStackTrace();
+            // log4j
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+        return department;
     }
 
 
