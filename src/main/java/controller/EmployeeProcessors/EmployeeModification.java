@@ -32,24 +32,38 @@ public abstract class EmployeeModification implements Processor {
 
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {
-
+        // TODO: 20.05.2016 Добавить проверку введённый параметров на null
+        System.out.println("--- entering EmployeeModification.java ---");  // debug
         //получаем данные работника
-        int empId = 0; // пока пишем ноль
+        Integer empId = null; // пока пишем ноль
+//        Integer empId = (Integer) request.getSession().getAttribute(EmployeeModification.EMP_ID);
+        String empIdAsString = request.getParameter(EmployeeModification.EMP_ID);
+        if (empIdAsString != null) { empId = Integer.parseInt(empIdAsString);};
+        System.out.println("  empId= "+empId);  // debug
         String empName = request.getParameter(EMP_NAME);
-        int departmentId = Integer.parseInt(request.getParameter(DEPARTMENT_ID));
-        int managerId = Integer.parseInt(request.getParameter(MANAGER_ID));
+        System.out.println("  empName= "+empName);  // debug
+        Integer departmentId = Integer.parseInt(request.getParameter(DEPARTMENT_ID));
+        System.out.println("  departmentId= "+departmentId);  // debug
+//        Integer managerId = Integer.parseInt(request.getParameter(MANAGER_ID));
+        Integer managerId = Integer.parseInt(request.getParameter(MANAGER_ID));
+        System.out.println("  managerId= "+managerId);  // debug
         String jobName = request.getParameter(JOB_NAME);
+        System.out.println("  jobName= "+jobName);  // debug
         Float salary = Float.parseFloat(request.getParameter(SALARY));
+        System.out.println("  salary= "+salary);  // debug
         Date dateIn = null;
         try {
-            // TODO: согласовать формат даты c html-формой и уже введенными инсертом даннными
-            dateIn = new SimpleDateFormat("dd.MM.yyyy").parse(request.getParameter(DATE_IN));
+            // TODO: согласовать формат даты
+            dateIn = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter(DATE_IN));
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        System.out.println("  request.getParameter(DATE_IN)= "+request.getParameter(DATE_IN));  // debug
+        System.out.println("  dateIn= "+dateIn);  // debug
 
         //создаем работника
         Employee employee = new EmployeeImpl(empId, empName, jobName, salary, departmentId, managerId, dateIn);
+        System.out.println("---  EmployeeModification.java ---   new EmployeeImpl= "+employee);  // debug
 
         //вызываем форвард c тремя параметрами, в том числе работником
         forwardForEmployee(request, response, employee);

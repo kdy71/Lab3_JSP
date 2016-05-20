@@ -34,9 +34,11 @@ public abstract class DepartmentModification implements Processor {
         int departmentId = 0; // пока пишем ноль
         String departmentName = request.getParameter(DEPARTMENT_NAME);
         String description = request.getParameter(DESCRIPTION);
+        System.out.println(departmentId + description);
 
         //создаем отдел
         Department department = new DepartmentImpl(departmentId, departmentName, description);
+        System.out.println(department);
 
         //вызываем форвард c тремя параметрами, в том числе отделом
         forwardForDepartment(request, response, department);

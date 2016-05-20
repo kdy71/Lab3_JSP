@@ -9,40 +9,7 @@
         document.createElement('article');
     </script>
     <style>
-
-        header {
-            background: lightblue;
-            padding: 10px;
-            width: 650px;
-            position: absolute; /* Абсолютное позиционирование */
-            top: 10px; /* Положение от  края */
-            left: 200px; /* Положение от края */
-            font-family: Calibri;
-            text-align: center;
-        }
-
-        aside {
-            background: lightgreen;
-            padding: 10px;
-            width: 200px;
-            float: left;
-            position: absolute;
-            top: 100px;
-            left: 200px;
-            font-family: Calibri;
-        }
-
-        article {
-            background: lightgoldenrodyellow;
-            padding: 10px;
-            margin-left: 430px;
-            width: 410px;
-            display: block;
-            position: absolute;
-            top: 100px;
-            left: 10px;
-            font-family: Calibri;
-        }
+        @import url("css/style.css");
     </style>
 </head>
 

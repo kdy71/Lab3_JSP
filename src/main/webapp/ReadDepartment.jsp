@@ -16,7 +16,7 @@
         document.createElement('article');
     </script>
     <style type="text/css">
-        @import url("../css/style.css");
+        @import url("css/style.css");
     </style>
 </head>
 <body>

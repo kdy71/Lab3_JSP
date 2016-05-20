@@ -9,9 +9,6 @@
 <html>
 <head>
     <title>footer</title>
-    <style type="text/css">
-        @import url("../css/style.css");
-    </style>
 </head>
 <body>
 <div class="footer">Information System for Human Resources Department. © 2016. D.Khoruzhenko, O.Dudkin.</div>

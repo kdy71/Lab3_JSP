@@ -4,10 +4,7 @@ import controller.DepartmentProcessors.CreateDepartment;
 import controller.DepartmentProcessors.DeleteDepartment;
 import controller.DepartmentProcessors.ReadDepartment;
 import controller.DepartmentProcessors.UpdateDepartment;
-import controller.EmployeeProcessors.CreateEmployee;
-import controller.EmployeeProcessors.DeleteEmployee;
-import controller.EmployeeProcessors.ReadEmployee;
-import controller.EmployeeProcessors.UpdateEmployee;
+import controller.EmployeeProcessors.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +51,9 @@ public class Actions {
         mapOfActions.put(UPDATE_DEPARTMENT, new UpdateDepartment());
         mapOfActions.put(DELETE_EMPLOYEE, new DeleteEmployee());
         mapOfActions.put(DELETE_DEPARTMENT, new DeleteDepartment());
+
+        mapOfActions.put(EDIT_EMPLOYEE, new EditEmployee());
+
     }
 
     /**

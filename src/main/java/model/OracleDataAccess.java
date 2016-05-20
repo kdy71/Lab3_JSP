@@ -123,7 +123,8 @@ public class OracleDataAccess implements DataAccess {
         PreparedStatement statement = null;
 //        ArrayList<EmployeeImpl> listEmpl = new ArrayList<EmployeeImpl>();
         ArrayList<Employee> listEmpl = new ArrayList<Employee>();
-        EmployeeImpl employee;
+//        EmployeeImpl employee;
+        Employee employee;
         try {
 //          statement = connection.prepareStatement("SELECT * FROM lab3_Employees ORDER BY EMP_NAME");
             statement = connection.prepareStatement("" +
@@ -134,23 +135,8 @@ public class OracleDataAccess implements DataAccess {
                     "ORDER BY emp.EMP_NAME ");
             result = statement.executeQuery();
             while(result.next()){
-                Integer employeeId   = Integer.parseInt(result.getString("EMP_ID"));
-                String  name         = result.getString("EMP_NAME");
-                String  jobName      = result.getString("JOB_NAME");
-                Float   salary       = result.getFloat("SALARY");
-                Integer departmentId = Integer.parseInt(result.getString("DEPARTMENT_ID"));
-                Integer managerId    = result.getInt("MANAGER_ID");
-                Date    date_in      = result.getDate("DATE_IN");
-                String  managerName  = result.getString("manName");
-                String  depName      = result.getString("depName");
-
-//              employee = new EmployeeImpl(employeeId, name, jobName, salary, departmentId, managerId, date_in);
-//                System.out.println("--- 1 -----");
-                employee = new EmployeeImpl(employeeId, name, jobName, salary,
-                        departmentId, managerId, date_in, managerName, depName);
-//                System.out.println("--- 2 -----");
+                employee = getEmployeeFromResultSet(result);
                 listEmpl.add(employee);
-//                System.out.println("--- 3 -----");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -184,7 +170,7 @@ public class OracleDataAccess implements DataAccess {
         ResultSet result = null;
         PreparedStatement statement = null;
         ArrayList<Employee> listEmpl = new ArrayList<Employee>();
-        EmployeeImpl employee;
+        Employee employee;
         try {
             statement = connection.prepareStatement("" +
                     "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
@@ -205,18 +191,7 @@ public class OracleDataAccess implements DataAccess {
             statement.setString(1, pName);
             result = statement.executeQuery();
             while(result.next()){
-                Integer employeeId   = Integer.parseInt(result.getString("EMP_ID"));
-                String  name         = result.getString("EMP_NAME");
-                String  jobName      = result.getString("JOB_NAME");
-                Float   salary       = result.getFloat("SALARY");
-                Integer departmentId = Integer.parseInt(result.getString("DEPARTMENT_ID"));
-                Integer managerId    = result.getInt("MANAGER_ID");
-                Date    date_in      = result.getDate("DATE_IN");
-                String  managerName  = result.getString("manName");
-                String  depName      = result.getString("depName");
-
-                employee = new EmployeeImpl(employeeId, name, jobName, salary,
-                        departmentId, managerId, date_in, managerName, depName);
+                employee = getEmployeeFromResultSet(result);
                 listEmpl.add(employee);
             }
         } catch (Exception e) {
@@ -234,7 +209,7 @@ public class OracleDataAccess implements DataAccess {
         Connection connection = connect_JDBC();
         ResultSet result = null;
         PreparedStatement statement = null;
-        EmployeeImpl employee = null;
+        Employee employee = null;
         try {
             statement = connection.prepareStatement("" +
                     "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
@@ -245,17 +220,7 @@ public class OracleDataAccess implements DataAccess {
             statement.setInt(1, id);
             result = statement.executeQuery();
             while(result.next()){
-                Integer employeeId   = Integer.parseInt(result.getString("EMP_ID"));
-                String  name         = result.getString("EMP_NAME");
-                String  jobName      = result.getString("JOB_NAME");
-                Float   salary       = result.getFloat("SALARY");
-                Integer departmentId = Integer.parseInt(result.getString("DEPARTMENT_ID"));
-                Integer managerId    = result.getInt("MANAGER_ID");
-                Date    date_in      = result.getDate("DATE_IN");
-                String  managerName  = result.getString("manName");
-                String  depName      = result.getString("depName");
-                employee = new EmployeeImpl(employeeId, name, jobName, salary,
-                        departmentId, managerId, date_in, managerName, depName);
+                employee = getEmployeeFromResultSet(result);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -340,7 +305,11 @@ public class OracleDataAccess implements DataAccess {
             statement.setInt   (3, employee.getDepartmentId());
             statement.setString(4, employee.getJobName());
             statement.setFloat (5, employee.getSalary());
-            statement.setDate  (6, (java.sql.Date)employee.getDateIn());
+//            statement.setDate  (6, (java.sql.Date)employee.getDateIn());
+            if (employee.getDateIn() != null) {
+                java.sql.Date sqlDate = new java.sql.Date(employee.getDateIn().getTime());
+                statement.setDate  (6, sqlDate);
+            }
             statement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -354,6 +323,7 @@ public class OracleDataAccess implements DataAccess {
 
     @Override
     public void updateEmployee(Employee employee) {
+        System.out.println("We are into ODA - updateEmployee(Employee employee). Begin.");  // debug
         Connection connection = connect_JDBC();
         PreparedStatement statement = null;
         try {
@@ -366,14 +336,21 @@ public class OracleDataAccess implements DataAccess {
                     "     SALARY        = ?, " +
                     "     DATE_IN       = ?  " +
                     " where  EMP_ID = ? ");
-            statement.setInt   (1, employee.getManagerId());
+//            statement.setInt   (1, employee.getManagerId());
+            if (employee.getManagerId() != null ) { statement.setInt   (1, employee.getManagerId()); }
             statement.setString(2, employee.getName());
             statement.setInt   (3, employee.getDepartmentId());
             statement.setString(4, employee.getJobName());
             statement.setFloat (5, employee.getSalary());
-            statement.setDate  (6, (java.sql.Date)employee.getDateIn());
+//            statement.setDate  (6, (java.sql.Date)employee.getDateIn());
+            if (employee.getDateIn() != null) {
+                java.sql.Date sqlDate = new java.sql.Date(employee.getDateIn().getTime());
+                statement.setDate  (6, sqlDate);
+            }
             statement.setInt   (7, employee.getId());
+            System.out.println(" ODA - updateEmployee. -- 2 -- before execute sql.");  // debug
             statement.executeUpdate();
+            System.out.println(" ODA - updateEmployee. -- 3 -- after execute sql.");  // debug
         } catch (Exception e) {
             e.printStackTrace();
             // log4j
@@ -464,4 +441,29 @@ public class OracleDataAccess implements DataAccess {
             disconnect(connection, statement);
         }
     }
+
+
+    /**
+     * Возвращает экземпляр Employee (на самом деле EmployeeImpl) на основе данных из базы (ResultSet)
+     * @param result - ResultSet - запись из базы данных
+     * @return - экземпляр Employee (на самом деле EmployeeImpl) на основе данных из базы (ResultSet)
+     * @throws SQLException
+     */
+    private Employee getEmployeeFromResultSet (ResultSet result) throws SQLException {
+        Integer employeeId   = Integer.parseInt(result.getString("EMP_ID"));
+        String  name         = result.getString("EMP_NAME");
+        String  jobName      = result.getString("JOB_NAME");
+        Float   salary       = result.getFloat("SALARY");
+        Integer departmentId = Integer.parseInt(result.getString("DEPARTMENT_ID"));
+        Integer managerId    = result.getInt("MANAGER_ID");
+        Date    date_in      = result.getDate("DATE_IN");
+        String  managerName  = result.getString("manName");
+        String  depName      = result.getString("depName");
+
+        Employee employee = new EmployeeImpl(employeeId, name, jobName, salary,
+                departmentId, managerId, date_in, managerName, depName);
+        return employee;
+    }
+
+
 }

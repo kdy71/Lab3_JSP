@@ -35,4 +35,7 @@ public interface Employee {
 
     public boolean equals(Object o);
 
+    public String getDateInAsString();
+    public String getSalaryAsString();
+
 }

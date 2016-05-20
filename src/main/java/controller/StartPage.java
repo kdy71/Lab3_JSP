@@ -35,14 +35,14 @@ public class StartPage implements Processor {
     public void process(HttpServletRequest request, HttpServletResponse response) {
 
 //        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/EmployeesList.jsp"); //todo сделать стартовую jsp-страницу
-//        RequestDispatcher dispatcher = request.getRequestDispatcher("/EmployeesList.jsp"); //todo сделать redirect ?
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/EmployeesList.jsp"); //todo сделать redirect ?
         try {
-//            dispatcher.forward(request, response);
-            response.sendRedirect("pages/EmployeesList.jsp");
+            dispatcher.forward(request, response);
+//            response.sendRedirect("pages/EmployeesList.jsp");
         }
-  //      catch (ServletException e) {
-//            e.printStackTrace();
-//        }
+        catch (ServletException e) {
+            e.printStackTrace();
+        }
         catch (IOException e) {
             e.printStackTrace();
         }

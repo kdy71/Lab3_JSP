@@ -26,13 +26,21 @@ public class UpdateEmployee extends EmployeeModification {
     @Override
     protected void forwardForEmployee(HttpServletRequest request, HttpServletResponse response, Employee employee) {
 
+        System.out.println("We are into  processor UpdateEmployee.java - begin.");  // debug
+        System.out.println("employee= "+employee);
         OracleDataAccess.getInstance().updateEmployee(employee);
+//        Integer empId = (Integer) request.getSession().getAttribute(EmployeeModification.EMP_ID);
+//        OracleDataAccess oda = OracleDataAccess.getInstance();
+//        Employee employeeById = oda.getEmployeeById(empId);
+//        System.out.println("employeeById= "+employeeById);
+//        OracleDataAccess.getInstance().updateEmployee(employeeById);
 
-        List<Employee> employeeList = (List) OracleDataAccess.getInstance().getAllEmployees();
-        request.getSession().setAttribute(EmployeeModification.EMPLOYEE_LIST, employeeList);
+//        List<Employee> employeeList = (List) OracleDataAccess.getInstance().getAllEmployees();
+//        request.getSession().setAttribute(EmployeeModification.EMPLOYEE_LIST, employeeList);
 
         String urlString = formUrl(employee);
-        RequestDispatcher rd = request.getRequestDispatcher(urlString);
+//        RequestDispatcher rd = request.getRequestDispatcher(urlString);
+        RequestDispatcher rd = request.getRequestDispatcher("/EmployeesList.jsp"); //todo проверить точное название страницы
         try {
             rd.forward(request, response);
         } catch (ServletException e) {
@@ -48,7 +56,7 @@ public class UpdateEmployee extends EmployeeModification {
      * @return
      */
     private String formUrl(Employee employee) {
-        // cхема пути: /<Имя сервлета>?параметр1=значение1&параметр2=значение2
+        // cхема пути: /Имя сервлета?параметр1=значение1&параметр2=значение2
         String urlString = "/ServletStart?action=" + Actions.READ_EMPLOYEE + "&" +
                 EmployeeModification.EMP_ID + "=" + employee.getId();
         return urlString;

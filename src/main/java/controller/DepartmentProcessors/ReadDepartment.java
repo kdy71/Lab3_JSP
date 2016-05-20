@@ -23,7 +23,7 @@ public class ReadDepartment implements Processor {
 
         request.getSession().setAttribute(DepartmentModification.DEPARTMENT, department);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/pages/ReadDepartment.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/ReadDepartment.jsp");
         try {
             rd.forward(request, response);
         } catch (ServletException e) {

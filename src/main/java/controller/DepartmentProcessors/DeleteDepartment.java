@@ -26,13 +26,13 @@ public class DeleteDepartment implements Processor {
     public void process(HttpServletRequest request, HttpServletResponse response) {
 
         int departmentId = Integer.parseInt(request.getParameter(DepartmentModification.DEPARTMENT_ID));
-        OracleDataAccess.getInstance().deleteDepartment(departmentId); //todo проверить имя метода
+        OracleDataAccess.getInstance().deleteDepartment(departmentId);
 
         //todo добавить постраничный вывод
-        List<Department> departmentList = OracleDataAccess.getInstance().getAllDepartments();
-        request.getSession().setAttribute(DepartmentModification.DEPARTMENT_LIST, departmentList);
+//        List<Department> departmentList = OracleDataAccess.getInstance().getAllDepartments();
+//        request.getSession().setAttribute(DepartmentModification.DEPARTMENT_LIST, departmentList);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/pages/DepartmentList.jsp"); //todo проверить имя страницы
+        RequestDispatcher rd = request.getRequestDispatcher("/DepartmentsList.jsp");
         try {
             rd.forward(request, response);
         } catch (ServletException e) {

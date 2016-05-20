@@ -31,7 +31,7 @@ public class CreateEmployee extends EmployeeModification {
         List employeeList = (List)OracleDataAccess.getInstance().getAllEmployees();
         request.getSession().setAttribute(EmployeeModification.EMPLOYEE_LIST, employeeList);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/pages/EmployeesMainJsp.jsp"); //todo проверить точное название страницы
+        RequestDispatcher rd = request.getRequestDispatcher("/EmployeesList.jsp"); //todo проверить точное название страницы
         try {
             rd.forward(request, response);
         } catch (ServletException e) {

@@ -27,10 +27,10 @@ public class DeleteEmployee implements Processor {
         int employeeId = Integer.parseInt(request.getParameter(EmployeeModification.EMP_ID));
         OracleDataAccess.getInstance().deleteEmployee(employeeId); //todo проверить имя метода
 
-        List<Employee> employeeList = OracleDataAccess.getInstance().getAllEmployees();
-        request.getSession().setAttribute("employeeList", employeeList);
+//        List<Employee> employeeList = OracleDataAccess.getInstance().getAllEmployees();
+//        request.getSession().setAttribute("employeeList", employeeList);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/pages/EmployeesMainJsp.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/EmployeesList.jsp");
         try {
             rd.forward(request, response);
         } catch (ServletException e) {

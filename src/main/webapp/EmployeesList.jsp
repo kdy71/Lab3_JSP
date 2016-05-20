@@ -1,6 +1,8 @@
 <%@ page import="model.Employee" %>
 <%@ page import="model.OracleDataAccess" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="controller.Actions" %>
+<%@ page import="controller.EmployeeProcessors.EmployeeModification" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
@@ -20,7 +22,7 @@
         document.createElement('article');
     </script>
     <style type="text/css">
-        @import url("../css/style.css"); /*проверить как работают стили и настроить их*/
+        @import url("css/style.css");
     </style>
 </head>
 
@@ -44,7 +46,7 @@
 
 <article>
 
-    <form action = 'Employee-edit.jsp' method = 'post'> <!--исправить адрес к сервлету и метод-->
+    <!--    <form action = 'Employee-edit.jsp' method = 'post'> исправить адрес к сервлету и метод-->
 
         <table border="1">
             <tr>
@@ -52,12 +54,13 @@
             </tr>
 
             <%
+                String stConfirmDel = "  onclick=\"return confirm('Вы точно хотите удалить запись о сотруднике?')\"";
                 //            ArrayList<EmployeeImpl> listEmployees = (ArrayList<EmployeeImpl>) OracleDataAccess.getInstance().getAllEmployees();
                 ArrayList<Employee> listEmployees = (ArrayList<Employee>) OracleDataAccess.getInstance().getAllEmployees();
                 String ref4EditEmployee;
                 for (Employee currEmp:listEmployees) {
-                    ref4EditEmployee = "<a href=Employee-edit.jsp&action1='edit'&employee_id="+currEmp.getId()+"> редактировать </a>";
-                    System.out.println(ref4EditEmployee);
+//                    ref4EditEmployee = "<a href=Employee-edit.jsp&action1='edit'&employee_id="+currEmp.getId()+"> редактировать </a>";
+//                    System.out.println(ref4EditEmployee);
             %>
 
             <tr>
@@ -68,22 +71,23 @@
                 <td> <%=currEmp.getDateIn()%>         </td>
 <!--                <td> <input type='submit' value = 'Update'></td> -->
                 <td>
-                    <a href="Employee-edit.jsp?action1=edit"> редактирование </a>
+                    <a href=<%="ServletStart?action=" + Actions.EDIT_EMPLOYEE + "&" + EmployeeModification.EMP_ID + "=" +
+                    currEmp.getId() %> > редактировать </a>
 
                 </td>
-                <td> <input type='submit' value = 'Delete'></td>
+                <td>
+<!--                    <input type='submit' value = 'Delete'>  -->
+                    <a href=<%= "ServletStart?action=" + Actions.DELETE_EMPLOYEE + "&" + EmployeeModification.EMP_ID + "=" + currEmp.getId() + stConfirmDel %> > удалить </a>
+                </td>
             </tr>
 
             <%
                 }
             %>
 
-            <% session.setAttribute("employeeForEdit", listEmployees.get(0)); %>  <!--  debug Передавать надо выбранного работника  -->
-            <!--  Только как определить, какой из них выбран???  -->
-
         </table>
 
-    </form>
+<!--    </form>   -->
 </article>
 
 <jsp:include page="Footer.jsp"/>

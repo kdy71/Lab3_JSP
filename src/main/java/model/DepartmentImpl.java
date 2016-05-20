@@ -1,7 +1,5 @@
 package model;
 
-import java.util.List;
-
 /**
  * Created by itps13 on 14.04.2016.
  */
@@ -14,7 +12,7 @@ public class DepartmentImpl implements Department {
     public DepartmentImpl(Integer id, String name, String description) {
         this.id = id;
         this.name = name;
-        description = description;
+        this.description = description;
     }
 
     @Override

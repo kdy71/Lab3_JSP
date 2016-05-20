@@ -25,13 +25,13 @@ public class CreateDepartment extends DepartmentModification {
     @Override
     protected void forwardForDepartment(HttpServletRequest request, HttpServletResponse response, Department department) {
 
-        OracleDataAccess.getInstance().insertDepartment(department); //todo проверить работу
+        OracleDataAccess.getInstance().insertDepartment(department);
 
         // TODO: позже доделать постраничный вывод
         List departmentList = (List)OracleDataAccess.getInstance().getAllDepartments();
         request.getSession().setAttribute(DepartmentModification.DEPARTMENT_LIST, departmentList);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/pages/DepartmentList.jsp"); //todo проверить точное название страницы
+        RequestDispatcher rd = request.getRequestDispatcher("/DepartmentsList.jsp"); //todo проверить точное название страницы
         try {
             rd.forward(request, response);
         } catch (ServletException e) {

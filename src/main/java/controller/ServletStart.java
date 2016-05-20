@@ -14,12 +14,12 @@ import java.util.Map;
 public class ServletStart extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("doPost execute..."); // debug
+        System.out.println("ServletStart - doPost execute..."); // debug
         process(request,response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("doGet execute...");  // debug
+        System.out.println("ServletStart - doGet execute...");  // debug
         process(request,response);
     }
 
@@ -53,7 +53,6 @@ public class ServletStart extends HttpServlet {
         if (action == null) {
             action = Actions.START_PAGE; //если параметр налл, то присваиваем значение для перехода на стартовую страницу
         }
-        System.out.println("action2 =" + action);  // debug
 
         Processor processor = (Processor) mapOfActions.get(action);
         System.out.println("processor =" + processor);  // debug

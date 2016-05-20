@@ -16,8 +16,8 @@
     <b>Опции: </b><br/>
     <a href='EmployeesList.jsp'>Cписок сотрудников<br/></a>
     <a href='DepartmentsList.jsp'>Список отделов<br/></a> <%--cоздать--%>
-    <a href='Employee-new.jsp'>Добавить сотрудника<br/></a> <%--cоздать--%>
-    <a href='pages/Employee-new.jsp'>Добавить сотрудника<br/></a> <%--cоздать--%>
+    <a href='Employee-new.jsp'>Добавить сотрудника<br/></a> <%-- Достаточно, что action != editEmployee --%>
+    <%--    <a href='Employee-new.jsp?action=tmp_AddEmp'>Добавить сотрудника<br/></a>  Достаточно, что action != editEmployee  --%>
     <a href='Department-new.jsp'>Добавить отдел<br/></a> <%--cоздать--%>
     <a href='Help.jsp'>Помощь<br/></a>
 

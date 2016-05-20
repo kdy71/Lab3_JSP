@@ -1,5 +1,6 @@
 package model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -15,6 +16,8 @@ public class EmployeeImpl implements Employee {
     private Date dateIn;
     private String managerName;
     private String departmentName;
+    private  final SimpleDateFormat sdf_rus_day = new SimpleDateFormat("dd.MM.yyyy");
+
 
 
     public EmployeeImpl() {
@@ -167,4 +170,42 @@ public class EmployeeImpl implements Employee {
         result = 31 * result + (getDateIn() != null ? getDateIn().hashCode() : 0);
         return result;
     }
+
+    /**
+     * Возвращает дату приёма в строковом формате
+      * @return
+     */
+    @Override
+    public String getDateInAsString() {
+        if (dateIn == null)
+            return "";
+        else
+            return sdf_rus_day.format(dateIn);
+    }
+
+
+    /**
+     * Возвращает зврплату в строковом формате
+     * @return
+     */
+    @Override
+    public String getSalaryAsString() {
+        return salary.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "EmployeeImpl{" +
+                "departmentName='" + departmentName + '\'' +
+                ", id=" + id +
+                ", managerId=" + managerId +
+                ", departmentId=" + departmentId +
+                ", salary=" + salary +
+                ", name='" + name + '\'' +
+                ", jobName='" + jobName + '\'' +
+                ", dateIn=" + dateIn +
+                ", managerName='" + managerName + '\'' +
+                '}';
+    }
+
 }
