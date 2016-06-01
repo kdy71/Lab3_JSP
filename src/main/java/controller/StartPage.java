@@ -15,7 +15,7 @@ public class StartPage implements Processor {
     public void process(HttpServletRequest request, HttpServletResponse response) {
         System.out.println("class StartPage implements Processor   execution...");  // debug
 
-//        RequestDispatcher dispatcher = request.getRequestDispatcher("pages/Start.jsp"); //todo сделать стартовую jsp-страницу
+//        RequestDispatcher dispatcher = request.getRequestDispatcher("pages/Start.jsp");
 //        RequestDispatcher dispatcher = request.getRequestDispatcher("pages/EmployeesList.jsp");
 
 //        System.out.println("RequestDispatcher dispatcher ="+dispatcher);  // debug
@@ -35,7 +35,7 @@ public class StartPage implements Processor {
     public void process(HttpServletRequest request, HttpServletResponse response) {
 
 //        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/EmployeesList.jsp"); //todo сделать стартовую jsp-страницу
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/EmployeesList.jsp"); //todo сделать redirect ?
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/EmployeesList.jsp");
         try {
             dispatcher.forward(request, response);
 //            response.sendRedirect("pages/EmployeesList.jsp");

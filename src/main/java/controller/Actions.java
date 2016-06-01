@@ -1,9 +1,6 @@
 package controller;
 
-import controller.DepartmentProcessors.CreateDepartment;
-import controller.DepartmentProcessors.DeleteDepartment;
-import controller.DepartmentProcessors.ReadDepartment;
-import controller.DepartmentProcessors.UpdateDepartment;
+import controller.DepartmentProcessors.*;
 import controller.EmployeeProcessors.*;
 
 import java.util.HashMap;
@@ -27,6 +24,7 @@ public class Actions {
     public static final String DELETE_DEPARTMENT = "deleteDepartment";
 
     public static final String EDIT_EMPLOYEE = "editEmployee";
+    public static final String EDIT_DEPARTMENT = "editDepartment";
 
 
     public static final int AMMOUNT_OF_ROWS_IN_LIST = 5; //for pagination
@@ -53,6 +51,7 @@ public class Actions {
         mapOfActions.put(DELETE_DEPARTMENT, new DeleteDepartment());
 
         mapOfActions.put(EDIT_EMPLOYEE, new EditEmployee());
+        mapOfActions.put(EDIT_DEPARTMENT, new EditDepartment());
 
     }
 

@@ -6,6 +6,7 @@ import model.DepartmentImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by Oleksandr Dudkin.
@@ -31,10 +32,30 @@ public abstract class DepartmentModification implements Processor {
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {
         //получаем данные отдела
-        int departmentId = 0; // пока пишем ноль
+        try {
+            request.setCharacterEncoding("utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+//        int departmentId = 0; // пока пишем ноль
+        Integer departmentId = null;
+        String depIdAsString = request.getParameter(DepartmentModification.DEPARTMENT_ID);
+        if (depIdAsString != null) { departmentId = Integer.parseInt(depIdAsString);};
+
         String departmentName = request.getParameter(DEPARTMENT_NAME);
         String description = request.getParameter(DESCRIPTION);
         System.out.println(departmentId + description);
+
+
+/*        String description = request.getParameter(DESCRIPTION);
+
+        String departmentName = request.getParameter(DEPARTMENT_NAME);
+        byte[] bytes = departmentName.getBytes(StandardCharsets.ISO_8859_1);
+        departmentName = new String(bytes, StandardCharsets.UTF_8);*/
+
+        System.out.println(departmentId +"  "+ departmentName +"  "+ description);  // debug
+
 
         //создаем отдел
         Department department = new DepartmentImpl(departmentId, departmentName, description);

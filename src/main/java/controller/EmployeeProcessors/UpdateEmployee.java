@@ -27,7 +27,7 @@ public class UpdateEmployee extends EmployeeModification {
     protected void forwardForEmployee(HttpServletRequest request, HttpServletResponse response, Employee employee) {
 
         System.out.println("We are into  processor UpdateEmployee.java - begin.");  // debug
-        System.out.println("employee= "+employee);
+        System.out.println("employee= "+employee); // debug
         OracleDataAccess.getInstance().updateEmployee(employee);
 //        Integer empId = (Integer) request.getSession().getAttribute(EmployeeModification.EMP_ID);
 //        OracleDataAccess oda = OracleDataAccess.getInstance();
@@ -38,7 +38,7 @@ public class UpdateEmployee extends EmployeeModification {
 //        List<Employee> employeeList = (List) OracleDataAccess.getInstance().getAllEmployees();
 //        request.getSession().setAttribute(EmployeeModification.EMPLOYEE_LIST, employeeList);
 
-        String urlString = formUrl(employee);
+//        String urlString = formUrl(employee);
 //        RequestDispatcher rd = request.getRequestDispatcher(urlString);
         RequestDispatcher rd = request.getRequestDispatcher("/EmployeesList.jsp"); //todo проверить точное название страницы
         try {

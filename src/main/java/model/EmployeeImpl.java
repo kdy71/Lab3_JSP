@@ -1,7 +1,8 @@
 package model;
 
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 import java.util.Date;
+import model.*;
 
 /**
  * Created by itps13 on 14.04.2016.
@@ -16,7 +17,8 @@ public class EmployeeImpl implements Employee {
     private Date dateIn;
     private String managerName;
     private String departmentName;
-    private  final SimpleDateFormat sdf_rus_day = new SimpleDateFormat("dd.MM.yyyy");
+    //private  final SimpleDateFormat sdf_rus_day = new SimpleDateFormat("dd.MM.yyyy");
+  //  private  final SimpleDateFormat sdf_rus_day = new SimpleDateFormat("MM/dd/yyyy");
 
 
 
@@ -59,7 +61,7 @@ public class EmployeeImpl implements Employee {
 
     @Override
     public void setId(Integer id) {
-
+        this.id = id;
     }
 
     @Override
@@ -68,8 +70,8 @@ public class EmployeeImpl implements Employee {
     }
 
     @Override
-    public void setManagerId(Integer ManagerId) {
-
+    public void setManagerId(Integer managerId) {
+        this.managerId = managerId;
     }
 
     @Override
@@ -78,8 +80,8 @@ public class EmployeeImpl implements Employee {
     }
 
     @Override
-    public void setDepartmentId(Integer DepartmentId) {
-
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
     }
 
     @Override
@@ -89,7 +91,7 @@ public class EmployeeImpl implements Employee {
 
     @Override
     public void setSalary(Float salary) {
-
+        this.salary = salary;
     }
 
     @Override
@@ -99,7 +101,7 @@ public class EmployeeImpl implements Employee {
 
     @Override
     public void setName(String name) {
-
+        this.name = name;
     }
 
     @Override
@@ -109,7 +111,7 @@ public class EmployeeImpl implements Employee {
 
     @Override
     public void setJobName(String jobName) {
-
+        this.jobName = jobName;
     }
 
     @Override
@@ -119,7 +121,7 @@ public class EmployeeImpl implements Employee {
 
     @Override
     public void setDateIn(Date dateIn) {
-
+        this.dateIn = dateIn;
     }
 
     public String getManagerName() {
@@ -180,7 +182,8 @@ public class EmployeeImpl implements Employee {
         if (dateIn == null)
             return "";
         else
-            return sdf_rus_day.format(dateIn);
+            return Util_dates.dat2Str(dateIn);
+//            return sdf_rus_day.format(dateIn);
     }
 
 

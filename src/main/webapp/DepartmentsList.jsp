@@ -50,8 +50,12 @@
                 <td><%=currDept.getName()%>
                 </td>
                 <td><%=currDept.getDescription()%>
-                <td><input type='submit' value='Update'></td>
+<!--                <td><input type='submit' value='Update'></td>  -->
                 <td>
+                    <a href=<%="ServletStart?action=" + Actions.EDIT_DEPARTMENT + "&" + DepartmentModification.DEPARTMENT_ID + "=" +
+                    currDept.getId() %> > редактировать </a>
+
+                </td>                <td>
 <!--                    <input type='submit' value='Delete'>  -->
                     <a href=<%= "ServletStart?action=" + Actions.DELETE_DEPARTMENT + "&" + DepartmentModification.DEPARTMENT_ID + "="
                         + currDept.getId() +stConfirmDel %> > удалить </a>

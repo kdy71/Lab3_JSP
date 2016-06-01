@@ -31,7 +31,7 @@ public class CreateDepartment extends DepartmentModification {
         List departmentList = (List)OracleDataAccess.getInstance().getAllDepartments();
         request.getSession().setAttribute(DepartmentModification.DEPARTMENT_LIST, departmentList);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/DepartmentsList.jsp"); //todo проверить точное название страницы
+        RequestDispatcher rd = request.getRequestDispatcher("/DepartmentsList.jsp");
         try {
             rd.forward(request, response);
         } catch (ServletException e) {

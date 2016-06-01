@@ -22,7 +22,7 @@ public class DepartmentImpl implements Department {
 
     @Override
     public void setId(Integer id) {
-
+        this.id = id;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class DepartmentImpl implements Department {
 
     @Override
     public void setName(String name) {
-
+        this.name = name;
     }
 
     @Override
@@ -41,7 +41,16 @@ public class DepartmentImpl implements Department {
     }
 
     @Override
-    public void setDescription(String name) {
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
+    @Override
+    public String toString() {
+        return "DepartmentImpl{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }

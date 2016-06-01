@@ -1,12 +1,9 @@
-<%@ page import="model.Department" %>
-<%@ page import="model.Employee" %>
-<%@ page import="model.EmployeeImpl" %>
-<%@ page import="model.OracleDataAccess" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="controller.EmployeeProcessors.EmployeeModification" %>
 <%@ page import="controller.Actions" %>
 <%@ page pageEncoding="UTF-8" %>
-<%@ page import="java.text.SimpleDateFormat" %><%--
+<%@ page import="java.util.Date" %>
+<%@ page import="model.*" %><%--
   Created by IntelliJ IDEA.
   User: Admin
   Date: 11.05.2016
@@ -24,6 +21,19 @@
     <style type="text/css">
         @import url("css/style.css");
     </style>
+
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script>
+        $(function () {
+            $("#datepicker").datepicker();
+        });
+    </script>
+
+
 </head>
 
 <body>
@@ -39,37 +49,38 @@
 
         System.out.println("--- We are into Employee-add_edit.jsp  ---");
         String action = request.getParameter("action");
-        System.out.println("action= "+action);  // debug
+        System.out.println("action= " + action);  // debug
         Boolean isEdit = (Actions.EDIT_EMPLOYEE.equals(action));
-        Employee employeeForEdit     =   null ;
-        Integer employeeForEditId    =   0 ;
-        Integer employeeForEditDepId =   0 ;
-        Integer employeeForEditManagerId =  0 ;
-//        final SimpleDateFormat sdf_rus_day = new SimpleDateFormat("dd.MM.yyyy");
-//        String strDateIn =  "";
+        Employee employeeForEdit = null;
+        Integer employeeForEditId = 0;
+        Integer employeeForEditDepId = 0;
+        Integer employeeForEditManagerId = 0;
+//        Date employeeDateIn = new Date();
+//        String strDateIn =  Util_dates.dat2Str(new Date());
         if (isEdit) {
             employeeForEdit = (Employee) session.getAttribute(Actions.EDIT_EMPLOYEE);
-            employeeForEditId    =  employeeForEdit.getId();
-            employeeForEditDepId =  employeeForEdit.getDepartmentId();
-            employeeForEditManagerId =  employeeForEdit.getManagerId();
-//            strDateIn =  sdf_rus_day.format(employeeForEdit.getDateIn());
+            employeeForEditId = employeeForEdit.getId();
+            employeeForEditDepId = employeeForEdit.getDepartmentId();
+            employeeForEditManagerId = employeeForEdit.getManagerId();
+//            employeeDateIn =employeeForEdit.getDateIn();
+//            strDateIn =  Util_dates.dat2Str(employeeForEdit.getDateIn());
 
             System.out.println(employeeForEdit.toString());  // debug
         }
     %>
 
-    <h3> <%= isEdit ? "Редактирование информации о сотруднике:" : "Добавление нового сотрудника:" %> </h3>
+    <h3><%= isEdit ? "Редактирование информации о сотруднике:" : "Добавление нового сотрудника:" %>
+    </h3>
 
     <form name="addEmployeeForm" action=<%= isEdit ?
             "ServletStart?action="+Actions.UPDATE_EMPLOYEE +"&"+ EmployeeModification.EMP_ID +"=" + employeeForEdit.getId() :
-            "ServletStart?action=createEmployee" %>
-            method='post'>
+            "ServletStart?action=createEmployee" %> method="post" accept-charset="utf-8">
 
         <% System.out.println("--- 2 --- ");  // debug %>
         Имя сотрудника:<br/>
         <input type='text' size='50' id="<%=EmployeeModification.EMP_ID%>"
                name='<%=EmployeeModification.EMP_NAME%>'
-                <%= isEdit ? "value=\"" + employeeForEdit.getName() +"\"" : "placeholder=\"Name of employee\"" %>required/>
+               <%= isEdit ? "value=\"" + employeeForEdit.getName() +"\"" : "placeholder=\"Name of employee\"" %>required/>
         <br/>
         <br/>
 
@@ -77,7 +88,8 @@
         <select size='5' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.DEPARTMENT_ID%>'>
             <option disabled>Выберите отдел</option>
             <% for (Department currDep : listDepartments) { %>
-            <option <%= (currDep.getId() == employeeForEditDepId) ? " selected " : "" %>  value=<%=currDep.getId()%>><%=currDep.getName()%>
+            <option <%= (currDep.getId() == employeeForEditDepId) ? " selected " : "" %>
+                    value=<%=currDep.getId()%>><%=currDep.getName()%>
             </option>
             <% } %>
         </select>
@@ -88,9 +100,13 @@
         <select size='5' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.MANAGER_ID%>'>
             <option disabled>Выберите менеджера</option>
             <% for (Employee currEmp : listEmployees) {
-                if (currEmp.equals(employeeForEdit)) { continue; }
+                if (currEmp.equals(employeeForEdit)) {
+                    continue;
+                }
             %>
-            <option  <%= (currEmp.getId() == employeeForEditManagerId) ? " selected " : "" %>  value=<%=currEmp.getId()%>> <%= currEmp.getName()%> </option>
+            <option  <%= (currEmp.getId() == employeeForEditManagerId) ? " selected " : "" %>
+                    value=<%=currEmp.getId()%>><%= currEmp.getName()%>
+            </option>
             <% }
             %>
         </select>
@@ -100,21 +116,28 @@
         <%--<input type='text' size='50' name='jobName'required/>--%>
         <input type='text' size='50' id="<%=EmployeeModification.EMP_ID%>"
                name="<%=EmployeeModification.JOB_NAME%>"
-               <%= isEdit ? "value=\"" + employeeForEdit.getJobName() +"\"" : "placeholder=\"Job name\"" %> required/>
+                <%= isEdit ? "value=\"" + employeeForEdit.getJobName() + "\"" : "placeholder=\"Job name\"" %> required/>
 
         <% System.out.println("--- 4 --- ");  // debug %>
 
         <br/> <br/>
         Зарплата сотрудника:<br/>
         <input type='number' size='50' id="<%=EmployeeModification.EMP_ID%>" name="<%=EmployeeModification.SALARY%>"
-                <%= isEdit ? "value=" + employeeForEdit.getSalaryAsString() : "placeholder=\"Salary size\"" %> required/>
+                <%= isEdit ? "value=" + employeeForEdit.getSalaryAsString() : "placeholder=\"Salary size\"" %>
+               required/>
 
-        <% if (employeeForEdit != null) { System.out.println("employeeForEdit.getDateIn()= "+employeeForEdit.getDateIn());} // debug %>
+        <% if (employeeForEdit != null) {
+            System.out.println("employeeForEdit.getDateIn()= " + employeeForEdit.getDateIn());
+        } // debug %>
 
         <br/> <br/>
         Дата трудоустройства:<br/>
-        <input type='date' id="<%=EmployeeModification.EMP_ID%>"      name='<%=EmployeeModification.DATE_IN%>'
-               <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>
+
+<%--        <input type='date' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.DATE_IN%>'
+                <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>--%>
+        Date: <input type='text' id='datepicker' name='<%=EmployeeModification.DATE_IN%>'
+            <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>
+
 
         <br/> <br/>
         <p><input type='submit' value='Save changes'></p>

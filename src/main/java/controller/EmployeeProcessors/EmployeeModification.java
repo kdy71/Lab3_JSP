@@ -3,11 +3,13 @@ package controller.EmployeeProcessors;
 import controller.Processor;
 import model.Employee;
 import model.EmployeeImpl;
+import model.Util_dates;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -32,6 +34,12 @@ public abstract class EmployeeModification implements Processor {
 
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            request.setCharacterEncoding("utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         // TODO: 20.05.2016 Добавить проверку введённый параметров на null
         System.out.println("--- entering EmployeeModification.java ---");  // debug
         //получаем данные работника
@@ -53,8 +61,8 @@ public abstract class EmployeeModification implements Processor {
         System.out.println("  salary= "+salary);  // debug
         Date dateIn = null;
         try {
-            // TODO: согласовать формат даты
-            dateIn = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter(DATE_IN));
+//            dateIn = new SimpleDateFormat("MM/dd/yyyy").parse(request.getParameter(DATE_IN));
+            dateIn = Util_dates.str2Date(request.getParameter(DATE_IN));
         } catch (ParseException e) {
             e.printStackTrace();
         }

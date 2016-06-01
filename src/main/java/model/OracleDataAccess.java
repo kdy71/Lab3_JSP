@@ -403,18 +403,25 @@ public class OracleDataAccess implements DataAccess {
 
     @Override
     public void updateDepartment(Department department) {
+//        System.out.println("We are into ODA - updateDepartment(Department department). Begin.");  // debug
+//        System.out.println("  department= "+department); // debug
         Connection connection = connect_JDBC();
         PreparedStatement statement = null;
         try {
+
             statement = connection.prepareStatement(" " +
                     " update LAB3_DEPARTMENTS " +
                     " set DEPARTMENT_NAME  = ?, " +
-                    "     DESCRIPTION      = ?, " +
+                    "     DESCRIPTION      = ? " +
                     " where  DEPARTMENT_ID = ? ");
+            //     System.out.println("  stSql= "+stSql);
             statement.setString(1, department.getName());
             statement.setString(2, department.getDescription());
             statement.setInt   (3, department.getId());
+//            System.out.println("  try to executeUpdate...");  // debug
+            System.out.println(department);
             statement.executeUpdate();
+//            System.out.println("  executeUpdate ok.");  // debug
         } catch (Exception e) {
             e.printStackTrace();
             // log4j

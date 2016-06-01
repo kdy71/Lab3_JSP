@@ -26,13 +26,16 @@ public class UpdateDepartment extends DepartmentModification{
     @Override
     protected void forwardForDepartment(HttpServletRequest request, HttpServletResponse response, Department department) {
 
+        System.out.println("--- We are into  processor UpdateDepartment.java - begin. ---");  // debug
+        System.out.println("department= "+department); // debug
         OracleDataAccess.getInstance().updateDepartment(department);
 
-        List<Department> departmentList = OracleDataAccess.getInstance().getAllDepartments();
-        request.getSession().setAttribute(DepartmentModification.DEPARTMENT_LIST, departmentList);
+//        List<Department> departmentList = OracleDataAccess.getInstance().getAllDepartments();
+//        request.getSession().setAttribute(DepartmentModification.DEPARTMENT_LIST, departmentList);
 
-        String urlString = formUrl(department);
-        RequestDispatcher rd = request.getRequestDispatcher(urlString);
+//        String urlString = formUrl(department);
+//        RequestDispatcher rd = request.getRequestDispatcher(urlString);
+        RequestDispatcher rd = request.getRequestDispatcher("/DepartmentsList.jsp");
         try {
             rd.forward(request, response);
         } catch (ServletException e) {

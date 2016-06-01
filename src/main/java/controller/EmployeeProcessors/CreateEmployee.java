@@ -25,13 +25,13 @@ public class CreateEmployee extends EmployeeModification {
     @Override
     protected void forwardForEmployee(HttpServletRequest request, HttpServletResponse response, Employee employee) {
 
-        OracleDataAccess.getInstance().insertEmployee(employee); //todo проверить точное название метода
+        OracleDataAccess.getInstance().insertEmployee(employee);
 
         // TODO: позже доделать постраничный вывод
         List employeeList = (List)OracleDataAccess.getInstance().getAllEmployees();
         request.getSession().setAttribute(EmployeeModification.EMPLOYEE_LIST, employeeList);
 
-        RequestDispatcher rd = request.getRequestDispatcher("/EmployeesList.jsp"); //todo проверить точное название страницы
+        RequestDispatcher rd = request.getRequestDispatcher("/EmployeesList.jsp");
         try {
             rd.forward(request, response);
         } catch (ServletException e) {
