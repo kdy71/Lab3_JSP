@@ -28,6 +28,7 @@
 <jsp:include page="Header.jsp"/>
 <jsp:include page="Menu.jsp"/>
 <jsp:include page="Footer.jsp"/>
+<jsp:include page="Search.jsp"/>
 
 <article>
     <%
@@ -43,7 +44,6 @@
             depForEditName = departmentForEdit.getName();
             depForEditDescription = departmentForEdit.getDescription();
         }
-
     %>
 
     <h3><%= isEdit ? "Редактирование информации об отделе:" : "Добавление нового отдела:" %>     </h3>

@@ -1,3 +1,7 @@
+<%@ page import="model.Department" %>
+<%@ page import="model.Employee" %>
+<%@ page import="model.EmployeeImpl" %>
+<%@ page import="model.OracleDataAccess" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="controller.EmployeeProcessors.EmployeeModification" %>
 <%@ page import="controller.Actions" %>
@@ -41,6 +45,7 @@
 <jsp:include page="Header.jsp"/>
 <jsp:include page="Menu.jsp"/>
 <jsp:include page="Footer.jsp"/>
+<jsp:include page="Search.jsp"/>
 
 <article>
     <%
@@ -137,7 +142,6 @@
                 <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>--%>
         Date: <input type='text' id='datepicker' name='<%=EmployeeModification.DATE_IN%>'
             <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>
-
 
         <br/> <br/>
         <p><input type='submit' value='Save changes'></p>

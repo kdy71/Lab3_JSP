@@ -32,6 +32,7 @@
 <jsp:include page="Header.jsp"/>
 <jsp:include page="Menu.jsp"/>
 <jsp:include page="Footer.jsp"/>
+<jsp:include page="Search.jsp"/>
 
 Name: <%=employee.getName()%>
 Department: <%=department.getName() %>

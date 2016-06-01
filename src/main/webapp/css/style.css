@@ -10,13 +10,24 @@ div {
     position: absolute;
     top: 2%; /*!*Положение от  края*!*/
     bottom: 86%; /*высота блока*/
-    right: 10%;
     left: 10%;
+    right: 10%;
 
     text-align: center;
 
+}
 
+.search {
+    background: lightskyblue;
+    padding: 10px; /*отступ края рамки от текста*/
 
+    position: absolute;
+    top: 14%; /*!*Положение от  края*!*/
+    bottom: 6%; /*высота блока*/
+    left: 80%;
+    right: 10%;
+
+    text-align: center;
 }
 
 .menu { /*вместо aside*/
@@ -39,7 +50,7 @@ article {
     top: 14%;
     bottom: 6%;
     left: 18%;
-    right: 10%;
+    right: 20%;
 }
 
 .footer {

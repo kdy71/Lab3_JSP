@@ -32,62 +32,79 @@
     <h3>Список всех сотрудников организации</h3>
 </header>--%>
 
+<jsp:include page="Search.jsp"/>
 <jsp:include page="Header.jsp"/>
-
-<%--<aside>
-    <b>Опции: </b><br/>
-    <a href='EmployeesList.html'>Cписок сотрудников<br/></a>
-    <a href='DepartmentsList.html'>Список отделов<br/></a>
-    <a href='Employee-new.html'>Добавить сотрудника<br/></a>
-    <a href='Department-new.html'>Добавить отдел<br/></a>
-    <a href='Help.html'>Помощь<br/></a>
-</aside>--%>
 <jsp:include page="Menu.jsp"/>
 
 <article>
 
     <!--    <form action = 'Employee-edit.jsp' method = 'post'> исправить адрес к сервлету и метод-->
 
-        <table border="1">
-            <tr>
-                <th>ФИО</th>  <th>Отдел</th> <th>Должность</th> <th>Менеджер</th> <th>Дата приёма</th><th>Обновить</th><th>Удалить</th>
-            </tr>
+    <table border="1">
+        <% if (request.getAttribute("foundEmployees") != null) {
+        %>Результаты поиска:<%
+        }%>
+        <tr>
+            <th>ФИО</th>
+            <th>Отдел</th>
+            <th>Должность</th>
+            <th>Менеджер</th>
+            <th>Дата приёма</th>
+            <th>Обновить</th>
+            <th>Удалить</th>
+        </tr>
 
-            <%
-                String stConfirmDel = "  onclick=\"return confirm('Вы точно хотите удалить запись о сотруднике?')\"";
-                //            ArrayList<EmployeeImpl> listEmployees = (ArrayList<EmployeeImpl>) OracleDataAccess.getInstance().getAllEmployees();
-                ArrayList<Employee> listEmployees = (ArrayList<Employee>) OracleDataAccess.getInstance().getAllEmployees();
-                String ref4EditEmployee;
-                for (Employee currEmp:listEmployees) {
+        <%
+            String stConfirmDel = "  onclick=\"return confirm('Вы точно хотите удалить запись о сотруднике?')\"";
+            //            ArrayList<EmployeeImpl> listEmployees = (ArrayList<EmployeeImpl>) OracleDataAccess.getInstance().getAllEmployees();
+
+            ArrayList<Employee> listEmployees = new ArrayList<Employee>();
+            listEmployees = (ArrayList<Employee>) request.getAttribute("foundEmployees");
+
+            if (listEmployees == null) {
+                listEmployees = (ArrayList<Employee>) OracleDataAccess.getInstance().getAllEmployees();
+            }
+
+            String ref4EditEmployee;
+            for (Employee currEmp : listEmployees) {
 //                    ref4EditEmployee = "<a href=Employee-edit.jsp&action1='edit'&employee_id="+currEmp.getId()+"> редактировать </a>";
 //                    System.out.println(ref4EditEmployee);
-            %>
+        %>
 
-            <tr>
-                <td> <%=currEmp.getName()%>           </td>
-                <td> <%=currEmp.getDepartmentName()%> </td>
-                <td> <%=currEmp.getJobName()%>        </td>
-                <td> <%=currEmp.getManagerName()%>    </td>
-                <td> <%=currEmp.getDateIn()%>         </td>
-<!--                <td> <input type='submit' value = 'Update'></td> -->
-                <td>
-                    <a href=<%="ServletStart?action=" + Actions.EDIT_EMPLOYEE + "&" + EmployeeModification.EMP_ID + "=" +
-                    currEmp.getId() %> > редактировать </a>
 
-                </td>
-                <td>
-<!--                    <input type='submit' value = 'Delete'>  -->
-                    <a href=<%= "ServletStart?action=" + Actions.DELETE_EMPLOYEE + "&" + EmployeeModification.EMP_ID + "=" + currEmp.getId() + stConfirmDel %> > удалить </a>
-                </td>
-            </tr>
+        <tr>
+            <td><%=currEmp.getName()%>
+            </td>
+            <td><%=currEmp.getDepartmentName()%>
+            </td>
+            <td><%=currEmp.getJobName()%>
+            </td>
+            <td><%=currEmp.getManagerName()%>
+            </td>
+            <td><%=currEmp.getDateIn()%>
+            </td>
+            <!--                <td> <input type='submit' value = 'Update'></td> -->
+            <td>
+                <a href=<%="ServletStart?action=" + Actions.EDIT_EMPLOYEE + "&" + EmployeeModification.EMP_ID + "=" +
+                    currEmp.getId() %>> редактировать </a>
 
-            <%
-                }
-            %>
+            </td>
+            <td>
+                <!--                    <input type='submit' value = 'Delete'>  -->
+                <a href=<%= "ServletStart?action=" + Actions.DELETE_EMPLOYEE + "&" + EmployeeModification.EMP_ID + "=" + currEmp.getId() + stConfirmDel %>>
+                    удалить </a>
+            </td>
+        </tr>
 
-        </table>
+        <%
+            }
+        %>
 
-<!--    </form>   -->
+        <%request.setAttribute("foundEmployees", null);%>
+
+    </table>
+
+    <!--    </form>   -->
 </article>
 
 <jsp:include page="Footer.jsp"/>
