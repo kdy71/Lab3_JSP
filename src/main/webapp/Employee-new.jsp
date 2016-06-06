@@ -26,17 +26,15 @@
         @import url("css/style.css");
     </style>
 
-
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <link rel="stylesheet" href="/resources/demos/style.css">
     <script>
         $(function () {
-            $("#datepicker").datepicker();
+            $("#datepicker0").datepicker();
         });
     </script>
-
 
 </head>
 
@@ -45,7 +43,7 @@
 <jsp:include page="Header.jsp"/>
 <jsp:include page="Menu.jsp"/>
 <jsp:include page="Footer.jsp"/>
-<jsp:include page="Search.jsp"/>
+<%-- <jsp:include page="Search.jsp"/>  --%>
 
 <article>
     <%
@@ -140,7 +138,7 @@
 
 <%--        <input type='date' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.DATE_IN%>'
                 <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>--%>
-        Date: <input type='text' id='datepicker' name='<%=EmployeeModification.DATE_IN%>'
+        Date: <input type='text' id='datepicker0' name='<%=EmployeeModification.DATE_IN%>'
             <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>
 
         <br/> <br/>

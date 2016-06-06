@@ -1,11 +1,8 @@
 package model;
 
-import javax.swing.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Utilites and constants for Lab 1 (Task Manager)
@@ -16,6 +13,8 @@ public class Util_dates {
     public static final SimpleDateFormat sdf_rus_ms  = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss .SSS");
     public static final SimpleDateFormat sdf_rus_day = new SimpleDateFormat("dd.MM.yyyy");
     public static final SimpleDateFormat sdf_usa_day = new SimpleDateFormat("MM/dd/yyyy");
+    public static final SimpleDateFormat dataBaseFormat = new SimpleDateFormat("yyyy-MM-dd");
+
 
     /**
      * Convert date to string in format "dd.MM.yyyy HH:mm:ss"  or String "null" if date is null
@@ -30,6 +29,12 @@ public class Util_dates {
             return sdf_usa_day.format(dat1);
     }
 
+    public static String dateToDBString(Date date) {
+        if (date == null)
+            return "null";
+        else
+            return dataBaseFormat.format(date);
+    }
     /**
      * Возвращает текущее время в строковом виде
      * @return

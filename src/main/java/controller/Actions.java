@@ -43,8 +43,8 @@ public class Actions {
         mapOfActions.put(START_PAGE, new StartPage());
         mapOfActions.put(CREATE_EMPLOYEE, new CreateEmployee());
         mapOfActions.put(CREATE_DEPARTMENT, new CreateDepartment());
-        mapOfActions.put(READ_EMPLOYEE, new ReadEmployee());
-        mapOfActions.put(READ_DEPARTMENT, new ReadDepartment());
+//        mapOfActions.put(READ_EMPLOYEE, new ReadEmployee());
+//        mapOfActions.put(READ_DEPARTMENT, new ReadDepartment());
         mapOfActions.put(UPDATE_EMPLOYEE, new UpdateEmployee());
         mapOfActions.put(UPDATE_DEPARTMENT, new UpdateDepartment());
         mapOfActions.put(DELETE_EMPLOYEE, new DeleteEmployee());

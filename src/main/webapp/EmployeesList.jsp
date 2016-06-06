@@ -48,6 +48,7 @@
             <th>ФИО</th>
             <th>Отдел</th>
             <th>Должность</th>
+            <th>Оклад</th>
             <th>Менеджер</th>
             <th>Дата приёма</th>
             <th>Обновить</th>
@@ -56,10 +57,10 @@
 
         <%
             String stConfirmDel = "  onclick=\"return confirm('Вы точно хотите удалить запись о сотруднике?')\"";
-            //            ArrayList<EmployeeImpl> listEmployees = (ArrayList<EmployeeImpl>) OracleDataAccess.getInstance().getAllEmployees();
 
             ArrayList<Employee> listEmployees = new ArrayList<Employee>();
             listEmployees = (ArrayList<Employee>) request.getAttribute("foundEmployees");
+//            listEmployees = (ArrayList<Employee>) OracleDataAccess.getInstance().getAllEmployees();
 
             if (listEmployees == null) {
                 listEmployees = (ArrayList<Employee>) OracleDataAccess.getInstance().getAllEmployees();
@@ -73,16 +74,12 @@
 
 
         <tr>
-            <td><%=currEmp.getName()%>
-            </td>
-            <td><%=currEmp.getDepartmentName()%>
-            </td>
-            <td><%=currEmp.getJobName()%>
-            </td>
-            <td><%=currEmp.getManagerName()%>
-            </td>
-            <td><%=currEmp.getDateIn()%>
-            </td>
+            <td> <%=currEmp.getName()%>                 </td>
+            <td> <%=currEmp.getDepartmentName()%>       </td>
+            <td> <%=currEmp.getJobName()%>              </td>
+            <td> <%=currEmp.getSalary()%>               </td>
+            <td> <%=currEmp.getManagerName()%>          </td>
+            <td> <%=currEmp.getDateIn()%>               </td>
             <!--                <td> <input type='submit' value = 'Update'></td> -->
             <td>
                 <a href=<%="ServletStart?action=" + Actions.EDIT_EMPLOYEE + "&" + EmployeeModification.EMP_ID + "=" +

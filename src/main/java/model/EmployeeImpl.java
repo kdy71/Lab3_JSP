@@ -199,13 +199,13 @@ public class EmployeeImpl implements Employee {
     @Override
     public String toString() {
         return "EmployeeImpl{" +
-                "departmentName='" + departmentName + '\'' +
+                " name='" + name + '\'' +
                 ", id=" + id +
+                ", jobName='" + jobName + '\'' +
+                ", salary=" + salary +
+                ", departmentName='" + departmentName + '\'' +
                 ", managerId=" + managerId +
                 ", departmentId=" + departmentId +
-                ", salary=" + salary +
-                ", name='" + name + '\'' +
-                ", jobName='" + jobName + '\'' +
                 ", dateIn=" + dateIn +
                 ", managerName='" + managerName + '\'' +
                 '}';
