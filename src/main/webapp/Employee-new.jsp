@@ -32,7 +32,9 @@
     <link rel="stylesheet" href="/resources/demos/style.css">
     <script>
         $(function () {
-            $("#datepicker0").datepicker();
+            $("#datepicker0").datepicker({
+                firstDay: 1
+            });
         });
     </script>
 
@@ -43,7 +45,7 @@
 <jsp:include page="Header.jsp"/>
 <jsp:include page="Menu.jsp"/>
 <jsp:include page="Footer.jsp"/>
-<%-- <jsp:include page="Search.jsp"/>  --%>
+<jsp:include page="InsteadOfSearch.jsp"/>
 
 <article>
     <%
@@ -80,16 +82,16 @@
             "ServletStart?action=createEmployee" %> method="post" accept-charset="utf-8">
 
         <% System.out.println("--- 2 --- ");  // debug %>
-        Имя сотрудника:<br/>
+        Имя:<br/>
         <input type='text' size='50' id="<%=EmployeeModification.EMP_ID%>"
                name='<%=EmployeeModification.EMP_NAME%>'
-               <%= isEdit ? "value=\"" + employeeForEdit.getName() +"\"" : "placeholder=\"Name of employee\"" %>required/>
+               <%= isEdit ? "value=\"" + employeeForEdit.getName() +"\"" : "placeholder=\"Введите имя работника\"" %>required/>
         <br/>
         <br/>
 
-        Отдел сотрудника:<br/>
+        Отдел:<br/>
         <select size='5' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.DEPARTMENT_ID%>'>
-            <option disabled>Выберите отдел</option>
+            <option disabled>Выберите отдел работника</option>
             <% for (Department currDep : listDepartments) { %>
             <option <%= (currDep.getId() == employeeForEditDepId) ? " selected " : "" %>
                     value=<%=currDep.getId()%>><%=currDep.getName()%>
@@ -99,9 +101,9 @@
 
         <% System.out.println("--- 3 --- ");  // debug %>
         <br/> <br/>
-        Менеджер сотрудника:<br/>
+        Руководитель:<br/>
         <select size='5' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.MANAGER_ID%>'>
-            <option disabled>Выберите менеджера</option>
+            <option disabled>Выберите руководителя</option>
             <% for (Employee currEmp : listEmployees) {
                 if (currEmp.equals(employeeForEdit)) {
                     continue;
@@ -115,18 +117,18 @@
         </select>
 
         <br/> <br/>
-        Позиция сотрудника:<br/>
+        Должность:<br/>
         <%--<input type='text' size='50' name='jobName'required/>--%>
         <input type='text' size='50' id="<%=EmployeeModification.EMP_ID%>"
                name="<%=EmployeeModification.JOB_NAME%>"
-                <%= isEdit ? "value=\"" + employeeForEdit.getJobName() + "\"" : "placeholder=\"Job name\"" %> required/>
+                <%= isEdit ? "value=\"" + employeeForEdit.getJobName() + "\"" : "placeholder=\"Введите должность работника\"" %> required/>
 
         <% System.out.println("--- 4 --- ");  // debug %>
 
         <br/> <br/>
-        Зарплата сотрудника:<br/>
+        Зарплата:<br/>
         <input type='number' size='50' id="<%=EmployeeModification.EMP_ID%>" name="<%=EmployeeModification.SALARY%>"
-                <%= isEdit ? "value=" + employeeForEdit.getSalaryAsString() : "placeholder=\"Salary size\"" %>
+                <%= isEdit ? "value=" + employeeForEdit.getSalaryAsString() : "placeholder=\"Введите размер зарплаты\"" %>
                required/>
 
         <% if (employeeForEdit != null) {
@@ -138,11 +140,14 @@
 
 <%--        <input type='date' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.DATE_IN%>'
                 <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>--%>
-        Date: <input type='text' id='datepicker0' name='<%=EmployeeModification.DATE_IN%>'
+        <input type='text' id='datepicker0' name='<%=EmployeeModification.DATE_IN%>'
+<%--
             <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>
+--%>
+        <%= isEdit ? "value=" + Util_dates.dat2Str(employeeForEdit.getDateIn()) : "value=" + Util_dates.dat2Str(new Date()) %> readonly required/>
 
         <br/> <br/>
-        <p><input type='submit' value='Save changes'></p>
+        <p><input type='submit' value='Сохранить данные'></p>
 
     </form>
 </article>

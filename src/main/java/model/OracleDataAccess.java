@@ -207,7 +207,7 @@ public class OracleDataAccess implements DataAccess {
             pDepartmentName = convertToQueryFormat(pDepartmentName);
 
             String stSQL = "" +
-                    "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
+                    "select  emp.*, nvl(to_char(man.EMP_NAME), ' ')  as manName, dep.DEPARTMENT_NAME as depName " +
                     "from lab3_Employees emp  " +
                     "left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
                     "left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
@@ -509,7 +509,11 @@ public class OracleDataAccess implements DataAccess {
                     "insert into LAB3_EMPLOYEES " +
                     "   (MANAGER_ID, EMP_NAME, DEPARTMENT_ID, JOB_NAME, SALARY, DATE_IN )  " +
                     "values ( :1, :2, :3, :4, :5, :6) ");
-            statement.setInt(1, employee.getManagerId());
+            if (employee.getManagerId() == null) {
+                statement.setNull(1, Types.INTEGER);
+            } else {
+                statement.setInt(1, employee.getManagerId());
+            }
             statement.setString(2, employee.getName());
             statement.setInt(3, employee.getDepartmentId());
             statement.setString(4, employee.getJobName());

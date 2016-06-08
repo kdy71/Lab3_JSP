@@ -3,8 +3,10 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="controller.Actions" %>
 <%@ page import="controller.EmployeeProcessors.EmployeeModification" %>
+<%@ page import="java.util.List" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <%--
   Created by IntelliJ IDEA.
   User: Dudkin Alexander, Dmitry Khoruzhenko
@@ -35,15 +37,21 @@
 <jsp:include page="Search.jsp"/>
 <jsp:include page="Header.jsp"/>
 <jsp:include page="Menu.jsp"/>
+<jsp:include page="Footer.jsp"/>
 
 <article>
 
     <!--    <form action = 'Employee-edit.jsp' method = 'post'> исправить адрес к сервлету и метод-->
 
-    <table border="1">
-        <% if (request.getAttribute("foundEmployees") != null) {
-        %>Результаты поиска:<%
+    <table border="1" >
+<%--        <% if (request.getAttribute("foundEmployees") != null ) {--%>
+        <% if (request.getAttribute("afterSearch").equals("yes") ) {
+        %><h3>Результаты поиска:</h3><%
+        } else {
+        %><h3>Список всех сотрудников:</h3><%
+            request.setAttribute("afterSearch", "no");
         }%>
+
         <tr>
             <th>ФИО</th>
             <th>Отдел</th>
@@ -77,7 +85,8 @@
             <td> <%=currEmp.getName()%>                 </td>
             <td> <%=currEmp.getDepartmentName()%>       </td>
             <td> <%=currEmp.getJobName()%>              </td>
-            <td> <%=currEmp.getSalary()%>               </td>
+<%--            <td> <%=  currEmp.getSalary()  %>           </td>  --%>
+            <td align="right"> <%= String.format( "% 10.2f", currEmp.getSalary() ) %>               </td>
             <td> <%=currEmp.getManagerName()%>          </td>
             <td> <%=currEmp.getDateIn()%>               </td>
             <!--                <td> <input type='submit' value = 'Update'></td> -->

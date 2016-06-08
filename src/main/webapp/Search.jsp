@@ -25,13 +25,17 @@
     <link rel="stylesheet" href="/resources/demos/style.css">
     <script>
         $(function () {
-            $("#datepicker").datepicker();
+            $("#datepicker").datepicker({
+                firstDay: 1
+            });
         });
     </script>
 
     <script>
         $(function () {
-            $("#datepicker1").datepicker();
+            $("#datepicker1").datepicker({
+                firstDay: 1
+            });
         });
     </script>
 
@@ -39,7 +43,7 @@
 
 <body>
 <div class="search">
-    <h3><b>Поиск:</b></h3>
+    <h3><b>Поиск работника:</b></h3>
 
     <form name="search" action='EmployeesList.jsp' method='post' accept-charset="utf-8">
 
@@ -78,37 +82,41 @@
 
         %>
 
-        Имя:
+        <p>Имя:<br/>
 <!--        <input type='text' size='20' name='namePattern'   placeholder="Имя работника"/>   -->
         <input type='text' size='20' name='namePattern'  <%= namePattern==null ? "placeholder=\"Имя работника\"" : "value=\"" +namePattern +"\""   %> />
-        <br/>
-        Должность:
-<!--        <input type='text' size='20' name='jobPattern' placeholder="Должность"/>  -->
+        </p>
+        <p>
+        Должность:<br/>
+        <!--        <input type='text' size='20' name='jobPattern' placeholder="Должность"/>  -->
         <input type='text' size='20' name='jobPattern' <%= jobPattern==null ? "placeholder=\"Должность\"" : "value=\"" +jobPattern +"\""   %> />
-        <br/>
+        </p>
 
-        Зарплата:
+        <p>Зарплата:<br/>
 <!--        <input type="number" size='20' name='salMinPattern' placeholder="От"/>   -->
         <input type="number" size='20' name='salMinPattern' <%= salMin==null ? "placeholder=\"От\"" : "value=\"" +salMin +"\"" %> />
 <!--        <input type="number" size='20' name='salMaxPattern' placeholder="До"/>  -->
         <input type="number" size='20' name='salMaxPattern' <%= salMax==null ? "placeholder=\"До\"" : "value=\"" +salMax +"\""   %> />
-        <br/>
+        </p>
 
-        Отдел:
+        <p>Отдел:<br/>
 <!--        <input type='text' size='20' name='depPattern' placeholder="Отдел"/>    -->
         <input type='text' size='20' name='depPattern'  <%= depPattern==null ? "placeholder=\"Отдел\"" : "value=\"" +depPattern +"\""   %> />
+        </p>
 
-        <br/>Менеджер:
+        <p>Менеджер:<br/>
 <!--        <input type='text' size='20' name='manPattern' placeholder="Mенеджер"/>   -->
         <input type='text' size='20' name='manPattern'  <%= manPattern==null ? "placeholder=\"Mенеджер\"" : "value=\"" +manPattern +"\"" %>  />
+        </p>
 
-        <br/>Трудоустройство:
+        <p>Трудоустройство:<br/>
 <!--        <input type='text' id='datepicker' name='dateMinPattern' placeholder="Начиная с"/>  -->
-        <input type='text' id='datepicker' name='dateMinPattern' <%= dateMinPattern==null ? "placeholder=\"Начиная с\"" : "value=\"" +dateMinPattern +"\"" %> />
-<!--        <input type='text' id='datepicker1' name='dateMaxPattern' placeholder="Заканчивая"/>  -->
-        <input type='text' id='datepicker1' name='dateMaxPattern' <%= dateMaxPattern==null ? "placeholder=\"Заканчивая\"" : "value=\"" +dateMaxPattern +"\"" %>  />
+        <input type='text' id='datepicker' name='dateMinPattern' <%= dateMinPattern==null ? "placeholder=\"Начиная с\"" : "value=\"" +dateMinPattern +"\"" %> readonly/>
 
-        <input type='submit' value='Search'/>
+        <!--        <input type='text' id='datepicker1' name='dateMaxPattern' placeholder="Заканчивая"/>  -->
+        <input type='text' id='datepicker1' name='dateMaxPattern' <%= dateMaxPattern==null ? "placeholder=\"Заканчивая\"" : "value=\"" +dateMaxPattern +"\"" %>  readonly/>
+        </p>
+        <input type='submit' value='Искать'/>
 
         <%  /*
             request.setCharacterEncoding("utf-8");
@@ -199,7 +207,14 @@
                 System.out.println(i+"- "+employeesList.get(i));
             }
 */
+            if (namePattern !=null || jobPattern !=null || salMinPattern!=null || salMaxPattern!= null ||
+                    depPattern != null || manPattern != null || dateMinPattern != null || dateMaxPattern != null) {
+                request.setAttribute("afterSearch", "yes");
+            } else {
+                request.setAttribute("afterSearch", "no");
+            }
         %>
+
 
     </form>
 

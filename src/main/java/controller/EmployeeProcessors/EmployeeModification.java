@@ -51,8 +51,16 @@ public abstract class EmployeeModification implements Processor {
         System.out.println("  empName= "+empName);  // debug
         Integer departmentId = Integer.parseInt(request.getParameter(DEPARTMENT_ID));
         System.out.println("  departmentId= "+departmentId);  // debug
+        System.out.println("  RequestmanagerId= "+request.getParameter(MANAGER_ID));  // debug
 //        Integer managerId = Integer.parseInt(request.getParameter(MANAGER_ID));
-        Integer managerId = Integer.parseInt(request.getParameter(MANAGER_ID));
+        Integer managerId;
+//        if (request.getParameter(MANAGER_ID) == null) { System.out.println("man_id == null !! ");    }
+        if (request.getParameter(MANAGER_ID) == null) {
+            managerId = null; //  MANAGER_ID - необязательное поле
+        } else {
+            managerId = Integer.parseInt(request.getParameter(MANAGER_ID));
+        }
+        //Integer managerId = Integer.parseInt(request.getParameter(MANAGER_ID));
         System.out.println("  managerId= "+managerId);  // debug
         String jobName = request.getParameter(JOB_NAME);
         System.out.println("  jobName= "+jobName);  // debug
@@ -69,7 +77,9 @@ public abstract class EmployeeModification implements Processor {
         System.out.println("  dateIn= "+dateIn);  // debug
 
         //создаем работника
+
         Employee employee = new EmployeeImpl(empId, empName, jobName, salary, departmentId, managerId, dateIn);
+
         System.out.println("---  EmployeeModification.java ---   new EmployeeImpl= "+employee);  // debug
 
         //вызываем форвард c тремя параметрами, в том числе работником

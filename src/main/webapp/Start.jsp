@@ -14,6 +14,10 @@
 </head>
 
 <body>
+<jsp:include page="Header.jsp"/>
+<jsp:include page="Menu.jsp"/>
+<jsp:include page="Footer.jsp"/>
+<jsp:include page="InsteadOfSearch.jsp"/>
 
 <header>
     <h3><b>Информационная система отдела кадров</b></h3>

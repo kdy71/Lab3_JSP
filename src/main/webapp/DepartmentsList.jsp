@@ -27,7 +27,7 @@
 <jsp:include page="Header.jsp"/>
 <jsp:include page="Menu.jsp"/>
 <jsp:include page="Footer.jsp"/>
-<%-- <jsp:include page="Search.jsp"/>  --%>
+<jsp:include page="InsteadOfSearch.jsp"/>
 
 <article>
     <h3>Список всех отделов в организации</h3>
