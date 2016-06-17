@@ -5,8 +5,8 @@ DROP TABLE  "LAB3_EMPLOYEES" cascade constraints;
 DROP TABLE  "LAB3_DEPARTMENTS" cascade constraints;
 
 
-   CREATE SEQUENCE   "LAB3_DEPARTMENTS_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 21 CACHE 20 NOORDER  NOCYCLE ;
-   CREATE SEQUENCE   "LAB3_EMPLOYEES_SEQ"    MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 41 CACHE 20 NOORDER  NOCYCLE ;
+   CREATE SEQUENCE   "LAB3_DEPARTMENTS_SEQ"  MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 100 CACHE 20 NOORDER  NOCYCLE ;
+   CREATE SEQUENCE   "LAB3_EMPLOYEES_SEQ"    MINVALUE 1 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 START WITH 100 CACHE 20 NOORDER  NOCYCLE ;
 
 
 --------------------------------------------------------
@@ -24,9 +24,16 @@ DROP TABLE  "LAB3_DEPARTMENTS" cascade constraints;
   TABLESPACE "USERS" ;
 REM INSERTING into DIMA.LAB3_DEPARTMENTS
 SET DEFINE OFF;
-Insert into DIMA.LAB3_DEPARTMENTS (DEPARTMENT_ID,DEPARTMENT_NAME,DESCRIPTION) values ('1','SALES',null);
-Insert into DIMA.LAB3_DEPARTMENTS (DEPARTMENT_ID,DEPARTMENT_NAME,DESCRIPTION) values ('2','ACCOUNTING',null);
-Insert into DIMA.LAB3_DEPARTMENTS (DEPARTMENT_ID,DEPARTMENT_NAME,DESCRIPTION) values ('3','IT',null);
+
+Insert into LAB3_DEPARTMENTS (DEPARTMENT_ID,DEPARTMENT_NAME,DESCRIPTION) values ('21','transport','trans port');
+Insert into LAB3_DEPARTMENTS (DEPARTMENT_ID,DEPARTMENT_NAME,DESCRIPTION) values ('41','отдел № 8 ','отдел номер восемь');
+Insert into LAB3_DEPARTMENTS (DEPARTMENT_ID,DEPARTMENT_NAME,DESCRIPTION) values ('62','ОМН','отдел монтажа и наладки');
+Insert into LAB3_DEPARTMENTS (DEPARTMENT_ID,DEPARTMENT_NAME,DESCRIPTION) values ('1','SALES','отдел продаж');
+Insert into LAB3_DEPARTMENTS (DEPARTMENT_ID,DEPARTMENT_NAME,DESCRIPTION) values ('2','ACCOUNTING','финансы и бухгалтерия');
+Insert into LAB3_DEPARTMENTS (DEPARTMENT_ID,DEPARTMENT_NAME,DESCRIPTION) values ('3','IT','информационные технологии');
+Insert into LAB3_DEPARTMENTS (DEPARTMENT_ID,DEPARTMENT_NAME,DESCRIPTION) values ('63','электрики','электрики');
+
+
 --------------------------------------------------------
 --  DDL for Index LAB3_DEPARTMENTS__NAME
 --------------------------------------------------------
@@ -104,10 +111,19 @@ ALTER TRIGGER  "LAB3_DEPARTMENTS_TRG" ENABLE;
    COMMENT ON COLUMN  "LAB3_EMPLOYEES"."DATE_IN" IS 'hire date';
 REM INSERTING into DIMA.LAB3_EMPLOYEES
 SET DEFINE OFF;
-Insert into DIMA.LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('3','Сидоренко С.С.','2','4','Бухгартер','3333',to_date('18.04.16','DD.MM.RR'));
-Insert into DIMA.LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('1','Иванов И.И.','1',null,'Директор','9999',to_date('01.04.16','DD.MM.RR'));
-Insert into DIMA.LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('2','Петров П.П.','3','1','Программист','5555',to_date('08.04.16','DD.MM.RR'));
-Insert into DIMA.LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('4','Сидоров С.С.','2','1','ГлавБух','4444',to_date('12.04.16','DD.MM.RR'));
+
+Insert into LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('24','Барабанов Б.Б.','3','1','Тестировщик','5555',to_date('19.05.16','DD.MM.RR'));
+Insert into LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('25','Виноградов В.В.','63','1','электрик','222',to_date('19.05.16','DD.MM.RR'));
+Insert into LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('27','Деревянко Д.Д.','21','2','водитель','3333',to_date('15.06.16','DD.MM.RR'));
+Insert into LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('3','Сидоренко С.С.','2','4','Бухгартер','3333',to_date('18.04.16','DD.MM.RR'));
+Insert into LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('1','Иванов И.И.','1',null,'Директор','9997',to_date('01.04.16','DD.MM.RR'));
+Insert into LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('2','Петров П.П.','3','1','Программист','5555',to_date('08.04.16','DD.MM.RR'));
+Insert into LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('4','Сидоров С.С.','2','1','ГлавБух','4444',to_date('12.04.16','DD.MM.RR'));
+Insert into LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('29','Гусев Г.Г.','41','25','монтажник','33333',to_date('15.06.16','DD.MM.RR'));
+Insert into LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('22','Яковлев Я.Я.','3','2','Программист','5000',to_date('28.04.16','DD.MM.RR'));
+Insert into LAB3_EMPLOYEES (EMP_ID,EMP_NAME,DEPARTMENT_ID,MANAGER_ID,JOB_NAME,SALARY,DATE_IN) values ('23','Арбузов А.А.','3','2','Программист','5111',to_date('28.04.16','DD.MM.RR'));
+
+
 --------------------------------------------------------
 --  DDL for Index LAB3_EMPLOYEES_PK
 --------------------------------------------------------

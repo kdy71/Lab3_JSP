@@ -1,7 +1,6 @@
 package model;
 
-import oracle.jdbc.OraclePreparedStatement;
-import oracle.jdbc.driver.OracleDriver;
+// import oracle.jdbc.driver.OracleDriver;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -18,27 +17,80 @@ import java.util.Date;
  */
 public class OracleDataAccess implements DataAccess {
 
-    private static final OracleDataAccess instance = new OracleDataAccess();
+    private static final String SQL_SELECT_ALL_EMPLOYEES =  "" +
+            "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
+            "from lab3_Employees emp  " +
+            "   left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
+            "   left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
+            "ORDER BY emp.EMP_NAME ";
+    private static final String SQL_SELECT_FILTERED_EMLOYEES = "" +
+            "select  emp.*, nvl(to_char(man.EMP_NAME), ' ')  as manName, dep.DEPARTMENT_NAME as depName " +
+            "from lab3_Employees emp  " +
+            "left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
+            "left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
+            "where  ( :1  is null  or  lower(emp.EMP_NAME)    like  :2 ) " +
+            "   and ( :3  is null  or  lower(emp.JOB_NAME)    like  :4 ) " +
+            "   and ( :5  is null  or  emp.SALARY          >= :6     ) " +
+            "   and ( :7  is null  or  emp.SALARY          <= :8     ) " +
+            "   and ( :9  is null  or  emp.DEPARTMENT_ID    = :10    ) " +
+            "   and ( :11 is null  or  emp.MANAGER_ID       = :12    ) " +
+            "   and ( :13 is null  or  emp.DATE_IN         >= :14    ) " +
+            "   and ( :15 is null  or  emp.DATE_IN         <= :16     ) " +
+            "   and ( :17 is null  or  lower(man.EMP_NAME)         like :18  ) " +
+            "   and ( :19 is null  or  lower(dep.DEPARTMENT_NAME)  like :20 ) " +
+            "ORDER BY emp.EMP_NAME ";
+    private final static String SQL_SELECT_FILTERED_DEPARTMENTS = "SELECT dep.* " +
+            "FROM LAB3_DEPARTMENTS dep " +
+            "WHERE dep.DEPARTMENT_NAME LIKE ? ";
+    private static final String SQL_SELECT_EMPLOYEE_BY_ID = "" +
+            "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
+            "from lab3_Employees emp  " +
+            "   left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
+            "   left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
+            "where emp.EMP_ID = ? ";
+    private static final String SQL_SELECT_ALL_DEPARTMENTS = "SELECT * FROM LAB3_DEPARTMENTS ORDER BY DEPARTMENT_NAME";
+    private static final String SQL_SELECT_DEPARTMENT_BY_ID = "" +
+            "select  * " +
+            "from LAB3_DEPARTMENTS   " +
+            "where DEPARTMENT_ID = :1 ";
+    private static final String SQL_INSERT_EMPLOYEE = "" +
+            "insert into LAB3_EMPLOYEES " +
+            "   (MANAGER_ID, EMP_NAME, DEPARTMENT_ID, JOB_NAME, SALARY, DATE_IN )  " +
+            "values ( :1, :2, :3, :4, :5, :6) ";
+    private static final String SQL_UPDATE_EMPLOYEE = " " +
+            " update LAB3_EMPLOYEES " +
+            " set MANAGER_ID    = ?, " +
+            "     EMP_NAME      = ?, " +
+            "     DEPARTMENT_ID = ?, " +
+            "     JOB_NAME      = ?, " +
+            "     SALARY        = ?, " +
+            "     DATE_IN       = ?  " +
+            " where  EMP_ID = ? ";
+    private static final String SQL_DELETE_EMPLOYEE = "delete from  LAB3_EMPLOYEES where  EMP_ID = :1 ";
+    private static final String SQL_INSERT_DEPARTMENT = "" +
+            "insert into LAB3_DEPARTMENTS " +
+            "   ( DEPARTMENT_NAME, DESCRIPTION )  " +
+            "values ( :1, :2 ) ";
+    private static final String SQL_UPDATE_DEPARTMENT = " " +
+            " update LAB3_DEPARTMENTS " +
+            " set DEPARTMENT_NAME  = ?, " +
+            "     DESCRIPTION      = ? " +
+            " where  DEPARTMENT_ID = ? ";
+    private static final String SQL_DELETE_DEPARTMENT = "delete from  LAB3_DEPARTMENTS where  DEPARTMENT_ID = :1 ";
 
+    private static final OracleDataAccess instance = new OracleDataAccess();
     private DataSource ds;
     private Context ctx;
     private Hashtable ht = new Hashtable();
-    Driver driver = new OracleDriver();  // for jdbc connection
+//    Driver driver = new OracleDriver();  // for jdbc connection
 
 
+    /**
+     * private constructor - for singleton
+     */
     private OracleDataAccess() {
-    /*
-        ht.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-        ht.put(Context.PROVIDER_URL, "t3://localhost:7001");
-        try {
-            ctx = new InitialContext(ht);
-            ds = (javax.sql.DataSource) ctx.lookup("DataBase");
-        } catch (NamingException e) {
-            System.err.println (e.getMessage());
-        }
-    */
+        super();
     }
-
 
 
     public static OracleDataAccess getInstance() {
@@ -48,20 +100,21 @@ public class OracleDataAccess implements DataAccess {
 
     /**
      * Возвращает коннект к базе данных через JDBC
-     *
+     *  Для корректной работы этого метода потребуется раскомментировать всё что касается  Driver driver = new OracleDriver()
+     *  Проблема в том, что для работы с OracleDriver() требуется этот драйвер явно скачивать и таскать за проектом - автоматом он не подхватывается.
      * @return - JDBC connection
      */
-    public Connection connect_JDBC() {
+    private Connection connectJDBC() {
         Locale.setDefault(Locale.ENGLISH);
         Connection connection = null;
-        try {
+/*        try {
             DriverManager.registerDriver(driver);
 //            connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XE", "Alef", "student");
             connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XE", "dima", "student");
         } catch (SQLException e) {
             e.printStackTrace();
             // log4j
-        }
+        }  */
         return connection;
     }
 
@@ -71,7 +124,7 @@ public class OracleDataAccess implements DataAccess {
      *
      * @return - WebLogic DataSource  connection
      */
-    public Connection connect_WebLogic_ds() {
+    private Connection connectWebLogicDs() {
         ht.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
         ht.put(Context.PROVIDER_URL, "t3://localhost:7001");
         try {
@@ -80,7 +133,6 @@ public class OracleDataAccess implements DataAccess {
         } catch (NamingException e) {
             System.err.println(e.getMessage());
         }
-
         Connection connection = null;
         try {
             connection = ds.getConnection();
@@ -91,7 +143,22 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+    /**
+     * Возвращает коннект к базе данных
+     * @return
+     */
+    private Connection getConnection() {
+        return connectWebLogicDs();
+//        return connectJDBC();
+    }
 
+
+    /**
+     * Disconnect with ResultSet
+     * @param connection - Connection
+     * @param result - ResultSet
+     * @param statement - Statement
+     */
     public void disconnect(Connection connection, ResultSet result, Statement statement) {
         try {
             if(statement != null)
@@ -106,6 +173,11 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+    /**
+     * Disconnect without ResultSet
+     * @param connection - Connection
+     * @param statement - Statement
+     */
     public void disconnect(Connection connection, Statement statement) {
         try {
             if (statement != null)
@@ -118,23 +190,18 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
-    //    public List<EmployeeImpl> getAllEmployees() {
+    /**
+     * Возвращает список всех работников (из базы данных).
+     * @return List<Employee> - список всех работников.
+     */
     public List<Employee> getAllEmployees() {
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         ResultSet result = null;
         PreparedStatement statement = null;
-//        ArrayList<EmployeeImpl> listEmpl = new ArrayList<EmployeeImpl>();
         ArrayList<Employee> listEmpl = new ArrayList<Employee>();
-//        EmployeeImpl employee;
         Employee employee;
         try {
-//          statement = connection.prepareStatement("SELECT * FROM lab3_Employees ORDER BY EMP_NAME");
-            statement = connection.prepareStatement("" +
-                    "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
-                    "from lab3_Employees emp  " +
-                    "left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
-                    "left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
-                    "ORDER BY emp.EMP_NAME ");
+            statement = connection.prepareStatement(SQL_SELECT_ALL_EMPLOYEES);
             result = statement.executeQuery();
             while (result.next()) {
                 employee = getEmployeeFromResultSet(result);
@@ -147,6 +214,7 @@ public class OracleDataAccess implements DataAccess {
         }
         return listEmpl;
     }
+
 
 
 
@@ -166,35 +234,17 @@ public class OracleDataAccess implements DataAccess {
      * @param pManagerName    - имя менеджера
      * @param pDepartmentName - наименование подразделения
      * @return - возвращает список работников, для которых выполняются все условия фильтрации
-
-    public List<Employee> findEmployees(String name, String job, Integer salMin, Integer salMax, String department,
-    String manager, Date dateMin, Date dateMax) {
      */
     public List<Employee> getEmployeesFiltered(String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
                                                Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
                                                String pManagerName, String pDepartmentName) {
-        System.out.println("   --- getEmployeesFiltered(String pName, String pJobName,... ---");
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         ResultSet result = null;
         PreparedStatement statement = null;
 //        OraclePreparedStatement statement = null;
         ArrayList<Employee> listEmpl = new ArrayList<Employee>();
         Employee employee;
         try {
-/*            System.out.println("    getEmployeesFiltered - try 1");
-            System.out.println("pName= <<"+pName+">>"); // debug
-            pName = convertToQueryFormat(pName);
-            System.out.println("pName= <<"+pName+">>"); // debug
-            System.out.println("pManagerName= <<"+pManagerName+">>"); // debug
-            pManagerName = convertToQueryFormat(pManagerName);
-            System.out.println("pManagerName= <<"+pManagerName+">>"); // debug
-            System.out.println("pSalaryFrom1= <<"+pSalaryFrom+">>"); // debug
-            pSalaryFrom = convertToQueryFormat(pSalaryFrom);
-            System.out.println("pSalaryFrom2= <<"+pSalaryFrom+">>"); // debug
-            System.out.println("pDateInFrom1= <<"+pDateInFrom+">>"); // debug
-            pDateInFrom = convertToQueryFormat(pDateInFrom);
-            System.out.println("pDateInFrom2= <<"+pDateInFrom+">>"); // debug  */
-
             pName           = convertToQueryFormat(pName          );
             pJobName        = convertToQueryFormat(pJobName       );
             pSalaryFrom     = convertToQueryFormat(pSalaryFrom    );
@@ -206,26 +256,7 @@ public class OracleDataAccess implements DataAccess {
             pManagerName    = convertToQueryFormat(pManagerName   );
             pDepartmentName = convertToQueryFormat(pDepartmentName);
 
-            String stSQL = "" +
-                    "select  emp.*, nvl(to_char(man.EMP_NAME), ' ')  as manName, dep.DEPARTMENT_NAME as depName " +
-                    "from lab3_Employees emp  " +
-                    "left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
-                    "left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
-                    "where  ( :1  is null  or  lower(emp.EMP_NAME)    like  :2  /*  or  1=2 */ ) " +
-                    "   and ( :3  is null  or  lower(emp.JOB_NAME)    like  :4  /*or (1=2) */ ) " +
-//                    "   and ( :3  is null  or  emp.JOB_NAME     = like :4        ) " +
-                    "   and ( :5  is null  or  emp.SALARY          >= :6     ) " +
-                    "   and ( :7  is null  or  emp.SALARY          <= :8     ) " +
-                    "   and ( :9  is null  or  emp.DEPARTMENT_ID    = :10    ) " +
-                    "   and ( :11 is null  or  emp.MANAGER_ID       = :12    ) " +
-                    "   and ( :13 is null  or  emp.DATE_IN         >= :14    ) " +
-                    "   and ( :15 is null  or  emp.DATE_IN         <= :16     ) " +
-                    "   and ( :17 is null  or  lower(man.EMP_NAME)         like :18  ) " +
-                    "   and ( :19 is null  or  lower(dep.DEPARTMENT_NAME)  like :20 ) " +
-                    "ORDER BY emp.EMP_NAME ";
-//            System.out.println("stSQL= "+stSQL); // debug
-            statement = connection.prepareStatement(stSQL);
-//            ((OraclePreparedStatement)statement).setStringAtName("p1", pName);
+            statement = connection.prepareStatement(SQL_SELECT_FILTERED_EMLOYEES);
             statement.setString(1, pName); // :1
             statement.setString(2, pName); // :1
             statement.setString(3, pJobName); // :2
@@ -289,8 +320,6 @@ public class OracleDataAccess implements DataAccess {
             statement.setString(18, pManagerName); // :9
             statement.setString(19, pDepartmentName); // :10
             statement.setString(20, pDepartmentName); // :10
-
-
             result = statement.executeQuery();
             while (result.next()) {
                 employee = getEmployeeFromResultSet(result);
@@ -305,16 +334,11 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
-
     private String convertToQueryFormat(String st) {
         if (st == null) {return null;}
         String result =  st.trim();
         if (st.equals("")) {return null;}
-//        return "%"+result.toLowerCase(Locale.ENGLISH)+"%";
-//        return result.toLowerCase()+"%";
         return "%"+result.toLowerCase()+"%";
-//        return "'"+result.toLowerCase()+"%'";
-//        return st;
     }
 
     private Float convertToQueryFormat(Float var) {
@@ -335,73 +359,21 @@ public class OracleDataAccess implements DataAccess {
 
 
 
-    public List<Employee> findEmployees(String name, String job, Integer salMin, Integer salMax, String department,
-                                        String manager, Date dateMin, Date dateMax) {
-        String namePattern = "%" + name.toLowerCase() + "%";
-        String jobPattern = "%" + job.toLowerCase() + "%";
-        String salMinPattern = salMin.toString();
-        String salMaxPattern = salMax.toString();
-        String depPattern = "%" + department.toLowerCase() + "%";
-        String manPattern = "%" + manager.toLowerCase() + "%";
-        String dateMinPattern = Util_dates.dateToDBString(dateMin);
-        String dateMaxPattern = Util_dates.dateToDBString(dateMax);
-
-        System.out.println(dateMinPattern); //debug
-        System.out.println(dateMaxPattern); //debug
-
-        Connection connection = connect_JDBC();
-        ResultSet result = null;
-        PreparedStatement statement = null;
-        ArrayList<Employee> employeeList = new ArrayList<Employee>();
-        Employee employee;
-
-        try {
-            statement = connection.prepareStatement("SELECT  emp.*, man.EMP_NAME AS manName, dep.DEPARTMENT_NAME AS depName\n" +
-                    "FROM LAB3_EMPLOYEES emp\n" +
-                    "  LEFT JOIN LAB3_EMPLOYEES man ON man.EMP_ID = emp.MANAGER_ID\n" +
-                    "  LEFT JOIN LAB3_DEPARTMENTS dep ON dep.DEPARTMENT_ID = emp.DEPARTMENT_ID\n" +
-                    "WHERE (LOWER(emp.EMP_NAME) LIKE :1) " +
-                    " AND (LOWER(emp.JOB_NAME) LIKE :2)" +
-                    " AND (emp.SALARY >= :3) AND (emp.SALARY <= :4)" +
-                    " AND (LOWER(dep.DEPARTMENT_NAME) LIKE :5)" +
-                    " AND (LOWER(man.EMP_NAME) LIKE :6)" +              // TODO Не выводит начальника с null-полем менеджера
-                    " AND (emp.DATE_IN >= to_date(:7, 'yyyy-MM-dd'))" +
-                    " AND (emp.DATE_IN <= to_date(:8, 'yyyy-MM-dd'))"
-            );
-            statement.setString(1, namePattern);
-            statement.setString(2, jobPattern);
-            statement.setString(3, salMinPattern);
-            statement.setString(4, salMaxPattern);
-            statement.setString(5, depPattern);
-            statement.setString(6, manPattern);
-            statement.setString(7, dateMinPattern);
-            statement.setString(8, dateMaxPattern);
-
-            result = statement.executeQuery();
-            while (result.next()) {
-                employee = getEmployeeFromResultSet(result);
-                employeeList.add(employee);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            disconnect(connection, result, statement);
-        }
-        return employeeList;
-    }
-
+    /**
+     * Возвращает список отделов, отфильтрованнй по названию отдела (из базы данных)
+     * @param name - шаблон названия отдела
+     * @return   List<Department> - список отделов с подходящими названиями.
+     */
     public List<Department> findDepartmentsByName(String name) {
-        String pattern = "%" + name + "%";
-        Connection connection = connect_JDBC();
+        String pattern = convertToQueryFormat(name); //"%" + name + "%";
+        Connection connection = getConnection();
         ResultSet result = null;
         PreparedStatement statement = null;
         ArrayList<Department> listDepart = new ArrayList<Department>();
         Department department;
 
         try {
-            statement = connection.prepareStatement("SELECT dep.*\n" +
-                    "FROM LAB3_DEPARTMENTS dep\n" +
-                    "WHERE dep.DEPARTMENT_NAME LIKE ? ");
+            statement = connection.prepareStatement(SQL_SELECT_FILTERED_DEPARTMENTS);
             statement.setString(1, pattern);
             result = statement.executeQuery();
             while (result.next()) {
@@ -417,18 +389,18 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+    /**
+     * Возвращает работника по заданному ID
+     * @param id - id искомого работника
+     * @return Employee - найденный работник (или null - если не найден)
+     */
     public Employee getEmployeeById(Integer id) {
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         ResultSet result = null;
         PreparedStatement statement = null;
         Employee employee = null;
         try {
-            statement = connection.prepareStatement("" +
-                    "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
-                    "from lab3_Employees emp  " +
-                    "left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
-                    "left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
-                    "where emp.EMP_ID = ? ");
+            statement = connection.prepareStatement(SQL_SELECT_EMPLOYEE_BY_ID);
             statement.setInt(1, id);
             result = statement.executeQuery();
             while (result.next()) {
@@ -444,15 +416,19 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+    /**
+     * Возвращает список всех отделов (из базы данных).
+     * @return - List<Department> - список всех отделов.
+     */
     @Override
     public List<Department> getAllDepartments() {
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         ResultSet result = null;
         PreparedStatement statement = null;
         ArrayList<Department> listDep = new ArrayList<Department>();
         DepartmentImpl department;
         try {
-            statement = connection.prepareStatement("SELECT * FROM LAB3_DEPARTMENTS ORDER BY DEPARTMENT_NAME");
+            statement = connection.prepareStatement(SQL_SELECT_ALL_DEPARTMENTS);
             result = statement.executeQuery();
             while (result.next()) {
                 Integer id = Integer.parseInt(result.getString("DEPARTMENT_ID"));
@@ -471,17 +447,20 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+
+    /**
+     * Возвращает отдел по заданному ID
+     * @param id - id искомого отдела
+     * @return - Department - найденный отдел (или null - если не найден).
+     */
     @Override
     public Department getDepartmentById(Integer id) {
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         ResultSet result = null;
         PreparedStatement statement = null;
         DepartmentImpl department = null;
         try {
-            statement = connection.prepareStatement("" +
-                    "select  * " +
-                    "from LAB3_DEPARTMENTS   " +
-                    "where DEPARTMENT_ID = :1 ");
+            statement = connection.prepareStatement(SQL_SELECT_DEPARTMENT_BY_ID);
             statement.setInt(1, id);
             result = statement.executeQuery();
             while (result.next()) {
@@ -500,15 +479,16 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+    /**
+     * Вставляет запись о работнике в таблицу базы данных
+     * @param employee - работник, которого надо записать в базу данных
+     */
     @Override
     public void insertEmployee(Employee employee) {
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement("" +
-                    "insert into LAB3_EMPLOYEES " +
-                    "   (MANAGER_ID, EMP_NAME, DEPARTMENT_ID, JOB_NAME, SALARY, DATE_IN )  " +
-                    "values ( :1, :2, :3, :4, :5, :6) ");
+            statement = connection.prepareStatement(SQL_INSERT_EMPLOYEE);
             if (employee.getManagerId() == null) {
                 statement.setNull(1, Types.INTEGER);
             } else {
@@ -533,36 +513,32 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+    /**
+     * Изменяет запись о работнике в базе данных.
+     * @param employee - работник, которого будем сохранять в базе.
+     */
     @Override
     public void updateEmployee(Employee employee) {
-        System.out.println("We are into ODA - updateEmployee(Employee employee). Begin.");  // debug
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement(" " +
-                    " update LAB3_EMPLOYEES " +
-                    " set MANAGER_ID    = ?, " +
-                    "     EMP_NAME      = ?, " +
-                    "     DEPARTMENT_ID = ?, " +
-                    "     JOB_NAME      = ?, " +
-                    "     SALARY        = ?, " +
-                    "     DATE_IN       = ?  " +
-                    " where  EMP_ID = ? ");
-//            statement.setInt   (1, employee.getManagerId());
-            if (employee.getManagerId() != null ) { statement.setInt   (1, employee.getManagerId()); }
+            statement = connection.prepareStatement(SQL_UPDATE_EMPLOYEE);
+
+            if (employee.getManagerId() != null) {  statement.setInt  (1, employee.getManagerId());  }
+                                            else {  statement.setNull (1, Types.INTEGER);  }
             statement.setString(2, employee.getName());
-            statement.setInt   (3, employee.getDepartmentId());
+//            statement.setInt   (3, employee.getDepartmentId());
+            if (employee.getDepartmentId() != null) {  statement.setInt  (3, employee.getDepartmentId());  }
+                                            else    {  statement.setNull (3, Types.INTEGER);  }
             statement.setString(4, employee.getJobName());
             statement.setFloat (5, employee.getSalary());
-//            statement.setDate  (6, (java.sql.Date)employee.getDateIn());
             if (employee.getDateIn() != null) {
                 java.sql.Date sqlDate = new java.sql.Date(employee.getDateIn().getTime());
                 statement.setDate  (6, sqlDate);
             }
+            else { statement.setNull(6, Types.DATE); }
             statement.setInt   (7, employee.getId());
-            System.out.println(" ODA - updateEmployee. -- 2 -- before execute sql.");  // debug
             statement.executeUpdate();
-            System.out.println(" ODA - updateEmployee. -- 3 -- after execute sql.");  // debug
         } catch (Exception e) {
             e.printStackTrace();
             // log4j
@@ -573,12 +549,16 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+    /**
+     * Удаляет работника из базы данных
+     * @param employeeId - id удаляемого работника.
+     */
     @Override
     public void deleteEmployee(Integer employeeId) {
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement("delete from  LAB3_EMPLOYEES where  EMP_ID = :1 ");
+            statement = connection.prepareStatement(SQL_DELETE_EMPLOYEE);
             statement.setInt(1, employeeId);
             statement.executeUpdate();
         } catch (Exception e) {
@@ -590,15 +570,16 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+    /**
+     * Вставляет запись об отделе в базу данных
+     * @param department - отдел, который будем записывать в базу
+     */
     @Override
     public void insertDepartment(Department department) {
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement("" +
-                    "insert into LAB3_DEPARTMENTS " +
-                    "   ( DEPARTMENT_NAME, DESCRIPTION )  " +
-                    "values ( :1, :2 ) ");
+            statement = connection.prepareStatement(SQL_INSERT_DEPARTMENT);
             statement.setString(1, department.getName());
             statement.setString(2, department.getDescription());
             statement.executeUpdate();
@@ -611,27 +592,21 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+
+    /**
+     * Изменяет запись об отделе в базе данных.
+     * @param department - отдел, который должен быть сохранён в базе.
+     */
     @Override
     public void updateDepartment(Department department) {
-//        System.out.println("We are into ODA - updateDepartment(Department department). Begin.");  // debug
-//        System.out.println("  department= "+department); // debug
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-
-            statement = connection.prepareStatement(" " +
-                    " update LAB3_DEPARTMENTS " +
-                    " set DEPARTMENT_NAME  = ?, " +
-                    "     DESCRIPTION      = ? " +
-                    " where  DEPARTMENT_ID = ? ");
-            //     System.out.println("  stSql= "+stSql);
+            statement = connection.prepareStatement(SQL_UPDATE_DEPARTMENT);
             statement.setString(1, department.getName());
             statement.setString(2, department.getDescription());
             statement.setInt   (3, department.getId());
-//            System.out.println("  try to executeUpdate...");  // debug
-            System.out.println(department);
             statement.executeUpdate();
-//            System.out.println("  executeUpdate ok.");  // debug
         } catch (Exception e) {
             e.printStackTrace();
             // log4j
@@ -642,12 +617,16 @@ public class OracleDataAccess implements DataAccess {
     }
 
 
+    /**
+     * Удаляет отдел из базы данных.
+     * @param departmentId - id удаляемого отдела.
+     */
     @Override
     public void deleteDepartment(Integer departmentId) {
-        Connection connection = connect_JDBC();
+        Connection connection = getConnection();
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement("delete from  LAB3_DEPARTMENTS where  DEPARTMENT_ID = :1 ");
+            statement = connection.prepareStatement(SQL_DELETE_DEPARTMENT);
             statement.setInt(1, departmentId);
             statement.executeUpdate();
         } catch (Exception e) {
@@ -682,6 +661,13 @@ public class OracleDataAccess implements DataAccess {
         return employee;
     }
 
+
+    /**
+     * Возвращает экземпляр Department (на самом деле DepartmentImpl) на основе данных из базы (ResultSet)
+     * @param result - ResultSet - запись из базы данных
+     * @return - экземпляр Department (на самом деле DepartmentImpl) на основе данных из базы (ResultSet)
+     * @throws SQLException
+     */
     private Department getDepartmentFromResultSet(ResultSet result) throws SQLException {
         Integer departmentId = Integer.parseInt(result.getString(1));
         String  departmentName = result.getString(2);
