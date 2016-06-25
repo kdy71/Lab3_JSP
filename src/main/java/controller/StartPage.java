@@ -1,5 +1,10 @@
 package controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+//import org.apache.log4j.Logger;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,41 +15,21 @@ import java.io.IOException;
  * Created by Oleksandr Dudkin on 27.04.2016.
  */
 public class StartPage implements Processor {
-
-/*    @Override
-    public void process(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("class StartPage implements Processor   execution...");  // debug
-
-//        RequestDispatcher dispatcher = request.getRequestDispatcher("pages/Start.jsp");
-//        RequestDispatcher dispatcher = request.getRequestDispatcher("pages/EmployeesList.jsp");
-
-//        System.out.println("RequestDispatcher dispatcher ="+dispatcher);  // debug
-        try {
-//            dispatcher.forward(request, response);
-            response.sendRedirect("pages/EmployeesList.jsp");
-        }
-        catch (ServletException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
+    private static final Logger LOG = LogManager.getLogger(StartPage.class);
 
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {
 
-//        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/EmployeesList.jsp"); //todo сделать стартовую jsp-страницу
         RequestDispatcher dispatcher = request.getRequestDispatcher("/EmployeesList.jsp");
         try {
             dispatcher.forward(request, response);
-//            response.sendRedirect("pages/EmployeesList.jsp");
-        }
-        catch (ServletException e) {
+            //LOG.info("START PAGE Dispatcher");
+        } catch (ServletException e) {
             e.printStackTrace();
-        }
-        catch (IOException e) {
+            LOG.error(e);
+        } catch (IOException e) {
             e.printStackTrace();
+            LOG.error(e);
         }
     }
 }

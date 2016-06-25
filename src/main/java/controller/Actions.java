@@ -8,7 +8,6 @@ import java.util.Map;
 
 /**
  * Class contains map of actions for method process() in class servletStart.
- *
  */
 public class Actions {
 
@@ -22,17 +21,12 @@ public class Actions {
     public static final String UPDATE_DEPARTMENT = "updateDepartment";
     public static final String DELETE_EMPLOYEE = "deleteEmployee";
     public static final String DELETE_DEPARTMENT = "deleteDepartment";
-
     public static final String EDIT_EMPLOYEE = "editEmployee";
     public static final String EDIT_DEPARTMENT = "editDepartment";
-
-
-    public static final int AMMOUNT_OF_ROWS_IN_LIST = 5; //for pagination
 
     public static final Actions INSTANCE = new Actions();
 
     private Map<String, Object> mapOfActions;
-
 
     /**
      * Сonstructor that creates map and puts in it all the actions.
@@ -43,8 +37,6 @@ public class Actions {
         mapOfActions.put(START_PAGE, new StartPage());
         mapOfActions.put(CREATE_EMPLOYEE, new CreateEmployee());
         mapOfActions.put(CREATE_DEPARTMENT, new CreateDepartment());
-//        mapOfActions.put(READ_EMPLOYEE, new ReadEmployee());
-//        mapOfActions.put(READ_DEPARTMENT, new ReadDepartment());
         mapOfActions.put(UPDATE_EMPLOYEE, new UpdateEmployee());
         mapOfActions.put(UPDATE_DEPARTMENT, new UpdateDepartment());
         mapOfActions.put(DELETE_EMPLOYEE, new DeleteEmployee());
@@ -52,11 +44,11 @@ public class Actions {
 
         mapOfActions.put(EDIT_EMPLOYEE, new EditEmployee());
         mapOfActions.put(EDIT_DEPARTMENT, new EditDepartment());
-
     }
 
     /**
      * Method for singleton-pattern.
+     *
      * @return instance of class Actions
      */
     public static Actions getInstance() {
@@ -65,11 +57,11 @@ public class Actions {
 
     /**
      * Getter for map of actions.
+     *
      * @return map of actions
      */
     public Map<String, Object> getMapOfActions() {
         return mapOfActions;
     }
-
 
 }

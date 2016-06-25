@@ -5,15 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Utilites and constants for Lab 1 (Task Manager)
+ * Utilities and constants for Lab 1 (Task Manager)
  * Created by Dmitry Khoruzhenko on 08.01.2016.
  */
-public class Util_dates {
+public class UtilDates {
 
-    public static final SimpleDateFormat sdf_rus_ms  = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss .SSS");
-    public static final SimpleDateFormat sdf_rus_day = new SimpleDateFormat("dd.MM.yyyy");
-    public static final SimpleDateFormat sdf_usa_day = new SimpleDateFormat("MM/dd/yyyy");
-    public static final SimpleDateFormat dataBaseFormat = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat SDF_RUS_MS = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss .SSS");
+    public static final SimpleDateFormat SDF_RUS_DAY = new SimpleDateFormat("dd.MM.yyyy");
+    public static final SimpleDateFormat SDF_USA_DAY = new SimpleDateFormat("MM/dd/yyyy");
+    public static final SimpleDateFormat DATA_BASE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 
     /**
@@ -22,25 +22,27 @@ public class Util_dates {
      * @param dat1 - Date for formatting
      * @return date as String in format "dd.MM.yyyy HH:mm:ss"  or String "null" if date is null
      */
-    public static String dat2Str(Date dat1) {
+    public static String dateToString(Date dat1) {
         if (dat1 == null)
             return "null";
         else
-            return sdf_usa_day.format(dat1);
+            return SDF_USA_DAY.format(dat1);
     }
 
     public static String dateToDBString(Date date) {
         if (date == null)
             return "null";
         else
-            return dataBaseFormat.format(date);
+            return DATA_BASE_FORMAT.format(date);
     }
+
     /**
      * Возвращает текущее время в строковом виде
+     *
      * @return
      */
-    public static String now2Str() {
-        return sdf_rus_ms.format(new Date());
+    public static String nowToString() {
+        return SDF_RUS_MS.format(new Date());
     }
 
 
@@ -51,8 +53,7 @@ public class Util_dates {
      * @return Date from String
      * @throws ParseException
      */
-    public static Date str2Date(String stDate) throws ParseException {
-        return sdf_usa_day.parse(stDate);
+    public static Date stringToDate(String stDate) throws ParseException {
+        return SDF_USA_DAY.parse(stDate);
     }
-
 }

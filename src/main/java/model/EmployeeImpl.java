@@ -1,8 +1,8 @@
 package model;
 
 //import java.text.SimpleDateFormat;
+
 import java.util.Date;
-import model.*;
 
 /**
  * Created by itps13 on 14.04.2016.
@@ -17,15 +17,10 @@ public class EmployeeImpl implements Employee {
     private Date dateIn;
     private String managerName;
     private String departmentName;
-    //private  final SimpleDateFormat sdf_rus_day = new SimpleDateFormat("dd.MM.yyyy");
-  //  private  final SimpleDateFormat sdf_rus_day = new SimpleDateFormat("MM/dd/yyyy");
-
-
 
     public EmployeeImpl() {
         super();
     }
-
 
     public EmployeeImpl(Integer id, String name, String jobName, Float salary,
                         Integer departmentId, Integer managerId, Date dateIn) {
@@ -39,9 +34,8 @@ public class EmployeeImpl implements Employee {
     }
 
 
-    public EmployeeImpl(Integer id, String name, String jobName, Float salary,
-                        Integer departmentId, Integer managerId, Date dateIn,
-                        String managerName, String departmentName) {
+    public EmployeeImpl(Integer id, String name, String jobName, Float salary, Integer departmentId, Integer managerId,
+                        Date dateIn, String managerName, String departmentName) {
         this.id = id;
         this.managerId = managerId;
         this.departmentId = departmentId;
@@ -175,20 +169,20 @@ public class EmployeeImpl implements Employee {
 
     /**
      * Возвращает дату приёма в строковом формате
-      * @return
+     *
+     * @return
      */
     @Override
     public String getDateInAsString() {
         if (dateIn == null)
             return "";
         else
-            return Util_dates.dat2Str(dateIn);
-//            return sdf_rus_day.format(dateIn);
+            return UtilDates.dateToString(dateIn);
     }
-
 
     /**
      * Возвращает зврплату в строковом формате
+     *
      * @return
      */
     @Override
@@ -199,8 +193,8 @@ public class EmployeeImpl implements Employee {
     @Override
     public String toString() {
         return "EmployeeImpl{" +
-                " name='" + name + '\'' +
-                ", id=" + id +
+                " id=" + id +
+                ", name='" + name + '\'' +
                 ", jobName='" + jobName + '\'' +
                 ", salary=" + salary +
                 ", departmentName='" + departmentName + '\'' +
@@ -210,5 +204,4 @@ public class EmployeeImpl implements Employee {
                 ", managerName='" + managerName + '\'' +
                 '}';
     }
-
 }

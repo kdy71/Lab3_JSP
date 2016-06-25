@@ -1,6 +1,12 @@
 <%@ page import="controller.DepartmentProcessors.DepartmentModification" %>
 <%@ page import="model.Department" %>
-<%@ page import="controller.Actions" %><%--
+<%@ page import="controller.Actions" %>
+<%@ page import="controller.EmployeeProcessors.EmployeeModification" %>
+<%@ page import="org.apache.logging.log4j.Logger" %>
+<%@ page import="org.apache.logging.log4j.LogManager" %>
+<%@ page errorPage="ErrorPage.jsp" %>
+
+<%--
   Created by IntelliJ IDEA.
   User: Admin
   Date: 11.05.2016
@@ -39,20 +45,19 @@
         Department departmentForEdit = null;
         String depForEditName = "";
         String depForEditDescription = "";
-        if(isEdit) {
+        if (isEdit) {
             departmentForEdit = (Department) session.getAttribute(Actions.EDIT_DEPARTMENT);
             depForEditName = departmentForEdit.getName();
             depForEditDescription = departmentForEdit.getDescription();
         }
     %>
 
-    <h3><%= isEdit ? "Редактирование информации об отделе:" : "Добавление нового отдела:" %>     </h3>
+    <h3><%= isEdit ? "Редактирование информации об отделе:" : "Добавление нового отдела:" %>
+    </h3>
 
-    <!--    <form name="addDepartmentForm" action='ServletStart?action=createDepartment' method='post' accept-charset="utf-8">  -->
     <form name="addDepartmentForm" action=<%= isEdit ?
-            "ServletStart?action="+Actions.UPDATE_DEPARTMENT +"&"+ DepartmentModification.DEPARTMENT_ID +"=" + departmentForEdit.getId() :
-            "ServletStart?action=createDepartment" %> method="post" accept-charset="utf-8">
-
+                "ServletStart?action="+Actions.UPDATE_DEPARTMENT +"&"+ DepartmentModification.DEPARTMENT_ID +"=" + departmentForEdit.getId() :
+                "ServletStart?action=createDepartment" %> method="post" accept-charset="utf-8">
 
         Название отдела:<br/>
         <input type='text' size='50' id="<%=DepartmentModification.DEPARTMENT_ID%>"
@@ -65,7 +70,6 @@
         <input type='text' size='50' id="<%=DepartmentModification.DEPARTMENT_ID%>"
                name='<%=DepartmentModification.DESCRIPTION%>'
                <%= isEdit ? "value=\"" + departmentForEdit.getDescription() +"\"" : "placeholder=\"Description\"" %> required/>
-
 
         <p><input type='submit' value='Save changes' required/></p>
 

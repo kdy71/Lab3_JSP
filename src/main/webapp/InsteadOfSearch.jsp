@@ -11,7 +11,7 @@
     <title>Title</title>
 </head>
 <body>
-<div class="insteadOfSearch"> </div>
+<div class="insteadOfSearch"></div>
 
 </body>
 </html>

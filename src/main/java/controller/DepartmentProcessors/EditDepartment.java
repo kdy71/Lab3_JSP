@@ -4,6 +4,8 @@ import controller.Actions;
 import controller.Processor;
 import model.Department;
 import model.OracleDataAccess;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -17,22 +19,26 @@ import java.io.IOException;
  * Этот department запоминает в параметрах сессии и переходит на страничку редактирования отделов.
  */
 public class EditDepartment implements Processor {
+    private static final Logger LOG = LogManager.getLogger(EditDepartment.class);
+
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {
-        int departmentId = Integer.parseInt( request.getParameter(DepartmentModification.DEPARTMENT_ID));
-        System.out.println("--- EditDepartment.java - controller. departmentId= "+departmentId);  // debug
+
+        int departmentId = Integer.parseInt(request.getParameter(DepartmentModification.DEPARTMENT_ID));
+        System.out.println("--- EditDepartment.java - controller. departmentId= " + departmentId);  // debug
+
         Department department = OracleDataAccess.getInstance().getDepartmentById(departmentId);
+
         request.getSession().setAttribute(Actions.EDIT_DEPARTMENT, department);
-        System.out.println("  department= "+department);  // debug
+        System.out.println("  department= " + department);  // debug
 
         RequestDispatcher rd = request.getRequestDispatcher("/Department-new.jsp");
         try {
             rd.forward(request, response);
         } catch (ServletException e) {
-            e.printStackTrace();
+            LOG.error(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(e);
         }
-
     }
 }

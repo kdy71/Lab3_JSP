@@ -2,6 +2,8 @@ package controller.DepartmentProcessors;
 
 import model.Department;
 import model.OracleDataAccess;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,10 +16,12 @@ import java.util.List;
  * Created by Oleksandr Dudkin on 27.04.2016.
  */
 public class CreateDepartment extends DepartmentModification {
+    private static final Logger LOG = LogManager.getLogger(CreateDepartment.class);
 
     /**
      * Создает запись о новом отделе в БД. Потом берет список отделов из БД. Заносит их в сессию.
      * Переходит на jsp-страницу со списком отделов.
+     *
      * @param request
      * @param response
      * @param department
@@ -27,17 +31,16 @@ public class CreateDepartment extends DepartmentModification {
 
         OracleDataAccess.getInstance().insertDepartment(department);
 
-        // TODO: позже доделать постраничный вывод
-        List departmentList = (List)OracleDataAccess.getInstance().getAllDepartments();
+        List departmentList = (List) OracleDataAccess.getInstance().getAllDepartments();
         request.getSession().setAttribute(DepartmentModification.DEPARTMENT_LIST, departmentList);
 
         RequestDispatcher rd = request.getRequestDispatcher("/DepartmentsList.jsp");
         try {
             rd.forward(request, response);
         } catch (ServletException e) {
-            e.printStackTrace();
+            LOG.error(e);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(e);
         }
     }
 }

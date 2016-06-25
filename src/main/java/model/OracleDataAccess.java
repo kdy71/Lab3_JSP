@@ -2,6 +2,9 @@ package model;
 
 // import oracle.jdbc.driver.OracleDriver;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -16,6 +19,7 @@ import java.util.Date;
  * Реализация интерфейса работы с базой данных  для БД Oracle
  */
 public class OracleDataAccess implements DataAccess {
+    public static final Logger LOG = LogManager.getLogger(OracleDataAccess.class);
 
     private static final String SQL_SELECT_ALL_EMPLOYEES =  "" +
             "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
@@ -131,13 +135,15 @@ public class OracleDataAccess implements DataAccess {
             ctx = new InitialContext(ht);
             ds = (javax.sql.DataSource) ctx.lookup("DataBase");
         } catch (NamingException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
+            LOG.error("Error while looking up data source: " + e);
         }
         Connection connection = null;
         try {
             connection = ds.getConnection();
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
+            LOG.error("Error while connecting to data base: " + e);
         }
         return connection;
     }
@@ -168,7 +174,8 @@ public class OracleDataAccess implements DataAccess {
             if(result != null)
                 result.close();
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
+            LOG.error("Error while disconnecting from data base: " + e);
         }
     }
 
@@ -185,7 +192,8 @@ public class OracleDataAccess implements DataAccess {
             if (connection != null)
                 connection.close();
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            //System.err.println(e.getMessage());
+            LOG.error("Error while disconnecting from data base: " + e);
         }
     }
 
@@ -208,14 +216,13 @@ public class OracleDataAccess implements DataAccess {
                 listEmpl.add(employee);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_SELECT_ALL_EMPLOYEES: " + e);
         } finally {
             disconnect(connection, result, statement);
         }
         return listEmpl;
     }
-
-
 
 
     /**
@@ -238,6 +245,9 @@ public class OracleDataAccess implements DataAccess {
     public List<Employee> getEmployeesFiltered(String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
                                                Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
                                                String pManagerName, String pDepartmentName) {
+        LOG.info("Search parameters: \n Name: " + pName + ". Job " + pJobName + ". Salary from " + pSalaryFrom + ". Salary to " + pSalaryTo +
+                ". Department Id " + pDepartmentId + ". Manager Id " + pManagerId + ". Date from " + pDateInFrom + ". Date to " + pDateInTo +
+                ". Manager name " + pManagerName + ". Department name " + pDepartmentName);
         Connection connection = getConnection();
         ResultSet result = null;
         PreparedStatement statement = null;
@@ -326,7 +336,8 @@ public class OracleDataAccess implements DataAccess {
                 listEmpl.add(employee);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_SELECT_FILTERED_EMLOYEES: " + e);
         } finally {
             disconnect(connection, result, statement);
         }
@@ -356,14 +367,11 @@ public class OracleDataAccess implements DataAccess {
         return datArg;
     }
 
-
-
-
-    /**
+/*    *//**
      * Возвращает список отделов, отфильтрованнй по названию отдела (из базы данных)
      * @param name - шаблон названия отдела
      * @return   List<Department> - список отделов с подходящими названиями.
-     */
+     *//*
     public List<Department> findDepartmentsByName(String name) {
         String pattern = convertToQueryFormat(name); //"%" + name + "%";
         Connection connection = getConnection();
@@ -381,12 +389,13 @@ public class OracleDataAccess implements DataAccess {
                 listDepart.add(department);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_SELECT_FILTERED_DEPARTMENTS: " + e);
         } finally {
             disconnect(connection, result, statement);
         }
         return listDepart;
-    }
+    }*/
 
 
     /**
@@ -407,8 +416,8 @@ public class OracleDataAccess implements DataAccess {
                 employee = getEmployeeFromResultSet(result);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            // log4j
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_SELECT_EMPLOYEE_BY_ID: " + e);
         } finally {
             disconnect(connection, result, statement);
         }
@@ -439,7 +448,8 @@ public class OracleDataAccess implements DataAccess {
                 listDep.add(department);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_SELECT_ALL_DEPARTMENTS: " + e);
         } finally {
             disconnect(connection, result, statement);
         }
@@ -470,8 +480,8 @@ public class OracleDataAccess implements DataAccess {
                 department = new DepartmentImpl(departmentId, name, description);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            // log4j
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_SELECT_DEPARTMENT_BY_ID: " + e);
         } finally {
             disconnect(connection, result, statement);
         }
@@ -503,10 +513,11 @@ public class OracleDataAccess implements DataAccess {
                 java.sql.Date sqlDate = new java.sql.Date(employee.getDateIn().getTime());
                 statement.setDate(6, sqlDate);
             }
+            LOG.info("Insert employee " + employee);
             statement.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
-            // log4j
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_INSERT_EMPLOYEE: " + e);
         } finally {
             disconnect(connection, statement);
         }
@@ -538,10 +549,13 @@ public class OracleDataAccess implements DataAccess {
             }
             else { statement.setNull(6, Types.DATE); }
             statement.setInt   (7, employee.getId());
+            LOG.info("Update employee.");
+            LOG.info("Employee before changes " + getEmployeeById(employee.getId()));
+            LOG.info("Employee after changes " + employee);
             statement.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
-            // log4j
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_UPDATE_EMPLOYEE: " + e);
         }
         finally {
             disconnect(connection, statement);
@@ -560,10 +574,11 @@ public class OracleDataAccess implements DataAccess {
         try {
             statement = connection.prepareStatement(SQL_DELETE_EMPLOYEE);
             statement.setInt(1, employeeId);
+            LOG.info("Delete employee " + getEmployeeById(employeeId));
             statement.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
-            // log4j
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_DELETE_EMPLOYEE: " + e);
         } finally {
             disconnect(connection, statement);
         }
@@ -582,10 +597,11 @@ public class OracleDataAccess implements DataAccess {
             statement = connection.prepareStatement(SQL_INSERT_DEPARTMENT);
             statement.setString(1, department.getName());
             statement.setString(2, department.getDescription());
+            LOG.info("Insert department " + department);
             statement.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
-            // log4j
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_INSERT_DEPARTMENT: " + e);
         } finally {
             disconnect(connection, statement);
         }
@@ -606,10 +622,13 @@ public class OracleDataAccess implements DataAccess {
             statement.setString(1, department.getName());
             statement.setString(2, department.getDescription());
             statement.setInt   (3, department.getId());
+            LOG.info("Update department.");
+            LOG.info("Department before changes " + getDepartmentById(department.getId()));
+            LOG.info("Department after changes " + department);
             statement.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
-            // log4j
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_UPDATE_DEPARTMENT: " + e);
         }
         finally {
             disconnect(connection, statement);
@@ -628,10 +647,11 @@ public class OracleDataAccess implements DataAccess {
         try {
             statement = connection.prepareStatement(SQL_DELETE_DEPARTMENT);
             statement.setInt(1, departmentId);
+            LOG.info("Delete department " + getDepartmentById(departmentId));
             statement.executeUpdate();
         } catch (Exception e) {
-            e.printStackTrace();
-            // log4j
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_UPDATE_DEPARTMENT: " + e);
         } finally {
             disconnect(connection, statement);
         }

@@ -3,6 +3,8 @@ package controller.DepartmentProcessors;
 import controller.Processor;
 import model.Department;
 import model.DepartmentImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +16,7 @@ import java.io.UnsupportedEncodingException;
  * Наследники CreateDepartment и UpdateDepartment.
  */
 public abstract class DepartmentModification implements Processor {
+    private static final Logger LOG = LogManager.getLogger(DepartmentModification.class);
 
     //все значения атрибутов сессии связанные с работником. выносим их в виде констант в поля классов и потом к ним обращаемся
     public static final String DEPARTMENT_ID = "department_id";
@@ -35,18 +38,17 @@ public abstract class DepartmentModification implements Processor {
         try {
             request.setCharacterEncoding("utf-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            LOG.error(e);
         }
 
 //        int departmentId = 0; // пока пишем ноль
         Integer departmentId = null;
         String depIdAsString = request.getParameter(DepartmentModification.DEPARTMENT_ID);
-        if (depIdAsString != null) { departmentId = Integer.parseInt(depIdAsString);};
+        if (depIdAsString != null) { departmentId = Integer.parseInt(depIdAsString);}
 
         String departmentName = request.getParameter(DEPARTMENT_NAME);
         String description = request.getParameter(DESCRIPTION);
         System.out.println(departmentId + description);
-
 
 /*        String description = request.getParameter(DESCRIPTION);
 
@@ -55,7 +57,6 @@ public abstract class DepartmentModification implements Processor {
         departmentName = new String(bytes, StandardCharsets.UTF_8);*/
 
         System.out.println(departmentId +"  "+ departmentName +"  "+ description);  // debug
-
 
         //создаем отдел
         Department department = new DepartmentImpl(departmentId, departmentName, description);

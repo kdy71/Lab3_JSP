@@ -3,7 +3,7 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
-<%@ page import="model.Util_dates" %>
+<%@ page import="model.UtilDates" %>
 <%--
   Created by IntelliJ IDEA.
   User: Admin
@@ -175,7 +175,7 @@
 //                dateMin = new Date(0); //минимальная дата
                 dateMin = null;
             } else {
-                dateMin = Util_dates.str2Date(dateMinPattern);
+                dateMin = UtilDates.stringToDate(dateMinPattern);
             }
 
             dateMaxPattern = request.getParameter("dateMaxPattern");
@@ -184,7 +184,7 @@
 //                dateMax = new Date(0); //5138 year
                 dateMax = null; //
             } else {
-                dateMax = Util_dates.str2Date(dateMaxPattern);
+                dateMax = UtilDates.stringToDate(dateMaxPattern);
             }
 
 /*            System.out.println("  -- We are into Search.jsp ---- "); // debug

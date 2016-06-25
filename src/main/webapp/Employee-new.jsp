@@ -7,7 +7,9 @@
 <%@ page import="controller.Actions" %>
 <%@ page pageEncoding="UTF-8" %>
 <%@ page import="java.util.Date" %>
-<%@ page import="model.*" %><%--
+<%@ page import="model.*" %>
+<%@ page errorPage="ErrorPage.jsp" %>
+<%--
   Created by IntelliJ IDEA.
   User: Admin
   Date: 11.05.2016
@@ -61,14 +63,14 @@
         Integer employeeForEditDepId = 0;
         Integer employeeForEditManagerId = 0;
 //        Date employeeDateIn = new Date();
-//        String strDateIn =  Util_dates.dat2Str(new Date());
+//        String strDateIn =  UtilDates.dateToString(new Date());
         if (isEdit) {
             employeeForEdit = (Employee) session.getAttribute(Actions.EDIT_EMPLOYEE);
             employeeForEditId = employeeForEdit.getId();
             employeeForEditDepId = employeeForEdit.getDepartmentId();
             employeeForEditManagerId = employeeForEdit.getManagerId();
 //            employeeDateIn =employeeForEdit.getDateIn();
-//            strDateIn =  Util_dates.dat2Str(employeeForEdit.getDateIn());
+//            strDateIn =  UtilDates.dateToString(employeeForEdit.getDateIn());
 
             System.out.println(employeeForEdit.toString());  // debug
         }
@@ -90,7 +92,7 @@
         <br/>
 
         Отдел:<br/>
-        <select size='5' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.DEPARTMENT_ID%>'>
+        <select size='5' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.DEPARTMENT_ID%>' required>
             <option disabled>Выберите отдел работника</option>
             <% for (Department currDep : listDepartments) { %>
             <option <%= (currDep.getId() == employeeForEditDepId) ? " selected " : "" %>
@@ -102,7 +104,7 @@
         <% System.out.println("--- 3 --- ");  // debug %>
         <br/> <br/>
         Руководитель:<br/>
-        <select size='5' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.MANAGER_ID%>'>
+        <select size='5' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.MANAGER_ID%>' required>
             <option disabled>Выберите руководителя</option>
             <% for (Employee currEmp : listEmployees) {
                 if (currEmp.equals(employeeForEdit)) {
@@ -121,7 +123,8 @@
         <%--<input type='text' size='50' name='jobName'required/>--%>
         <input type='text' size='50' id="<%=EmployeeModification.EMP_ID%>"
                name="<%=EmployeeModification.JOB_NAME%>"
-                <%= isEdit ? "value=\"" + employeeForEdit.getJobName() + "\"" : "placeholder=\"Введите должность работника\"" %> required/>
+                <%= isEdit ? "value=\"" + employeeForEdit.getJobName() + "\"" : "placeholder=\"Введите должность работника\"" %>
+               required/>
 
         <% System.out.println("--- 4 --- ");  // debug %>
 
@@ -138,13 +141,14 @@
         <br/> <br/>
         Дата трудоустройства:<br/>
 
-<%--        <input type='date' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.DATE_IN%>'
-                <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>--%>
+        <%--        <input type='date' id="<%=EmployeeModification.EMP_ID%>" name='<%=EmployeeModification.DATE_IN%>'
+                        <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>--%>
         <input type='text' id='datepicker0' name='<%=EmployeeModification.DATE_IN%>'
-<%--
-            <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>
---%>
-        <%= isEdit ? "value=" + Util_dates.dat2Str(employeeForEdit.getDateIn()) : "value=" + Util_dates.dat2Str(new Date()) %> readonly required/>
+        <%--
+                    <%= isEdit ? "value=" + employeeForEdit.getDateIn() : "placeholder=\"Date of work beginning\"" %> required/>
+        --%>
+                <%= isEdit ? "value=" + UtilDates.dateToString(employeeForEdit.getDateIn()) : "value=" + UtilDates.dateToString(new Date()) %>
+               readonly required/>
 
         <br/> <br/>
         <p><input type='submit' value='Сохранить данные'></p>

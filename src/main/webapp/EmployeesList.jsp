@@ -6,6 +6,7 @@
 <%@ page import="java.util.List" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page errorPage="ErrorPage.jsp" %>
 
 <%--
   Created by IntelliJ IDEA.
@@ -30,10 +31,6 @@
 
 <body>
 
-<%--<header>
-    <h3>Список всех сотрудников организации</h3>
-</header>--%>
-
 <jsp:include page="Search.jsp"/>
 <jsp:include page="Header.jsp"/>
 <jsp:include page="Menu.jsp"/>
@@ -43,12 +40,12 @@
 
     <!--    <form action = 'Employee-edit.jsp' method = 'post'> исправить адрес к сервлету и метод-->
 
-    <table border="1" >
-<%--        <% if (request.getAttribute("foundEmployees") != null ) {--%>
-        <% if (request.getAttribute("afterSearch").equals("yes") ) {
+    <table border="1">
+        <%--        <% if (request.getAttribute("foundEmployees") != null ) {--%>
+        <% if (request.getAttribute("afterSearch").equals("yes")) {
         %><h3>Результаты поиска:</h3><%
-        } else {
-        %><h3>Список всех сотрудников:</h3><%
+    } else {
+    %><h3>Список всех сотрудников:</h3><%
             request.setAttribute("afterSearch", "no");
         }%>
 
@@ -82,17 +79,23 @@
 
 
         <tr>
-            <td> <%=currEmp.getName()%>                 </td>
-            <td> <%=currEmp.getDepartmentName()%>       </td>
-            <td> <%=currEmp.getJobName()%>              </td>
-<%--            <td> <%=  currEmp.getSalary()  %>           </td>  --%>
-            <td align="right"> <%= String.format( "% 10.2f", currEmp.getSalary() ) %>               </td>
-            <td> <%=currEmp.getManagerName()%>          </td>
-            <td> <%=currEmp.getDateIn()%>               </td>
+            <td><%=currEmp.getName()%>
+            </td>
+            <td><%=currEmp.getDepartmentName()%>
+            </td>
+            <td><%=currEmp.getJobName()%>
+            </td>
+            <%--            <td> <%=  currEmp.getSalary()  %>           </td>  --%>
+            <td align="right"><%= String.format("% 10.2f", currEmp.getSalary()) %>
+            </td>
+            <td><%=currEmp.getManagerName()%>
+            </td>
+            <td><%=currEmp.getDateIn()%>
+            </td>
             <!--                <td> <input type='submit' value = 'Update'></td> -->
             <td>
                 <a href=<%="ServletStart?action=" + Actions.EDIT_EMPLOYEE + "&" + EmployeeModification.EMP_ID + "=" +
-                    currEmp.getId() %>> редактировать </a>
+                        currEmp.getId() %>> редактировать </a>
 
             </td>
             <td>
@@ -110,10 +113,6 @@
 
     </table>
 
-    <!--    </form>   -->
 </article>
-
-<jsp:include page="Footer.jsp"/>
-
 </body>
 </html>

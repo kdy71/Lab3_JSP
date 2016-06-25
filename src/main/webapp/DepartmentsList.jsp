@@ -2,7 +2,9 @@
 <%@ page import="model.OracleDataAccess" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="controller.DepartmentProcessors.DepartmentModification" %>
-<%@ page import="controller.Actions" %><%--
+<%@ page import="controller.Actions" %>
+<%@ page errorPage="ErrorPage.jsp" %>
+<%--
   Created by IntelliJ IDEA.
   User: Admin
   Date: 11.05.2016
@@ -32,7 +34,8 @@
 <article>
     <h3>Список всех отделов в организации</h3>
 
-    <form name="addDepartmentForm" action='ServletStart?action=addDepartment' method='post'> <!--исправить адрес к сервлету и метод-->
+    <form name="addDepartmentForm" action='ServletStart?action=addDepartment' method='post'>
+        <!--исправить адрес к сервлету и метод-->
 
         <table border="1">
             <tr>
@@ -51,15 +54,16 @@
                 <td><%=currDept.getName()%>
                 </td>
                 <td><%=currDept.getDescription()%>
-<!--                <td><input type='submit' value='Update'></td>  -->
+                    <!--                <td><input type='submit' value='Update'></td>  -->
                 <td>
                     <a href=<%="ServletStart?action=" + Actions.EDIT_DEPARTMENT + "&" + DepartmentModification.DEPARTMENT_ID + "=" +
-                    currDept.getId() %> > редактировать </a>
+                    currDept.getId() %>> редактировать </a>
 
-                </td>                <td>
-<!--                    <input type='submit' value='Delete'>  -->
+                </td>
+                <td>
+                    <!--                    <input type='submit' value='Delete'>  -->
                     <a href=<%= "ServletStart?action=" + Actions.DELETE_DEPARTMENT + "&" + DepartmentModification.DEPARTMENT_ID + "="
-                        + currDept.getId() +stConfirmDel %> > удалить </a>
+                        + currDept.getId() +stConfirmDel %>> удалить </a>
                 </td>
             </tr>
 
@@ -74,6 +78,6 @@
         </table>
 
     </form>
-    </article>
+</article>
 </body>
 </html>

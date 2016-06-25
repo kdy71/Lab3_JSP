@@ -1,55 +1,36 @@
+#ui-datepicker-div {
+    font: 62.5% "Trebuchet MS", sans-serif;
+}
+
+*{
+    font-family: Calibri;
+}
 
 .header {
     background: lightblue;
-    padding: 10px; /*отступ края рамки от текста*/
-
-    position: absolute;
-    top: 2%; /*!*Положение от  края*!*/
-    bottom: 86%; /*высота блока*/
-    left: 10%;
-    right: 10%;
-
-    text-align: center;
-    font-family: Calibri;
-}
-
-.search {
-    overflow: auto;
-    background: lightskyblue;
-    padding: 10px; /*отступ края рамки от текста*/
-
-    position: absolute;
-    top: 14%; /*!*Положение от  края*!*/
-    bottom: 6%; /*высота блока*/
-    left: 80%;
-    right: 10%;
-
-    text-align: left;
-    font-family: Calibri;
-}
-
-.insteadOfSearch {
-    background: lightgoldenrodyellow;
     padding: 10px;
 
     position: absolute;
-    top: 14%;
-    bottom: 6%;
-    left: 80%;
-    right: 10%;
+    overflow: auto;
+
+    top: 0;
+    left: 0;
+    width: 1200px;
+    height: 100px;
+
+    text-align: center;
 }
 
-.menu { /*вместо aside*/
+.menu {
     background: lightgreen;
     padding: 10px;
 
     position: absolute;
-    top: 14%;
-    bottom: 6%;
-    left: 10%;
-    right: 82%;
-    font-family: Calibri;
 
+    top: 120px;
+    left: 0;
+    height: 600px;
+    width: 170px;
 }
 
 article {
@@ -57,11 +38,11 @@ article {
     padding: 10px;
 
     position: absolute;
-    top: 14%;
-    bottom: 6%;
-    left: 18%;
-    right: 20%;
-    font-family: Calibri;
+
+    top: 120px;
+    height: 600px;
+    left: 180px;
+    width: 830px;
 }
 
 .footer {
@@ -69,13 +50,40 @@ article {
     padding: 10px;
 
     position: absolute;
-    top: 94%;
-    bottom: 1%;
-    left:10%;
-    right:10%;
+
+    top: 740px;
+    left:0;
+    height: 30px;
+    width: 1200px;
+
     font-size: small;
     text-align: center;
-    font-family: Calibri;
 }
 
+.search {
+    overflow: auto;
+    background: lightskyblue;
+    padding: 10px;
+
+    position: absolute;
+
+    top: 120px;
+    height: 600px;
+    left: 1030px;
+    width: 170px;
+
+    text-align: left;
+}
+
+.insteadOfSearch {
+    background: lightgoldenrodyellow;
+    padding: 10px;
+
+    position: absolute;
+
+    top: 120px;
+    height: 600px;
+    left: 1030px;
+    width: 170px;
+}
 
