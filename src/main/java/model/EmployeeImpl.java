@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * Created by itps13 on 14.04.2016.
+ * Class contains constructors, getters and setters for employee-objects.
  */
 public class EmployeeImpl implements Employee {
     private Integer id;
@@ -118,20 +119,47 @@ public class EmployeeImpl implements Employee {
         this.dateIn = dateIn;
     }
 
+    @Override
     public String getManagerName() {
         return managerName;
     }
 
+    @Override
     public void setManagerName(String managerName) {
         this.managerName = managerName;
     }
 
+    @Override
     public String getDepartmentName() {
         return departmentName;
     }
 
+    @Override
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
+    }
+
+    /**
+     * Возвращает дату приёма в строковом формате
+     *
+     * @return
+     */
+    @Override
+    public String getDateInAsString() {
+        if (dateIn == null)
+            return "";
+        else
+            return UtilDates.dateToString(dateIn);
+    }
+
+    /**
+     * Возвращает зaрплату в строковом формате
+     *
+     * @return
+     */
+    @Override
+    public String getSalaryAsString() {
+        return salary.toString();
     }
 
     @Override
@@ -165,29 +193,6 @@ public class EmployeeImpl implements Employee {
         result = 31 * result + (getJobName() != null ? getJobName().hashCode() : 0);
         result = 31 * result + (getDateIn() != null ? getDateIn().hashCode() : 0);
         return result;
-    }
-
-    /**
-     * Возвращает дату приёма в строковом формате
-     *
-     * @return
-     */
-    @Override
-    public String getDateInAsString() {
-        if (dateIn == null)
-            return "";
-        else
-            return UtilDates.dateToString(dateIn);
-    }
-
-    /**
-     * Возвращает зврплату в строковом формате
-     *
-     * @return
-     */
-    @Override
-    public String getSalaryAsString() {
-        return salary.toString();
     }
 
     @Override

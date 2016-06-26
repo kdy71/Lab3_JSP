@@ -13,23 +13,21 @@ import java.io.IOException;
 
 /**
  * Created by Oleksandr Dudkin on 27.04.2016.
+ * Class makes preparations for the department updating.
  */
 public class UpdateDepartment extends DepartmentModification {
     private static final Logger LOG = LogManager.getLogger(UpdateDepartment.class);
 
     /**
-     * Обновляет измененные данные отдела в БД. Потом берет список отделов из БД. Заносит их в сессию.
-     * Переходит на jsp-страницу со списком отделов.
+     * Updates record of chosen department and goes to the page with list of departments.
      *
-     * @param request
-     * @param response
-     * @param department
+     * @param request HttpServlet request
+     * @param response HttpServlet response
+     * @param department updated department
      */
     @Override
     protected void forwardForDepartment(HttpServletRequest request, HttpServletResponse response, Department department) {
 
-        System.out.println("--- We are into  processor UpdateDepartment.java - begin. ---");  // debug
-        System.out.println("department= " + department); // debug
         OracleDataAccess.getInstance().updateDepartment(department);
 
         RequestDispatcher rd = request.getRequestDispatcher("/DepartmentsList.jsp");

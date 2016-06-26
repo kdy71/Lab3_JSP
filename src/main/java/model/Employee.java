@@ -4,8 +4,10 @@ import java.util.Date;
 
 /**
  * Created by khoruzh on 15.04.2016.
+ * Interface for class EmployeeImpl.
  */
 public interface Employee {
+
     public Integer getId();
 
     public void setId(Integer id);
@@ -41,8 +43,6 @@ public interface Employee {
     public String getDepartmentName();
 
     public void setDepartmentName(String departmentName);
-
-    public boolean equals(Object o);
 
     public String getDateInAsString();
 

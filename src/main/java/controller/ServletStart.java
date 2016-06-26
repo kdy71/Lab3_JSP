@@ -29,30 +29,26 @@ public class ServletStart extends HttpServlet {
     }
 
     /**
-     * Метод берет из реквеста параметр action и выполняет требемое действие с объектом (работником или отделом),
-     * после переходит на нужную страницу.
+     * Gets parameter "action" from request and execute corresponding processor.
      *
-     * @param request
-     * @param response
+     * @param request Http Servlet Request
+     * @param response Http Servlet Response
      */
     private void process(HttpServletRequest request, HttpServletResponse response) {
 
-        System.out.println("process execute...");  // debug
-        //из реквеста берем параметр action
         String action = request.getParameter("action");
-        System.out.println("action =" + action);  // debug
         Map mapOfActions = Actions.getInstance().getMapOfActions();
 
         if (action == null) {
-            action = Actions.START_PAGE; //если параметр налл, то присваиваем значение для перехода на стартовую страницу
+            action = Actions.START_PAGE; //if "action" is null, then go to the start page
         }
 
         Processor processor = (Processor) mapOfActions.get(action);
-        System.out.println("processor =" + processor);  // debug
 
         if (processor == null) {
             LOG.info("Start page");
-            processor = (Processor) mapOfActions.get(Actions.START_PAGE); //если нет процессора по ключу, то переход на стартовую страницу
+            processor = (Processor) mapOfActions.get(Actions.START_PAGE); //if processor is null, then go to the start page
+            processor.process(request, response);
         } else {
             LOG.info("Action: " + action);
             processor.process(request, response);

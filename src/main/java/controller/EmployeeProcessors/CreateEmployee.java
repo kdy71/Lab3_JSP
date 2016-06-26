@@ -14,17 +14,17 @@ import java.util.List;
 
 /**
  * Created by Oleksandr Dudkin.
+ * Class creates record about new employee in data base.
  */
 public class CreateEmployee extends EmployeeModification {
     private static final Logger LOG = LogManager.getLogger(CreateEmployee.class);
 
     /**
-     * Создает работника в БД. Потом берет список работников из БД. Заносит их в сессию.
-     * Переходит на jsp-страницу со списком работников.
+     * Creates record about newly created employee and goes to the page with list of employees.
      *
-     * @param request
-     * @param response
-     * @param employee
+     * @param request HttpServlet request
+     * @param response HttpServlet response
+     * @param employee created employee
      */
     @Override
     protected void forwardForEmployee(HttpServletRequest request, HttpServletResponse response, Employee employee) {

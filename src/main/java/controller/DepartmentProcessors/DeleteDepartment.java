@@ -12,17 +12,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by Oleksandr Dudkin on 29.04.2016.
+ * Created by Oleksandr Dudkin.
+ * Class deletes record about chosen department from data base.
  */
 public class DeleteDepartment implements Processor {
     private static final Logger LOG = LogManager.getLogger(DeleteDepartment.class);
 
     /**
-     * Из реквеста получить айди отдела и по нему удалить отдела из БД. Потом получить обновленный список отделов.
-     * Поместить список в сессию. Перейти на jsp страницу со списком отделов.
+     * Deletes record of chosen department and goes to the page with list of departments.
      *
-     * @param request
-     * @param response
+     * @param request HttpServlet request
+     * @param response HttpServlet response
      */
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {

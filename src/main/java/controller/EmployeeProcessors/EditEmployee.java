@@ -15,24 +15,27 @@ import java.io.IOException;
 
 /**
  * Created by Dmitry Khoruzhenko on 18.05.2016.
- * <p>
- * Переправляет на jsp-страницу редактирования данных работника.
+ * Class makes preparations for the employee editing.
  */
 
 public class EditEmployee implements Processor {
     private static final Logger LOG = LogManager.getLogger(EditEmployee.class);
 
+    /**
+     * Gets from request employee id, creates employee-object by id, then goes to the editing page.
+     *
+     * @param request HttpServlet request
+     * @param response HttpServlet response
+     */
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {
-        String action = request.getParameter("action");
+
         int employeeId = Integer.parseInt(request.getParameter(EmployeeModification.EMP_ID));
-
-        System.out.println("EditEmployee.java - controller. employeeId= " + employeeId);
-
         Employee employee = OracleDataAccess.getInstance().getEmployeeById(employeeId);
 
         request.getSession().setAttribute(Actions.EDIT_EMPLOYEE, employee);
         RequestDispatcher rd = request.getRequestDispatcher("/Employee-new.jsp");
+
         try {
             rd.forward(request, response);
         } catch (ServletException e) {

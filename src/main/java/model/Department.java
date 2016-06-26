@@ -2,6 +2,7 @@ package model;
 
 /**
  * Created by khoruzh on 15.04.2016.
+ * Interface for class DepartmentImpl.
  */
 public interface Department {
 

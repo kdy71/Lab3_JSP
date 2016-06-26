@@ -16,7 +16,7 @@ import java.util.Date;
 
 /**
  * Created by khoruzh on 15.04.2016.
- * Реализация интерфейса работы с базой данных  для БД Oracle
+ * Realization of interface for working with data base.
  */
 public class OracleDataAccess implements DataAccess {
     public static final Logger LOG = LogManager.getLogger(OracleDataAccess.class);
@@ -43,9 +43,6 @@ public class OracleDataAccess implements DataAccess {
             "   and ( :17 is null  or  lower(man.EMP_NAME)         like :18  ) " +
             "   and ( :19 is null  or  lower(dep.DEPARTMENT_NAME)  like :20 ) " +
             "ORDER BY emp.EMP_NAME ";
-    private final static String SQL_SELECT_FILTERED_DEPARTMENTS = "SELECT dep.* " +
-            "FROM LAB3_DEPARTMENTS dep " +
-            "WHERE dep.DEPARTMENT_NAME LIKE ? ";
     private static final String SQL_SELECT_EMPLOYEE_BY_ID = "" +
             "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
             "from lab3_Employees emp  " +
@@ -82,46 +79,23 @@ public class OracleDataAccess implements DataAccess {
             " where  DEPARTMENT_ID = ? ";
     private static final String SQL_DELETE_DEPARTMENT = "delete from  LAB3_DEPARTMENTS where  DEPARTMENT_ID = :1 ";
 
-    private static final OracleDataAccess instance = new OracleDataAccess();
+    private static final OracleDataAccess INSTANCE = new OracleDataAccess();
     private DataSource ds;
     private Context ctx;
     private Hashtable ht = new Hashtable();
-//    Driver driver = new OracleDriver();  // for jdbc connection
 
-
-    /**
-     * private constructor - for singleton
-     */
     private OracleDataAccess() {
         super();
     }
 
-
-    public static OracleDataAccess getInstance() {
-        return instance;
-    }
-
-
     /**
-     * Возвращает коннект к базе данных через JDBC
-     *  Для корректной работы этого метода потребуется раскомментировать всё что касается  Driver driver = new OracleDriver()
-     *  Проблема в том, что для работы с OracleDriver() требуется этот драйвер явно скачивать и таскать за проектом - автоматом он не подхватывается.
-     * @return - JDBC connection
+     * Getter for singleton.
+     *
+     * @return instance of class.
      */
-    private Connection connectJDBC() {
-        Locale.setDefault(Locale.ENGLISH);
-        Connection connection = null;
-/*        try {
-            DriverManager.registerDriver(driver);
-//            connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XE", "Alef", "student");
-            connection = DriverManager.getConnection("jdbc:oracle:thin:@//localhost:1521/XE", "dima", "student");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // log4j
-        }  */
-        return connection;
+    public static OracleDataAccess getInstance() {
+        return INSTANCE;
     }
-
 
     /**
      * Возвращает коннект к базе данных через WebLogic DataSource
@@ -148,7 +122,6 @@ public class OracleDataAccess implements DataAccess {
         return connection;
     }
 
-
     /**
      * Возвращает коннект к базе данных
      * @return
@@ -158,14 +131,13 @@ public class OracleDataAccess implements DataAccess {
 //        return connectJDBC();
     }
 
-
     /**
      * Disconnect with ResultSet
      * @param connection - Connection
      * @param result - ResultSet
      * @param statement - Statement
      */
-    public void disconnect(Connection connection, ResultSet result, Statement statement) {
+    private void disconnect(Connection connection, ResultSet result, Statement statement) {
         try {
             if(statement != null)
                 statement.close();
@@ -179,13 +151,12 @@ public class OracleDataAccess implements DataAccess {
         }
     }
 
-
     /**
      * Disconnect without ResultSet
      * @param connection - Connection
      * @param statement - Statement
      */
-    public void disconnect(Connection connection, Statement statement) {
+    private void disconnect(Connection connection, Statement statement) {
         try {
             if (statement != null)
                 statement.close();
@@ -197,11 +168,11 @@ public class OracleDataAccess implements DataAccess {
         }
     }
 
-
     /**
      * Возвращает список всех работников (из базы данных).
      * @return List<Employee> - список всех работников.
      */
+    @Override
     public List<Employee> getAllEmployees() {
         Connection connection = getConnection();
         ResultSet result = null;
@@ -224,7 +195,6 @@ public class OracleDataAccess implements DataAccess {
         return listEmpl;
     }
 
-
     /**
      * Возвращает список работников, отфильтрованный по заданным параметрам.
      * Если параметр не должен участвовать в фильтрации - присвоить ему null
@@ -242,6 +212,7 @@ public class OracleDataAccess implements DataAccess {
      * @param pDepartmentName - наименование подразделения
      * @return - возвращает список работников, для которых выполняются все условия фильтрации
      */
+    @Override
     public List<Employee> getEmployeesFiltered(String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
                                                Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
                                                String pManagerName, String pDepartmentName) {
@@ -251,8 +222,7 @@ public class OracleDataAccess implements DataAccess {
         Connection connection = getConnection();
         ResultSet result = null;
         PreparedStatement statement = null;
-//        OraclePreparedStatement statement = null;
-        ArrayList<Employee> listEmpl = new ArrayList<Employee>();
+        ArrayList<Employee> listEmpl = new ArrayList<>();
         Employee employee;
         try {
             pName           = convertToQueryFormat(pName          );
@@ -344,7 +314,6 @@ public class OracleDataAccess implements DataAccess {
         return listEmpl;
     }
 
-
     private String convertToQueryFormat(String st) {
         if (st == null) {return null;}
         String result =  st.trim();
@@ -367,42 +336,12 @@ public class OracleDataAccess implements DataAccess {
         return datArg;
     }
 
-/*    *//**
-     * Возвращает список отделов, отфильтрованнй по названию отдела (из базы данных)
-     * @param name - шаблон названия отдела
-     * @return   List<Department> - список отделов с подходящими названиями.
-     *//*
-    public List<Department> findDepartmentsByName(String name) {
-        String pattern = convertToQueryFormat(name); //"%" + name + "%";
-        Connection connection = getConnection();
-        ResultSet result = null;
-        PreparedStatement statement = null;
-        ArrayList<Department> listDepart = new ArrayList<Department>();
-        Department department;
-
-        try {
-            statement = connection.prepareStatement(SQL_SELECT_FILTERED_DEPARTMENTS);
-            statement.setString(1, pattern);
-            result = statement.executeQuery();
-            while (result.next()) {
-                department = getDepartmentFromResultSet(result);
-                listDepart.add(department);
-            }
-        } catch (Exception e) {
-            //e.printStackTrace();
-            LOG.error("Error while query SQL_SELECT_FILTERED_DEPARTMENTS: " + e);
-        } finally {
-            disconnect(connection, result, statement);
-        }
-        return listDepart;
-    }*/
-
-
     /**
      * Возвращает работника по заданному ID
      * @param id - id искомого работника
      * @return Employee - найденный работник (или null - если не найден)
      */
+    @Override
     public Employee getEmployeeById(Integer id) {
         Connection connection = getConnection();
         ResultSet result = null;
@@ -423,7 +362,6 @@ public class OracleDataAccess implements DataAccess {
         }
         return employee;
     }
-
 
     /**
      * Возвращает список всех отделов (из базы данных).
@@ -456,8 +394,6 @@ public class OracleDataAccess implements DataAccess {
         return listDep;
     }
 
-
-
     /**
      * Возвращает отдел по заданному ID
      * @param id - id искомого отдела
@@ -487,7 +423,6 @@ public class OracleDataAccess implements DataAccess {
         }
         return department;
     }
-
 
     /**
      * Вставляет запись о работнике в таблицу базы данных
@@ -522,7 +457,6 @@ public class OracleDataAccess implements DataAccess {
             disconnect(connection, statement);
         }
     }
-
 
     /**
      * Изменяет запись о работнике в базе данных.
@@ -562,7 +496,6 @@ public class OracleDataAccess implements DataAccess {
         }
     }
 
-
     /**
      * Удаляет работника из базы данных
      * @param employeeId - id удаляемого работника.
@@ -583,7 +516,6 @@ public class OracleDataAccess implements DataAccess {
             disconnect(connection, statement);
         }
     }
-
 
     /**
      * Вставляет запись об отделе в базу данных
@@ -606,8 +538,6 @@ public class OracleDataAccess implements DataAccess {
             disconnect(connection, statement);
         }
     }
-
-
 
     /**
      * Изменяет запись об отделе в базе данных.
@@ -635,7 +565,6 @@ public class OracleDataAccess implements DataAccess {
         }
     }
 
-
     /**
      * Удаляет отдел из базы данных.
      * @param departmentId - id удаляемого отдела.
@@ -656,7 +585,6 @@ public class OracleDataAccess implements DataAccess {
             disconnect(connection, statement);
         }
     }
-
 
     /**
      * Возвращает экземпляр Employee (на самом деле EmployeeImpl) на основе данных из базы (ResultSet)
@@ -679,20 +607,5 @@ public class OracleDataAccess implements DataAccess {
         Employee employee = new EmployeeImpl(employeeId, name, jobName, salary,
                 departmentId, managerId, date_in, managerName, depName);
         return employee;
-    }
-
-
-    /**
-     * Возвращает экземпляр Department (на самом деле DepartmentImpl) на основе данных из базы (ResultSet)
-     * @param result - ResultSet - запись из базы данных
-     * @return - экземпляр Department (на самом деле DepartmentImpl) на основе данных из базы (ResultSet)
-     * @throws SQLException
-     */
-    private Department getDepartmentFromResultSet(ResultSet result) throws SQLException {
-        Integer departmentId = Integer.parseInt(result.getString(1));
-        String  departmentName = result.getString(2);
-        String  departmentDescription = result.getString(3);
-
-        return new DepartmentImpl(departmentId, departmentName, departmentDescription);
     }
 }

@@ -13,16 +13,16 @@ import java.io.IOException;
 
 /**
  * Created by Oleksandr Dudkin on 29.04.2016.
+ * Class deletes record about chosen employee from data base.
  */
 public class DeleteEmployee implements Processor {
     private static final Logger LOG = LogManager.getLogger(DeleteEmployee.class);
 
     /**
-     * Из реквеста получить айди работника и по нему удалить работника из БД. Потом получить обновленный список работников.
-     * Поместить список в сессию. Перейти на jsp страницу со списком работников.
+     * Deletes record of chosen employee and goes to the page with list of employees.
      *
-     * @param request
-     * @param response
+     * @param request HttpServlet request
+     * @param response HttpServlet response
      */
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {

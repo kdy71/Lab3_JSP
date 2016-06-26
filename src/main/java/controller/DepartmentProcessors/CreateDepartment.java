@@ -13,18 +13,18 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Created by Oleksandr Dudkin on 27.04.2016.
+ * Created by Oleksandr Dudkin.
+ * Class creates record about new department in data base.
  */
 public class CreateDepartment extends DepartmentModification {
     private static final Logger LOG = LogManager.getLogger(CreateDepartment.class);
 
     /**
-     * Создает запись о новом отделе в БД. Потом берет список отделов из БД. Заносит их в сессию.
-     * Переходит на jsp-страницу со списком отделов.
+     * Creates record about newly created department and goes to the page with list of departments.
      *
-     * @param request
-     * @param response
-     * @param department
+     * @param request HttpServlet request
+     * @param response HttpServlet response
+     * @param department created department
      */
     @Override
     protected void forwardForDepartment(HttpServletRequest request, HttpServletResponse response, Department department) {

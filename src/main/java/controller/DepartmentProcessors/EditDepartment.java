@@ -15,22 +15,24 @@ import java.io.IOException;
 
 /**
  * Created by Dmitry Khoruzhenko on 01.06.2016.
- * Берёт из реквеста DEPARTMENT_ID и по нему вытягивает из базы department.
- * Этот department запоминает в параметрах сессии и переходит на страничку редактирования отделов.
+ * Class makes preparations for the department editing.
  */
 public class EditDepartment implements Processor {
     private static final Logger LOG = LogManager.getLogger(EditDepartment.class);
 
+    /**
+     * Gets from request department id, creates department-object by id, then goes to the editing page.
+     *
+     * @param request HttpServlet request
+     * @param response HttpServlet response
+     */
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {
 
         int departmentId = Integer.parseInt(request.getParameter(DepartmentModification.DEPARTMENT_ID));
-        System.out.println("--- EditDepartment.java - controller. departmentId= " + departmentId);  // debug
-
         Department department = OracleDataAccess.getInstance().getDepartmentById(departmentId);
 
         request.getSession().setAttribute(Actions.EDIT_DEPARTMENT, department);
-        System.out.println("  department= " + department);  // debug
 
         RequestDispatcher rd = request.getRequestDispatcher("/Department-new.jsp");
         try {

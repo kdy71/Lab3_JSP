@@ -12,13 +12,13 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Created by Oleksandr Dudkin.
- * Абстрактрый класс, который модифицирует данные работника - создает нового или менеят существующего.
- * Наследники CreateDepartment и UpdateDepartment.
+ * Abstract class that modifies fields of department (that is newly created department or already existed one).
+ * Inheritors are CreateDepartment and UpdateDepartment classes.
  */
 public abstract class DepartmentModification implements Processor {
     private static final Logger LOG = LogManager.getLogger(DepartmentModification.class);
 
-    //все значения атрибутов сессии связанные с работником. выносим их в виде констант в поля классов и потом к ним обращаемся
+    // Attributes related to department modification.
     public static final String DEPARTMENT_ID = "department_id";
     public static final String DEPARTMENT_NAME = "department_name";
     public static final String DESCRIPTION = "description";
@@ -27,22 +27,21 @@ public abstract class DepartmentModification implements Processor {
     public static final String DEPARTMENT = "department";
 
     /**
-     * Метод берет из реквеста параметры отдела, создает его объект и дальше выполняет требемое действие -
-     * добавление нового или обновление информации о существующем отделе в БД.
-     * @param request
-     * @param response
+     * Gets from request department parameters, create department-object, then transfers object
+     * for modification in data base (creating or updating).
+     *
+     * @param request HttpServlet request
+     * @param response HttpServlet response
      */
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {
-        //получаем данные отдела
         try {
             request.setCharacterEncoding("utf-8");
         } catch (UnsupportedEncodingException e) {
             LOG.error(e);
         }
 
-//        int departmentId = 0; // пока пишем ноль
-        Integer departmentId = null;
+        Integer departmentId = null; //initially set id as null
         String depIdAsString = request.getParameter(DepartmentModification.DEPARTMENT_ID);
         if (depIdAsString != null) { departmentId = Integer.parseInt(depIdAsString);}
 
@@ -50,22 +49,18 @@ public abstract class DepartmentModification implements Processor {
         String description = request.getParameter(DESCRIPTION);
         System.out.println(departmentId + description);
 
-/*        String description = request.getParameter(DESCRIPTION);
-
-        String departmentName = request.getParameter(DEPARTMENT_NAME);
-        byte[] bytes = departmentName.getBytes(StandardCharsets.ISO_8859_1);
-        departmentName = new String(bytes, StandardCharsets.UTF_8);*/
-
-        System.out.println(departmentId +"  "+ departmentName +"  "+ description);  // debug
-
-        //создаем отдел
         Department department = new DepartmentImpl(departmentId, departmentName, description);
-        System.out.println(department);
 
-        //вызываем форвард c тремя параметрами, в том числе отделом
+        // call abstract method forward with additional parameter - department
         forwardForDepartment(request, response, department);
     }
 
-    //абстрактный метод для действий по добавлению нового отдела или обновлению данных об отделе
+    /**
+     * Method that contains in inheritors actions on further department modification.
+     *
+     * @param request HttpServlet request
+     * @param response HttpServlet response
+     * @param department modified department
+     */
     protected abstract void forwardForDepartment(HttpServletRequest request, HttpServletResponse response, Department department);
 }

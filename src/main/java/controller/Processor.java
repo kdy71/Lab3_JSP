@@ -4,10 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
+ * Created by Oleksandr Dudkin.
  * Common interface for all processors - contains method process().
  */
 public interface Processor {
 
-    public void process(HttpServletRequest request, HttpServletResponse response);
+    void process(HttpServletRequest request, HttpServletResponse response);
 
 }

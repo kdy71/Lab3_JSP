@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class contains map of actions for method process() in class servletStart.
+ * Created by Oleksandr Dudkin.
+ * Class contains map of actions for method process() in class ServletStart.
  */
 public class Actions {
 
@@ -15,8 +16,6 @@ public class Actions {
     public static final String START_PAGE = "startPage";
     public static final String CREATE_EMPLOYEE = "createEmployee";
     public static final String CREATE_DEPARTMENT = "createDepartment";
-    public static final String READ_EMPLOYEE = "readEmployees";
-    public static final String READ_DEPARTMENT = "readDepartment";
     public static final String UPDATE_EMPLOYEE = "updateEmployee";
     public static final String UPDATE_DEPARTMENT = "updateDepartment";
     public static final String DELETE_EMPLOYEE = "deleteEmployee";
@@ -29,10 +28,10 @@ public class Actions {
     private Map<String, Object> mapOfActions;
 
     /**
-     * Сonstructor that creates map and puts in it all the actions.
+     * Constructor that creates map and puts all the actions into it.
      */
     private Actions() {
-        mapOfActions = new HashMap<String, Object>();
+        mapOfActions = new HashMap<>();
 
         mapOfActions.put(START_PAGE, new StartPage());
         mapOfActions.put(CREATE_EMPLOYEE, new CreateEmployee());

@@ -12,18 +12,24 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Created by Oleksandr Dudkin on 27.04.2016.
+ * Created by Oleksandr Dudkin.
+ * Class contains processor to go to start page.
  */
 public class StartPage implements Processor {
     private static final Logger LOG = LogManager.getLogger(StartPage.class);
 
+    /**
+     * Goes to the start page with list of employees.
+     *
+     * @param request Http Servlet Request
+     * @param response Http Servlet Response
+     */
     @Override
     public void process(HttpServletRequest request, HttpServletResponse response) {
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/EmployeesList.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/Start.jsp");
         try {
             dispatcher.forward(request, response);
-            //LOG.info("START PAGE Dispatcher");
         } catch (ServletException e) {
             e.printStackTrace();
             LOG.error(e);

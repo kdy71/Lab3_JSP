@@ -13,17 +13,17 @@ import java.io.IOException;
 
 /**
  * Created by Oleksandr Dudkin.
+ * Class makes preparations for the employee updating.
  */
 public class UpdateEmployee extends EmployeeModification {
     private static final Logger LOG = LogManager.getLogger(UpdateEmployee.class);
 
     /**
-     * Обновляет данные работника в БД. Потом берет список работников из БД. Заносит их в сессию.
-     * Переходит на jsp-страницу со списком работников.
+     * Updates record of chosen employee and goes to the page with list of employees.
      *
-     * @param request
-     * @param response
-     * @param employee
+     * @param request HttpServlet request
+     * @param response HttpServlet response
+     * @param employee updated employee
      */
     @Override
     protected void forwardForEmployee(HttpServletRequest request, HttpServletResponse response, Employee employee) {

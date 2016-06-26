@@ -2,6 +2,7 @@ package model;
 
 /**
  * Created by itps13 on 14.04.2016.
+ * Class contains constructors, getters and setters for department-objects.
  */
 public class DepartmentImpl implements Department {
 
