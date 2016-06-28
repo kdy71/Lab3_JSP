@@ -41,7 +41,7 @@ public interface DataAccess {
 
     int getTotalCountOfEmployees();
 
-    //List<Employee> getAllEmployeesByPage(int page, int range);
+    List<Employee> getAllEmployeesByPage(int page, int range);
 
     int getTotalCountOfDepartments();
 

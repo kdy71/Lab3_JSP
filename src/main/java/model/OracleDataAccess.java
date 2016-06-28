@@ -798,7 +798,7 @@ public class OracleDataAccess implements DataAccess {
             return number;
     }
 
-    /*public List<Employee> getAllEmployeesByPage(int page, int range) {
+    public List<Employee> getAllEmployeesByPage(int page, int range) {
 
         Connection connection = getConnection();
         ResultSet result = null;
@@ -836,7 +836,7 @@ public class OracleDataAccess implements DataAccess {
             disconnect(connection, result, statement);
         }
         return employeeList;
-    }*/
+    }
 
     public int getTotalCountOfDepartments() {
         Connection connection = getConnection();

@@ -33,7 +33,7 @@
 <jsp:include page="InsteadOfSearch.jsp"/>
 
 <article>
-    <h3>Список всех отделов в организации</h3>
+    <h3>Список всех отделов:</h3>
     <%
         System.out.println("в начале DepartmentList.jsp - подготовка к пейджинации");  // debug
 
@@ -59,6 +59,7 @@
 
         <table border="1">
             <tr>
+                <th> № </th>
                 <th>Отдел</th>
                 <th>Описание</th>
                 <th>Обновить</th>
@@ -69,9 +70,12 @@
                 String stConfirmDel = "  onclick=\"return confirm('Вы точно хотите удалить отдел?')\"";
                 //ArrayList<Department> listDepartments = (ArrayList<Department>) OracleDataAccess.getInstance().getAllDepartments();
                 ArrayList<Department> listDepartments = (ArrayList<Department>) OracleDataAccess.getInstance().getAllDepartments(pageNumber, departmentsPerPage);
+
+                int number = ((pageNumber - 1) * departmentsPerPage);
                 for (Department currDept : listDepartments) { %>
 
             <tr>
+                <td><%=++number%></td>
                 <td><%=currDept.getName()%>
                 </td>
                 <td><%=currDept.getDescription()%>
