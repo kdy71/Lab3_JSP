@@ -6,9 +6,7 @@
 <%@ page import="java.util.ArrayList" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%--
 <%@ page errorPage="ErrorPage.jsp" %>
---%>
 
 <%--
   Created by IntelliJ IDEA.

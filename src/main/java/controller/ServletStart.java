@@ -1,6 +1,7 @@
 package controller;
 
 
+import model.OracleDataAccess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,35 +37,39 @@ public class ServletStart extends HttpServlet {
      */
     private void process(HttpServletRequest request, HttpServletResponse response) {
 
+        System.out.println("ServletStart");
 
-/*
-        int page;
-
+        int pageNumber;
         if (request.getParameter("page") != null) {
-            page = Integer.parseInt(request.getParameter("page"));
+            pageNumber = Integer.parseInt(request.getParameter("page"));
         } else {
-            page = 1;
+            pageNumber = 1;
         }
-        System.out.println(page);
+        System.out.println("pageNumber " + pageNumber);
+
+        int departmentsCount = OracleDataAccess.getInstance().getTotalCountOfDepartments();
+        int departmentsPerPage = 5;
+        System.out.println("departmentsCount" + departmentsCount);
+
+        PaginationController paginationController = new PaginationController(departmentsCount, departmentsPerPage, pageNumber);
+
+        request.getSession().setAttribute("paginationControllerForDep", paginationController);
+        System.out.println("Положили все в сессию");
+        System.out.println("");
 
 
-        int employeesCount = OracleDataAccess.getInstance().getTotalCountOfEmployees();
-        int employeesPerPage = 5;
 
-        PaginationController paginationController = new PaginationController(employeesCount, employeesPerPage, page);
-
-        request.getSession().setAttribute("paginationController", paginationController);
-
-
-        // TODO: 27.06.2016 заменил вызов метода getAllEmployeesByPage
+/*        // TODO: 27.06.2016 заменил вызов метода getAllEmployeesByPage
         //ArrayList<Employee> listOfEmployees = (ArrayList<Employee>) OracleDataAccess.getInstance().getAllEmployeesByPage(page, employeesPerPage);
         ArrayList<Employee> listOfEmployees = (ArrayList<Employee>) OracleDataAccess.getInstance().getEmployeesFiltered(null, null, null, null,
                 null, null, null, null, null, null, page, employeesPerPage);
 
 
         //request.getSession().setAttribute("listOfEmployees", listOfEmployees); // TODO: поменял название атрибута
-        request.getSession().setAttribute("foundEmployees", listOfEmployees);
-*/
+        request.getSession().setAttribute("foundEmployees", listOfEmployees);*/
+
+
+
 
         String action = request.getParameter("action");
         Map mapOfActions = Actions.getInstance().getMapOfActions();

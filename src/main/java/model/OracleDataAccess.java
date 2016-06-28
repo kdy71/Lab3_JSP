@@ -72,6 +72,10 @@ public class OracleDataAccess implements DataAccess {
             "   left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
             "where emp.EMP_ID = ? ";
     private static final String SQL_SELECT_ALL_DEPARTMENTS = "SELECT * FROM LAB3_DEPARTMENTS ORDER BY DEPARTMENT_NAME";
+
+    private static final String SQL_SELECT_ALL_DEPARTMENTS_RANGE = "" +
+            "SELECT * FROM (SELECT page.*,ROWNUM rn FROM (SELECT * FROM LAB3_DEPARTMENTS ORDER BY DEPARTMENT_NAME) page) WHERE rn BETWEEN :1 AND :2";
+
     private static final String SQL_SELECT_DEPARTMENT_BY_ID = "" +
             "select  * " +
             "from LAB3_DEPARTMENTS   " +
@@ -328,8 +332,6 @@ public class OracleDataAccess implements DataAccess {
             statement.setInt(21, ((page - 1) * range + 1));
             statement.setInt(22, (page * range));
 
-
-
             result = statement.executeQuery();
             while (result.next()) {
                 employee = getEmployeeFromResultSet(result);
@@ -519,6 +521,36 @@ public class OracleDataAccess implements DataAccess {
         } catch (Exception e) {
             //e.printStackTrace();
             LOG.error("Error while query SQL_SELECT_ALL_DEPARTMENTS: " + e);
+        } finally {
+            disconnect(connection, result, statement);
+        }
+        return listDep;
+    }
+
+    @Override
+    public List<Department> getAllDepartments(int page, int range) {
+        Connection connection = getConnection();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        ArrayList<Department> listDep = new ArrayList<Department>();
+        DepartmentImpl department;
+        try {
+            statement = connection.prepareStatement(SQL_SELECT_ALL_DEPARTMENTS_RANGE);
+            statement.setInt(1, ((page - 1) * range + 1));
+            statement.setInt(2, (page * range));
+
+            result = statement.executeQuery();
+            while (result.next()) {
+                Integer id = Integer.parseInt(result.getString("DEPARTMENT_ID"));
+                String name = result.getString("DEPARTMENT_NAME");
+                String description = result.getString("DESCRIPTION");
+
+                department = new DepartmentImpl(id, name, description);
+                listDep.add(department);
+            }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            LOG.error("Error while query SQL_SELECT_ALL_DEPARTMENTS_RANGE: " + e);
         } finally {
             disconnect(connection, result, statement);
         }
@@ -766,8 +798,7 @@ public class OracleDataAccess implements DataAccess {
             return number;
     }
 
-    @Override
-    public List<Employee> getAllEmployeesByPage(int page, int range) {
+    /*public List<Employee> getAllEmployeesByPage(int page, int range) {
 
         Connection connection = getConnection();
         ResultSet result = null;
@@ -805,5 +836,32 @@ public class OracleDataAccess implements DataAccess {
             disconnect(connection, result, statement);
         }
         return employeeList;
+    }*/
+
+    public int getTotalCountOfDepartments() {
+        Connection connection = getConnection();
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
+
+        int number = 0;
+
+        try {
+            // TODO: 26.06.2016 вынести на уровень класса
+            statement = connection.prepareStatement("SELECT count(DEPARTMENT_ID) AS COUNT FROM LAB3_DEPARTMENTS");
+            resultSet = statement.executeQuery();
+            resultSet.next();
+            number = resultSet.getInt("COUNT");
+            System.out.println("TotalCountOfDepartments " + number);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("Error while query count of departments: " + e);
+        }
+        finally {
+            disconnect(connection, resultSet, statement);
+        }
+        return number;
+
     }
+
+
 }

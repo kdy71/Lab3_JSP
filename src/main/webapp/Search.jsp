@@ -227,8 +227,7 @@
             //Если СЕЙЧАС ПОИСКА НЕТ и при этом ранее не было отобраного по поиску списка, то
             if (request.getSession().getAttribute("afterSearch").equals("no")
                     && (request.getSession().getAttribute("foundEmployees") == null
-                    || request.getSession().getAttribute("foundEmployees").toString().isEmpty())
-                    ) {
+                    || request.getSession().getAttribute("foundEmployees").toString().isEmpty())) {
 
                 System.out.println("ВАРИАНТ 1 ПОИСКА НЕ БЫЛО НИ РАЗУ");
                 // находим количество работников в списке и на странице. Помещаем PaginationController с количеством

@@ -4,7 +4,7 @@
 <%@ page import="model.Department" %>
 <%@ page import="model.OracleDataAccess" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page errorPage="ErrorPage.jsp" %>
+<%--<%@ page errorPage="ErrorPage.jsp" %>--%>
 <%--
   Created by IntelliJ IDEA.
   User: Admin
@@ -34,9 +34,28 @@
 
 <article>
     <h3>Список всех отделов в организации</h3>
+    <%
+        System.out.println("в начале DepartmentList.jsp - подготовка к пейджинации");  // debug
+
+        //PaginationController paginationController = (PaginationController) request.getSession().getAttribute("paginationControllerForDep");
+
+        int pageNumber;
+        if (request.getParameter("page") != null) {
+            pageNumber = Integer.parseInt(request.getParameter("page"));
+        } else {
+            pageNumber = 1;
+        }
+        System.out.println("pageNumber" + pageNumber);
+
+        int departmentsCount = OracleDataAccess.getInstance().getTotalCountOfDepartments();
+        int departmentsPerPage = 5;
+        System.out.println("departmentsCount" + departmentsCount);
+
+        PaginationController paginationController = new PaginationController(departmentsCount, departmentsPerPage, pageNumber);
+        request.getSession().setAttribute("paginationControllerForDep", paginationController);
+    %>
 
     <form name="addDepartmentForm" action='ServletStart?action=addDepartment' method='post'>
-        <!--исправить адрес к сервлету и метод-->
 
         <table border="1">
             <tr>
@@ -48,7 +67,8 @@
 
             <%
                 String stConfirmDel = "  onclick=\"return confirm('Вы точно хотите удалить отдел?')\"";
-                ArrayList<Department> listDepartments = (ArrayList<Department>) OracleDataAccess.getInstance().getAllDepartments();
+                //ArrayList<Department> listDepartments = (ArrayList<Department>) OracleDataAccess.getInstance().getAllDepartments();
+                ArrayList<Department> listDepartments = (ArrayList<Department>) OracleDataAccess.getInstance().getAllDepartments(pageNumber, departmentsPerPage);
                 for (Department currDept : listDepartments) { %>
 
             <tr>
@@ -75,19 +95,28 @@
             <% session.setAttribute("departmentForEdit", listDepartments.get(0)); %>
             <!--  debug Передавать надо выбранного работника  -->
             <!--  Только как определить, какой из них выбран???  -->
-            <%
-                PaginationController paginationController = (PaginationController) request.getSession().getAttribute("paginationController");
-                int pageNumber;
-                if (request.getParameter("page") != null) {
-                    pageNumber = Integer.parseInt(request.getParameter("page"));
-                } else {
-                    pageNumber = 1;
-                }
-                paginationController.setCurrentPageNumber(pageNumber);
-            %>
-            <%= paginationController.makePagingLinks("EmployeesList.jsp", "")%>
 
         </table>
+
+        <%
+            //если контроллера в параметрах нет, то
+            // создаем его для первой страницы
+            // если есть, то используем его для считанной страницы ()
+            System.out.println("в конце DepartmentList.jsp - пейджинация");  // debug
+
+            /*PaginationController*/ paginationController = (PaginationController) request.getSession().getAttribute("paginationControllerForDep");
+
+            /*int pageNumber;*/
+            if (request.getParameter("page") != null) {
+                pageNumber = Integer.parseInt(request.getParameter("page"));
+            } else {
+                pageNumber = 1;
+            }
+            System.out.println("pageNumber" + pageNumber);
+
+            paginationController.setCurrentPageNumber(pageNumber);
+        %>
+        <%= paginationController.makePagingLinks("DepartmentsList.jsp", "")%>
 
     </form>
 </article>
