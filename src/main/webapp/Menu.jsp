@@ -14,7 +14,7 @@
 <div class="menu">
 
     <b>Опции: </b><br/>
-    <a href='EmployeesList.jsp'>Cписок сотрудников<br/></a>
+    <a href='EmployeesList.jsp?renew=yes'>Cписок сотрудников<br/></a>
     <a href='DepartmentsList.jsp'>Список отделов<br/></a>
     <a href='Employee-new.jsp'>Добавить сотрудника<br/></a> <%-- Достаточно, что action != editEmployee --%>
     <a href='Department-new.jsp'>Добавить отдел<br/></a>

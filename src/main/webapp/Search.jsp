@@ -4,6 +4,7 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
 <%@ page import="model.UtilDates" %>
+<%@ page import="controller.PaginationController" %>
 <%--
   Created by IntelliJ IDEA.
   User: Admin
@@ -48,6 +49,8 @@
     <form name="search" action='EmployeesList.jsp' method='post' accept-charset="utf-8">
 
         <%
+            System.out.println("-- в Search.jsp--");
+
             request.setCharacterEncoding("utf-8");
             List<Employee> employeesList = new ArrayList<Employee>();
             String namePattern = request.getParameter("namePattern");
@@ -137,14 +140,8 @@
             Date dateMax;  */
 
             namePattern = request.getParameter("namePattern");
-/*            if (namePattern == null) {
-                namePattern = "";
-            } */
 
             jobPattern = request.getParameter("jobPattern");
-/*            if (jobPattern == null) {
-                jobPattern = "";
-            } */
 
             salMinPattern = request.getParameter("salMinPattern");
             if (salMinPattern == null || salMinPattern.isEmpty()) {
@@ -161,18 +158,11 @@
             }
 
             depPattern = request.getParameter("depPattern");
-/*            if (depPattern == null) {
-                depPattern = "";
-            } */
 
             manPattern = request.getParameter("manPattern");
-/*            if (manPattern == null) {
-                manPattern = "";
-            }  */
 
             dateMinPattern = request.getParameter("dateMinPattern");
             if (dateMinPattern == null || dateMinPattern.isEmpty()) {
-//                dateMin = new Date(0); //минимальная дата
                 dateMin = null;
             } else {
                 dateMin = UtilDates.stringToDate(dateMinPattern);
@@ -180,8 +170,6 @@
 
             dateMaxPattern = request.getParameter("dateMaxPattern");
             if (dateMaxPattern == null || dateMaxPattern.isEmpty()) {
-//                dateMax = new Date(100000000000000L); //5138 year
-//                dateMax = new Date(0); //5138 year
                 dateMax = null; //
             } else {
                 dateMax = UtilDates.stringToDate(dateMaxPattern);
@@ -199,20 +187,122 @@
 
 //            System.out.println("  go to find  - findEmployees(namePattern, jobPattern, salMin, salMax, depPattern, manPattern, dateMin, dateMax)..."); //debug
 //            employeesList = OracleDataAccess.getInstance().findEmployees(namePattern, jobPattern, salMin, salMax, depPattern, manPattern, dateMin, dateMax);
-            employeesList = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern,
-                            salMin, salMax, null, null, dateMin, dateMax, manPattern, depPattern);
-            request.setAttribute("foundEmployees", employeesList);
-/*
-            for (int i = 0; i < employeesList.size(); i++) { //debug
-                System.out.println(i+"- "+employeesList.get(i));
-            }
-*/
-            if (namePattern !=null || jobPattern !=null || salMinPattern!=null || salMaxPattern!= null ||
-                    depPattern != null || manPattern != null || dateMinPattern != null || dateMaxPattern != null) {
-                request.setAttribute("afterSearch", "yes");
+
+
+            //find page number
+            int pageNumber;
+
+            if (request.getParameter("page") != null) {
+                pageNumber = Integer.parseInt(request.getParameter("page"));
             } else {
-                request.setAttribute("afterSearch", "no");
+                pageNumber = 1;
             }
+
+            System.out.println("namePattern= "+namePattern);
+            System.out.println("jobPattern="+jobPattern);
+            System.out.println("salMin= "+salMin);
+            System.out.println("salMax= "+salMax);
+            System.out.println("depPattern= "+depPattern);
+            System.out.println("manPattern= "+manPattern);
+            System.out.println("dateMin= "+dateMin);
+            System.out.println("dateMax= "+dateMax);
+
+            // создать атрибут afterSearch
+            // ПО ПЕРЕХОДУ ЧЕРЕЗ ССЫЛКУ ОБНУЛЯЕТСЯ ФОРМА ПОИСКА, А ЗНАЧИТ ОБНУЛЯЮТСЯ ПАТТЕРНЫ, А ЗНАЧИТ AFTER SEARCH СТАНОВИТСЯ NO
+
+            /**
+             * 1. До первого заполения формы "afterSearch", "no"
+             * 2. После первого заполнения "afterSearch", "yes"
+             * 3. После этого пока не обнулим всегда будет "yes"
+             */
+
+            if (namePattern != null || jobPattern != null || salMinPattern != null || salMaxPattern != null ||
+                    depPattern != null || manPattern != null || dateMinPattern != null || dateMaxPattern != null) {
+                request.getSession().setAttribute("afterSearch", "yes");
+            } else {
+                request.getSession().setAttribute("afterSearch", "no");
+            }
+
+            System.out.println("-- в Search.jsp--");
+            //Если СЕЙЧАС ПОИСКА НЕТ и при этом ранее не было отобраного по поиску списка, то
+            if (request.getSession().getAttribute("afterSearch").equals("no")
+                    && (request.getSession().getAttribute("foundEmployees") == null
+                    || request.getSession().getAttribute("foundEmployees").toString().isEmpty())
+                    ) {
+
+                System.out.println("ВАРИАНТ 1 ПОИСКА НЕ БЫЛО НИ РАЗУ");
+                // находим количество работников в списке и на странице. Помещаем PaginationController с количеством
+                // работников, кол-вом их на странице, и номером страницы в реквест
+                int employeesCount = OracleDataAccess.getInstance().getTotalCountOfEmployees();
+                int employeesPerPage = 5;
+                PaginationController paginationController = new PaginationController(employeesCount, employeesPerPage, pageNumber);
+                request.getSession().setAttribute("paginationController", paginationController);
+
+                //выбираем работников для нужной страницы. Помещаем в реквест
+                employeesList = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
+                        null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
+                request.getSession().setAttribute("allEmployees", employeesList);
+
+            //ЕСЛИ НОВОГО ПОИСКА НЕТ А foundEmployees ЕСТЬ УЖЕ
+            } else if (request.getSession().getAttribute("afterSearch").equals("no")
+                    && (!request.getSession().getAttribute("foundEmployees").toString().isEmpty())) {
+                System.out.println("ВАРИАНТ 2 СЕЙЧАС ПОИСКА НЕ БЫЛО, НО БЫЛ ДО ЭТОГО");
+                //достаем из реквеста список
+                employeesList = (List<Employee>) request.getSession().getAttribute("foundEmployees");
+                System.out.println("Отобранные по поиску ранее все работники");
+                System.out.println(employeesList);
+
+                // находим количество работников в списке и на странице. Помещаем PaginationController с количеством
+                // работников, кол-вом их на странице, и номером страницы в реквест
+                int employeesCount = employeesList.size();
+                System.out.println("размер отобранного списка = " + employeesList.size());
+                int employeesPerPage = 5;
+                PaginationController paginationController = new PaginationController(employeesCount, employeesPerPage, pageNumber);
+                request.getSession().setAttribute("paginationController", paginationController);
+
+                //выбираем работников для нужной страницы. Помещаем в реквест
+                List <Employee> employeesForPage = new ArrayList<>();
+                int endOfList= (pageNumber * employeesPerPage);// индекс последнего работника на странице
+
+                System.out.println("номер страницы = " + pageNumber);
+                System.out.println("индекс последнего работника по расчетам = " + endOfList);
+                System.out.println("индекс последнего работника по списку = " + employeesCount);
+                if (endOfList > employeesCount) {
+                    endOfList = employeesCount;
+                }
+                System.out.println("Индекс последнего работника для станицы = " + endOfList);
+
+                for (int i = ((pageNumber - 1) * employeesPerPage); i < endOfList; i++) {
+                    System.out.println(employeesList.get(i));
+                    employeesForPage.add(employeesList.get(i));
+                }
+                System.out.println("Отобранные для страницы работники");
+                System.out.println(employeesForPage);
+
+                request.getSession().setAttribute("foundEmployeesForPage", employeesForPage);
+                System.out.println("ВАРИАНТ 2 ВСЕ ПОДГОТОВЛЕНО");
+            }
+
+            //ЕСЛИ ЕСТЬ НОВЫЙ ПОИСК
+            else if (request.getSession().getAttribute("afterSearch").equals("yes")) {
+                System.out.println("ВАРИАНТ 3 ЕСТЬ НОВЫЙ ПОИСК");
+                //короткий метод
+                employeesList = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
+                        null, null, dateMin, dateMax, manPattern, depPattern);
+                request.getSession().setAttribute("foundEmployees", employeesList);
+
+                int employeesCount = employeesList.size();
+                int employeesPerPage = 5;
+                //длинный метод
+                List <Employee> employeesForPage = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
+                        null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
+
+                PaginationController paginationController = new PaginationController(employeesCount, employeesPerPage, pageNumber);
+
+                request.getSession().setAttribute("paginationController", paginationController);
+                request.getSession().setAttribute("foundEmployeesForPage", employeesForPage);
+            }
+
         %>
 
 

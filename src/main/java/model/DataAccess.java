@@ -15,6 +15,10 @@ public interface DataAccess {
                                         Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
                                         String pManagerName, String pDepartmentName);
 
+    List<Employee> getEmployeesFiltered(String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
+                                        Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
+                                        String pManagerName, String pDepartmentName, int page, int range);
+
     Employee getEmployeeById(Integer id);
 
     void insertEmployee(Employee employee);
@@ -32,4 +36,8 @@ public interface DataAccess {
     void updateDepartment(Department department);
 
     void deleteDepartment(Integer departmentId);
+
+    int getTotalCountOfEmployees();
+
+    List<Employee> getAllEmployeesByPage(int page, int range);
 }

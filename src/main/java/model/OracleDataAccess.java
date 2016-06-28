@@ -2,6 +2,7 @@ package model;
 
 // import oracle.jdbc.driver.OracleDriver;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,6 +28,26 @@ public class OracleDataAccess implements DataAccess {
             "   left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
             "   left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
             "ORDER BY emp.EMP_NAME ";
+    private static final String SQL_SELECT_FILTERED_EMLOYEES_RANGE = "" +
+            "SELECT *" +
+            "FROM (SELECT page.*,ROWNUM rn" +
+            "      FROM (select  emp.*, nvl(to_char(man.EMP_NAME), ' ')  as manName, dep.DEPARTMENT_NAME as depName " +
+            "from lab3_Employees emp  " +
+            "left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
+            "left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
+            "where  ( :1  is null  or  lower(emp.EMP_NAME)    like  :2 ) " +
+            "   and ( :3  is null  or  lower(emp.JOB_NAME)    like  :4 ) " +
+            "   and ( :5  is null  or  emp.SALARY          >= :6     ) " +
+            "   and ( :7  is null  or  emp.SALARY          <= :8     ) " +
+            "   and ( :9  is null  or  emp.DEPARTMENT_ID    = :10    ) " +
+            "   and ( :11 is null  or  emp.MANAGER_ID       = :12    ) " +
+            "   and ( :13 is null  or  emp.DATE_IN         >= :14    ) " +
+            "   and ( :15 is null  or  emp.DATE_IN         <= :16     ) " +
+            "   and ( :17 is null  or  lower(man.EMP_NAME)         like :18  ) " +
+            "   and ( :19 is null  or  lower(dep.DEPARTMENT_NAME)  like :20 ) " +
+            "ORDER BY emp.EMP_NAME) page)" +
+            "WHERE rn BETWEEN :21 AND :22 ";
+
     private static final String SQL_SELECT_FILTERED_EMLOYEES = "" +
             "select  emp.*, nvl(to_char(man.EMP_NAME), ' ')  as manName, dep.DEPARTMENT_NAME as depName " +
             "from lab3_Employees emp  " +
@@ -43,6 +64,7 @@ public class OracleDataAccess implements DataAccess {
             "   and ( :17 is null  or  lower(man.EMP_NAME)         like :18  ) " +
             "   and ( :19 is null  or  lower(dep.DEPARTMENT_NAME)  like :20 ) " +
             "ORDER BY emp.EMP_NAME ";
+
     private static final String SQL_SELECT_EMPLOYEE_BY_ID = "" +
             "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
             "from lab3_Employees emp  " +
@@ -215,6 +237,115 @@ public class OracleDataAccess implements DataAccess {
     @Override
     public List<Employee> getEmployeesFiltered(String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
                                                Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
+                                               String pManagerName, String pDepartmentName, int page, int range) {
+        LOG.info("Search parameters: \n Name: " + pName + ". Job " + pJobName + ". Salary from " + pSalaryFrom + ". Salary to " + pSalaryTo +
+                ". Department Id " + pDepartmentId + ". Manager Id " + pManagerId + ". Date from " + pDateInFrom + ". Date to " + pDateInTo +
+                ". Manager name " + pManagerName + ". Department name " + pDepartmentName);
+        Connection connection = getConnection();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        ArrayList<Employee> listEmpl = new ArrayList<>();
+        Employee employee;
+        try {
+            pName           = convertToQueryFormat(pName          );
+            pJobName        = convertToQueryFormat(pJobName       );
+            pSalaryFrom     = convertToQueryFormat(pSalaryFrom    );
+            pSalaryTo       = convertToQueryFormat(pSalaryTo      );
+            pDepartmentId   = convertToQueryFormat(pDepartmentId  );
+            pManagerId      = convertToQueryFormat(pManagerId     );
+            pDateInFrom     = convertToQueryFormat(pDateInFrom    );
+            pDateInTo       = convertToQueryFormat(pDateInTo      );
+            pManagerName    = convertToQueryFormat(pManagerName   );
+            pDepartmentName = convertToQueryFormat(pDepartmentName);
+
+            statement = connection.prepareStatement(SQL_SELECT_FILTERED_EMLOYEES_RANGE);
+            statement.setString(1, pName); // :1
+            statement.setString(2, pName); // :1
+            statement.setString(3, pJobName); // :2
+            statement.setString(4, pJobName); // :2
+            if (pSalaryFrom != null) {
+                statement.setFloat(5, pSalaryFrom); // :3
+                statement.setFloat(6, pSalaryFrom); // :3
+            }
+            else {
+                statement.setNull(5, Types.FLOAT); // :3
+                statement.setNull(6, Types.FLOAT); // :3
+            }
+            if (pSalaryTo != null) {
+                statement.setFloat(7, pSalaryTo); // :4
+                statement.setFloat(8, pSalaryTo); // :4
+            }
+            else {
+                statement.setNull(7, Types.FLOAT); // :4
+                statement.setNull(8, Types.FLOAT); // :4
+            }
+
+            if (pDepartmentId != null) {
+                statement.setInt(9, pDepartmentId);  // :5
+                statement.setInt(10, pDepartmentId); // :5
+            }
+            else {
+                statement.setNull(9, Types.INTEGER);  // :5
+                statement.setNull(10, Types.INTEGER); // :5
+            }
+
+            if (pManagerId != null) {
+                statement.setInt(11, pManagerId);  // :6
+                statement.setInt(12, pManagerId);  // :6
+            }
+            else {
+                statement.setNull(11, Types.INTEGER); // :6
+                statement.setNull(12, Types.INTEGER); // :6
+            }
+
+            if (pDateInFrom != null) {
+                java.sql.Date sqlDate = new java.sql.Date(pDateInFrom.getTime());
+                statement.setDate(13, sqlDate);  // :7
+                statement.setDate(14, sqlDate);  // :7
+            }
+            else {
+                statement.setNull(13, Types.DATE); // :7
+                statement.setNull(14, Types.DATE); // :7
+            }
+
+            if (pDateInTo != null) {
+                java.sql.Date sqlDate = new java.sql.Date(pDateInTo.getTime());
+                statement.setDate(15, sqlDate);  // :8
+                statement.setDate(16, sqlDate);  // :8
+            }
+            else {
+                statement.setNull(15, Types.DATE); // :8
+                statement.setNull(16, Types.DATE); // :8
+            }
+
+            statement.setString(17, pManagerName); // :9
+            statement.setString(18, pManagerName); // :9
+            statement.setString(19, pDepartmentName); // :10
+            statement.setString(20, pDepartmentName); // :10
+
+/*            statement.setInt(21, page);
+            statement.setInt(22, range);*/
+            statement.setInt(21, ((page - 1) * range + 1));
+            statement.setInt(22, (page * range));
+
+
+
+            result = statement.executeQuery();
+            while (result.next()) {
+                employee = getEmployeeFromResultSet(result);
+                listEmpl.add(employee);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("Error while query SQL_SELECT_FILTERED_EMLOYEES_RANGE: " + e);
+        } finally {
+            disconnect(connection, result, statement);
+        }
+        return listEmpl;
+    }
+
+    public List<Employee> getEmployeesFiltered(String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
+                                               Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
                                                String pManagerName, String pDepartmentName) {
         LOG.info("Search parameters: \n Name: " + pName + ". Job " + pJobName + ". Salary from " + pSalaryFrom + ". Salary to " + pSalaryTo +
                 ". Department Id " + pDepartmentId + ". Manager Id " + pManagerId + ". Date from " + pDateInFrom + ". Date to " + pDateInTo +
@@ -306,7 +437,7 @@ public class OracleDataAccess implements DataAccess {
                 listEmpl.add(employee);
             }
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             LOG.error("Error while query SQL_SELECT_FILTERED_EMLOYEES: " + e);
         } finally {
             disconnect(connection, result, statement);
@@ -606,6 +737,73 @@ public class OracleDataAccess implements DataAccess {
 
         Employee employee = new EmployeeImpl(employeeId, name, jobName, salary,
                 departmentId, managerId, date_in, managerName, depName);
+        System.out.println(employee);
         return employee;
+    }
+
+    @Override
+    public int getTotalCountOfEmployees() {
+            Connection connection = getConnection();
+            ResultSet resultSet = null;
+            PreparedStatement statement = null;
+
+            int number = 0;
+
+            try {
+                // TODO: 26.06.2016 вынести на уровень класса
+                statement = connection.prepareStatement("SELECT count(EMP_ID) AS COUNT FROM LAB3_EMPLOYEES");
+                resultSet = statement.executeQuery();
+                resultSet.next();
+                number = resultSet.getInt("COUNT");
+                System.out.println("TotalCountOfEmployees " + number);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOG.error("Error while query count of employees: " + e);
+            }
+            finally {
+                disconnect(connection, resultSet, statement);
+            }
+            return number;
+    }
+
+    @Override
+    public List<Employee> getAllEmployeesByPage(int page, int range) {
+
+        Connection connection = getConnection();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+
+        Employee employee;
+        List<Employee> employeeList = new ArrayList<Employee>();
+
+        try {
+            // TODO: 26.06.2016 вынести на уровень класса
+            statement = connection.prepareStatement("SELECT *" +
+                    "FROM (SELECT page.*,ROWNUM rn" +
+                    "      FROM (select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName" +
+                    "            from lab3_Employees emp" +
+                    "            left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID" +
+                    "            left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID" +
+                    "            ORDER BY emp.EMP_NAME) page)" +
+                    "WHERE rn BETWEEN ? AND ?");
+
+            statement.setInt(1, ((page - 1) * range + 1));
+            statement.setInt(2, (page * range));
+
+            LOG.info("Page from " + ((page - 1) * range + 1) + " to " + (page * range));
+            result = statement.executeQuery();
+
+            while(result.next()){
+                employee = getEmployeeFromResultSet(result);
+                employeeList.add(employee);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("Error while query set of employees for page: " + e);
+        }
+        finally {
+            disconnect(connection, result, statement);
+        }
+        return employeeList;
     }
 }

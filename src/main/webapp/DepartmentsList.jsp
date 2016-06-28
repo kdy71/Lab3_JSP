@@ -1,8 +1,9 @@
+<%@ page import="controller.Actions" %>
+<%@ page import="controller.DepartmentProcessors.DepartmentModification" %>
+<%@ page import="controller.PaginationController" %>
 <%@ page import="model.Department" %>
 <%@ page import="model.OracleDataAccess" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="controller.DepartmentProcessors.DepartmentModification" %>
-<%@ page import="controller.Actions" %>
 <%@ page errorPage="ErrorPage.jsp" %>
 <%--
   Created by IntelliJ IDEA.
@@ -74,6 +75,17 @@
             <% session.setAttribute("departmentForEdit", listDepartments.get(0)); %>
             <!--  debug Передавать надо выбранного работника  -->
             <!--  Только как определить, какой из них выбран???  -->
+            <%
+                PaginationController paginationController = (PaginationController) request.getSession().getAttribute("paginationController");
+                int pageNumber;
+                if (request.getParameter("page") != null) {
+                    pageNumber = Integer.parseInt(request.getParameter("page"));
+                } else {
+                    pageNumber = 1;
+                }
+                paginationController.setCurrentPageNumber(pageNumber);
+            %>
+            <%= paginationController.makePagingLinks("EmployeesList.jsp", "")%>
 
         </table>
 
