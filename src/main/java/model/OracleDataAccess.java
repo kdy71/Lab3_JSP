@@ -2,7 +2,6 @@ package model;
 
 // import oracle.jdbc.driver.OracleDriver;
 
-import com.sun.xml.internal.bind.v2.TODO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,8 +10,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
 
 
 /**
@@ -787,7 +788,7 @@ public class OracleDataAccess implements DataAccess {
                 resultSet = statement.executeQuery();
                 resultSet.next();
                 number = resultSet.getInt("COUNT");
-                System.out.println("TotalCountOfEmployees " + number);
+                //System.out.println("TotalCountOfEmployees " + number);
             } catch (Exception e) {
                 e.printStackTrace();
                 LOG.error("Error while query count of employees: " + e);
@@ -851,7 +852,7 @@ public class OracleDataAccess implements DataAccess {
             resultSet = statement.executeQuery();
             resultSet.next();
             number = resultSet.getInt("COUNT");
-            System.out.println("TotalCountOfDepartments " + number);
+            //System.out.println("TotalCountOfDepartments " + number);
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("Error while query count of departments: " + e);

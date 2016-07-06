@@ -4,9 +4,10 @@
 <%@ page import="model.Employee" %>
 <%@ page import="model.OracleDataAccess" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page errorPage="ErrorPage.jsp" %>
+<%--<%@ page errorPage="ErrorPage.jsp" %>--%>
 
 <%--
   Created by IntelliJ IDEA.
@@ -39,9 +40,7 @@
 
     <table border="1">
         <%
-            System.out.println("-- в EmployeesList.jsp--");
-
-            //если в реквесте параметр ренью не пустой, то нужен вывод всего
+            //если в реквесте параметр ренью не пустой, то нужен вывод первой страницы всех работников
             int employeesPerPage = 5;
             int pageNumber;
 
@@ -51,34 +50,32 @@
                 pageNumber = 1;
             }
 
-            if (request.getParameter("renew") != null
-                    && request.getParameter("renew").equals("yes")) {
-                System.out.println(request.getParameter("renew"));
+            // если результаты поиска сбрасываются, то параметры сессии делаем null
+            if (request.getParameter("renew") != null && request.getParameter("renew").equals("yes")) {
 
-                //pageNumber = 1;
                 request.getSession().setAttribute("afterSearch", "no");
-                request.getSession().setAttribute("foundEmployees", null);
-                request.getSession().setAttribute("foundEmployeesForPage", null);
-                //request.getSession().setAttribute("allEmployees", null);
+                request.getSession().setAttribute("hasPreviousPatterns", null);
+                request.getSession().setAttribute("EmployeesForPage", null);
 
-                //обновляем PaginationController, иначе будет старый перечень страниц
+                //обновляем PaginationController, иначе может остаться перечень страниц для предыдущего поиска
                 int employeesCount = OracleDataAccess.getInstance().getTotalCountOfEmployees();
                 PaginationController paginationController = new PaginationController(employeesCount, employeesPerPage, pageNumber);
                 request.getSession().setAttribute("paginationController", paginationController);
             }
 
-    if (request.getSession().getAttribute("afterSearch").equals("yes")) {
-        %><h3>Результаты поиска:</h3><%
-    }else if(request.getSession().getAttribute("afterSearch").equals("no")
-            && (request.getSession().getAttribute("foundEmployees") != null)) {
-        %><h3>Результаты поиска:</h3><%
-    } else {
-    %><h3>Список всех сотрудников:</h3><%
-        }%>
+            if (request.getSession().getAttribute("afterSearch").equals("yes")
+                    || (request.getSession().getAttribute("afterSearch").equals("no")
+                    && (request.getSession().getAttribute("hasPreviousPatterns") != null))) {
 
+                %><h3 style="color: red">Результаты поиска:</h3><%
+
+            } else {
+
+                %><h3>Список всех сотрудников:</h3><%
+            }%>
 
         <tr>
-            <th> № </th>
+            <th> №</th>
             <th>ФИО</th>
             <th>Отдел</th>
             <th>Должность</th>
@@ -92,27 +89,9 @@
         <%
             String stConfirmDel = "  onclick=\"return confirm('Вы точно хотите удалить запись о сотруднике?')\"";
 
-            ArrayList<Employee> listEmployees = new ArrayList<Employee>();
-
-            if (request.getSession().getAttribute("afterSearch").equals("yes")) {
-                System.out.println("ВАРИАНТ 3 ЕСТЬ НОВЫЙ ПОИСК");
-                listEmployees = (ArrayList<Employee>) request.getSession().getAttribute("foundEmployeesForPage");
-            } else if (request.getSession().getAttribute("afterSearch").equals("no")
-                    && (request.getSession().getAttribute("foundEmployees") == null
-                    || request.getSession().getAttribute("foundEmployees").toString().isEmpty())) {
-                System.out.println("ВАРИАНТ 1 ПОИСКА НЕ БЫЛО НИ РАЗУ");
-                //listEmployees = (ArrayList<Employee>) request.getSession().getAttribute("allEmployees");
-                listEmployees = (ArrayList<Employee>) OracleDataAccess.getInstance().getAllEmployeesByPage(pageNumber, employeesPerPage);
-            } else if (request.getSession().getAttribute("afterSearch").equals("no")
-                    && (!request.getSession().getAttribute("foundEmployees").toString().isEmpty())) {
-                System.out.println("ВАРИАНТ 2 СЕЙЧАС ПОИСКА НЕ БЫЛО, НО БЫЛ ДО ЭТОГО");
-                listEmployees = (ArrayList<Employee>) request.getSession().getAttribute("foundEmployeesForPage");
-                System.out.println(listEmployees);
-            }
-
-
+            List<Employee> listEmployees = (ArrayList<Employee>) request.getSession().getAttribute("EmployeesForPage");
             if (listEmployees == null) {
-                listEmployees = (ArrayList<Employee>) OracleDataAccess.getInstance().getAllEmployees();
+                listEmployees = OracleDataAccess.getInstance().getAllEmployeesByPage(pageNumber, employeesPerPage);
             }
 
             String ref4EditEmployee;
@@ -125,7 +104,8 @@
 
 
         <tr>
-            <td><%=++number%></td>
+            <td><%=++number%>
+            </td>
             <td><%=currEmp.getName()%>
             </td>
             <td><%=currEmp.getDepartmentName()%>
@@ -161,20 +141,15 @@
     <%--Links under the table.--%>
     <%
         PaginationController paginationController = (PaginationController) request.getSession().getAttribute("paginationController");
-/*        int pageNumber;
-        if (request.getParameter("page") != null) {
-            pageNumber = Integer.parseInt(request.getParameter("page"));
-        } else {
-            pageNumber = 1;
-        }*/
         paginationController.setCurrentPageNumber(pageNumber);
     %>
     <%= paginationController.makePagingLinks("EmployeesList.jsp", "")%>
 
+    <%--Link to renew list of employees.--%>
     <%
         if (request.getSession().getAttribute("afterSearch").equals("yes")
                 || (request.getSession().getAttribute("afterSearch").equals("no")
-                && (request.getSession().getAttribute("foundEmployees") != null))) {
+                && (request.getSession().getAttribute("hasPreviousPatterns") != null))) {
     %><a href='EmployeesList.jsp?renew=yes'><br/>Сбросить результаты поиска<br/></a><%
     }%>
 

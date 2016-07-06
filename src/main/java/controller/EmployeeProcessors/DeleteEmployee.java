@@ -35,6 +35,7 @@ public class DeleteEmployee implements Processor {
             rd.forward(request, response);
         } catch (ServletException e) {
             LOG.error(e);
+            //// TODO: 06.07.2016 не выводит ошибку при удалении главного менеджера
         } catch (IOException e) {
             LOG.error(e);
         }

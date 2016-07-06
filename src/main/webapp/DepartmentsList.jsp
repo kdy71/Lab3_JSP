@@ -4,7 +4,7 @@
 <%@ page import="model.Department" %>
 <%@ page import="model.OracleDataAccess" %>
 <%@ page import="java.util.ArrayList" %>
-<%--<%@ page errorPage="ErrorPage.jsp" %>--%>
+<%@ page errorPage="ErrorPage.jsp" %>
 <%--
   Created by IntelliJ IDEA.
   User: Admin

@@ -29,8 +29,6 @@ public interface DataAccess {
 
     List<Department> getAllDepartments();
 
-    List<Department> getAllDepartments(int page, int range);
-
     Department getDepartmentById(Integer id);
 
     void insertDepartment(Department department);
@@ -45,5 +43,6 @@ public interface DataAccess {
 
     int getTotalCountOfDepartments();
 
-    //List<Department> getAllDepartmentsByPage(int page, int range);
+    List<Department> getAllDepartments(int page, int range);
+
 }
