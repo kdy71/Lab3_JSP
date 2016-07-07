@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Oleksandr Dudkin.
+ * Created by Oleksandr Dudkin, Dmitry Khoruzhenko.
  * Class contains map of actions for method process() in class ServletStart.
  */
 public class Actions {
@@ -22,6 +22,7 @@ public class Actions {
     public static final String DELETE_DEPARTMENT = "deleteDepartment";
     public static final String EDIT_EMPLOYEE = "editEmployee";
     public static final String EDIT_DEPARTMENT = "editDepartment";
+    public static final String LIST_EMPLOYEES = "listEmployees";
 
     public static final Actions INSTANCE = new Actions();
 
@@ -43,6 +44,7 @@ public class Actions {
 
         mapOfActions.put(EDIT_EMPLOYEE, new EditEmployee());
         mapOfActions.put(EDIT_DEPARTMENT, new EditDepartment());
+        mapOfActions.put(LIST_EMPLOYEES, new EmpListProcessor());
     }
 
     /**

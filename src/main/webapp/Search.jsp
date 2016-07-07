@@ -5,6 +5,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="model.UtilDates" %>
 <%@ page import="controller.PaginationController" %>
+<%@ page import="controller.EmployeeProcessors.EmpListProcessor" %>
 <%--
   Created by IntelliJ IDEA.
   User: Admin
@@ -49,6 +50,7 @@
     <form name="search" action='EmployeesList.jsp' method='post' accept-charset="utf-8">
 
         <%
+            System.out.println(" ---- enter to Search.jsp ----"); // debug
             request.setCharacterEncoding("utf-8");
             List<Employee> employeesList = new ArrayList<Employee>();
             String namePattern = request.getParameter("namePattern");
@@ -167,27 +169,31 @@
             int employeesPerPage = 5;
 
             //ВАРИАНТ 1 ПОИСКА НЕ БЫЛО НИ РАЗУ
+            // --- Лишнее !!! ---
             if (request.getSession().getAttribute("afterSearch").equals("no")
                     && (request.getSession().getAttribute("hasPreviousPatterns") == null
                     || request.getSession().getAttribute("hasPreviousPatterns").toString().isEmpty())) {
 
-                employeesCount = OracleDataAccess.getInstance().getTotalCountOfEmployees();
+//                employeesCount = OracleDataAccess.getInstance().getTotalCountOfEmployees();
 
                 //выбираем работников для нужной страницы. Помещаем в реквест
-                employeesList = OracleDataAccess.getInstance().getAllEmployeesByPage(pageNumber, employeesPerPage);
-                request.getSession().setAttribute("EmployeesForPage", employeesList);
+//                employeesList = OracleDataAccess.getInstance().getAllEmployeesByPage(pageNumber, employeesPerPage);
+//                request.getSession().setAttribute("EmployeesForPage", employeesList);
             }
 
             // ВАРИАНТ 2 ЕСТЬ НОВЫЙ ПОИСК
             else if (request.getSession().getAttribute("afterSearch").equals("yes")) {
                 //узнаем количество найденных по паттернам работников
-                employeesCount = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
-                        null, null, dateMin, dateMax, manPattern, depPattern).size();
+//                employeesCount = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
+//                        null, null, dateMin, dateMax, manPattern, depPattern).size();
 
                 //делаем список найденных работников для нужной страницы и помещаем в сессию
-                List <Employee> employeesForPage = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
-                        null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
-                request.getSession().setAttribute("EmployeesForPage", employeesForPage);
+//                List <Employee> employeesForPage = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
+//                        null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
+//                EmpListProcessor empListProcessor = new EmpListProcessor();
+//                List <Employee> employeesForPage = empListProcessor.getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
+//                        null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
+//                request.getSession().setAttribute("EmployeesForPage", employeesForPage);
 
                 // сохраняем паттерны поиска в сессии
                 request.getSession().setAttribute("namePattern", namePattern);
@@ -236,18 +242,84 @@
                 }
 
                 // узнаем количество найденных работников
-                employeesCount = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
-                        null, null, dateMin, dateMax, manPattern, depPattern).size();
+//                employeesCount = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
+//                        null, null, dateMin, dateMax, manPattern, depPattern).size();
 
                 // Ищем работников по паттернам для нужной страницы. помещаем в сессию
-                List <Employee> employeesForPage = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
-                        null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
-                request.getSession().setAttribute("EmployeesForPage", employeesForPage);
+//                List <Employee> employeesForPage = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
+//                        null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
+//                request.getSession().setAttribute("EmployeesForPage", employeesForPage);
             }
+
+
+
+
+
+
+
+            System.out.println(" - 1 -"); // debug
+
+            EmpListProcessor empListProcessor = new EmpListProcessor();
+            List <Employee> employeesForPage = empListProcessor.getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
+                    null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
+            request.getSession().setAttribute("EmployeesForPage", employeesForPage);
+            employeesCount = empListProcessor.countFilteredEmployees(namePattern, jobPattern, salMin, salMax,
+                    null, null, dateMin, dateMax, manPattern, depPattern);
+
+            System.out.println(" - 2 -"); // debug
+
+/*
+            // сохраняем паттерны поиска в сессии
+            request.getSession().setAttribute("namePattern", namePattern);
+            request.getSession().setAttribute("jobPattern", jobPattern);
+            request.getSession().setAttribute("salMin", salMin);
+            request.getSession().setAttribute("salMax", salMax);
+            request.getSession().setAttribute("depPattern", depPattern);
+            request.getSession().setAttribute("manPattern", manPattern);
+            request.getSession().setAttribute("dateMin", dateMin);
+            request.getSession().setAttribute("dateMax", dateMax);
+*/
+
+            // Достаем из реквеста все паттерны
+/*            namePattern = request.getSession().getAttribute("namePattern").toString();
+            jobPattern = request.getSession().getAttribute("jobPattern").toString();
+            if (salMinPattern == null || salMinPattern.isEmpty()) {
+                salMin = null;
+            } else {
+                salMin = Float.parseFloat(request.getParameter("salMinPattern"));
+            }
+            System.out.println(" - 3 -"); // debug
+            salMaxPattern = request.getParameter("salMaxPattern");
+            if (salMaxPattern == null || salMaxPattern.isEmpty()) {
+                salMax = null;
+            } else {
+                salMax = Float.parseFloat(request.getParameter("salMaxPattern"));
+            }
+            depPattern = request.getSession().getAttribute("depPattern").toString();
+            manPattern = request.getSession().getAttribute("manPattern").toString();
+            dateMinPattern = request.getParameter("dateMinPattern");
+            if (dateMinPattern == null || dateMinPattern.isEmpty()) {
+                dateMin = null;
+            } else {
+                dateMin = UtilDates.stringToDate(dateMinPattern);
+            }
+            dateMaxPattern = request.getParameter("dateMaxPattern");
+            if (dateMaxPattern == null || dateMaxPattern.isEmpty()) {
+                dateMax = null; //
+            } else {
+                dateMax = UtilDates.stringToDate(dateMaxPattern);
+            }
+*/
+
+
+
+
+
 
             // после всего cоздаем paginationController и помещаем его в сессию
             PaginationController paginationController = new PaginationController(employeesCount, employeesPerPage, pageNumber);
             request.getSession().setAttribute("paginationController", paginationController);
+            System.out.println(" ---- leave Search.jsp ----"); // debug
         %>
 
 

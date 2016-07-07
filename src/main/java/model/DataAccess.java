@@ -45,4 +45,8 @@ public interface DataAccess {
 
     List<Department> getAllDepartments(int page, int range);
 
+    public int countFilteredEmployees (String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
+                                       Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
+                                       String pManagerName, String pDepartmentName);
+
 }

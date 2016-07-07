@@ -29,7 +29,8 @@ public class OracleDataAccess implements DataAccess {
             "   left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
             "   left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
             "ORDER BY emp.EMP_NAME ";
-    private static final String SQL_SELECT_FILTERED_EMLOYEES_RANGE = "" +
+
+    private static final String SQL_SELECT_FILTERED_EMPLOYEES_RANGE = "" +
             "SELECT *" +
             "FROM (SELECT page.*,ROWNUM rn" +
             "      FROM (select  emp.*, nvl(to_char(man.EMP_NAME), ' ')  as manName, dep.DEPARTMENT_NAME as depName " +
@@ -49,7 +50,8 @@ public class OracleDataAccess implements DataAccess {
             "ORDER BY emp.EMP_NAME) page)" +
             "WHERE rn BETWEEN :21 AND :22 ";
 
-    private static final String SQL_SELECT_FILTERED_EMLOYEES = "" +
+
+    private static final String SQL_SELECT_FILTERED_EMPLOYEES = "" +
             "select  emp.*, nvl(to_char(man.EMP_NAME), ' ')  as manName, dep.DEPARTMENT_NAME as depName " +
             "from lab3_Employees emp  " +
             "left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
@@ -65,6 +67,22 @@ public class OracleDataAccess implements DataAccess {
             "   and ( :17 is null  or  lower(man.EMP_NAME)         like :18  ) " +
             "   and ( :19 is null  or  lower(dep.DEPARTMENT_NAME)  like :20 ) " +
             "ORDER BY emp.EMP_NAME ";
+
+    private static final String SQL_COUNT_FILTERED_EMPLOYEES = "" +
+            "select  count(*) as number_emp " +
+            "from lab3_Employees emp  " +
+            "left join LAB3_EMPLOYEES   man on man.EMP_ID = emp.MANAGER_ID " +
+            "left join LAB3_DEPARTMENTS dep on dep.DEPARTMENT_ID = emp.DEPARTMENT_ID " +
+            "where  ( :1  is null  or  lower(emp.EMP_NAME)    like  :2 ) " +
+            "   and ( :3  is null  or  lower(emp.JOB_NAME)    like  :4 ) " +
+            "   and ( :5  is null  or  emp.SALARY          >= :6     ) " +
+            "   and ( :7  is null  or  emp.SALARY          <= :8     ) " +
+            "   and ( :9  is null  or  emp.DEPARTMENT_ID    = :10    ) " +
+            "   and ( :11 is null  or  emp.MANAGER_ID       = :12    ) " +
+            "   and ( :13 is null  or  emp.DATE_IN         >= :14    ) " +
+            "   and ( :15 is null  or  emp.DATE_IN         <= :16     ) " +
+            "   and ( :17 is null  or  lower(man.EMP_NAME)         like :18  ) " +
+            "   and ( :19 is null  or  lower(dep.DEPARTMENT_NAME)  like :20 ) ";
 
     private static final String SQL_SELECT_EMPLOYEE_BY_ID = "" +
             "select  emp.*, man.EMP_NAME  as manName, dep.DEPARTMENT_NAME as depName " +
@@ -263,7 +281,7 @@ public class OracleDataAccess implements DataAccess {
             pManagerName    = convertToQueryFormat(pManagerName   );
             pDepartmentName = convertToQueryFormat(pDepartmentName);
 
-            statement = connection.prepareStatement(SQL_SELECT_FILTERED_EMLOYEES_RANGE);
+            statement = connection.prepareStatement(SQL_SELECT_FILTERED_EMPLOYEES_RANGE);
             statement.setString(1, pName); // :1
             statement.setString(2, pName); // :1
             statement.setString(3, pJobName); // :2
@@ -340,12 +358,13 @@ public class OracleDataAccess implements DataAccess {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LOG.error("Error while query SQL_SELECT_FILTERED_EMLOYEES_RANGE: " + e);
+            LOG.error("Error while query SQL_SELECT_FILTERED_EMPLOYEES_RANGE: " + e);
         } finally {
             disconnect(connection, result, statement);
         }
         return listEmpl;
     }
+
 
     public List<Employee> getEmployeesFiltered(String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
                                                Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
@@ -370,7 +389,7 @@ public class OracleDataAccess implements DataAccess {
             pManagerName    = convertToQueryFormat(pManagerName   );
             pDepartmentName = convertToQueryFormat(pDepartmentName);
 
-            statement = connection.prepareStatement(SQL_SELECT_FILTERED_EMLOYEES);
+            statement = connection.prepareStatement(SQL_SELECT_FILTERED_EMPLOYEES);
             statement.setString(1, pName); // :1
             statement.setString(2, pName); // :1
             statement.setString(3, pJobName); // :2
@@ -441,12 +460,13 @@ public class OracleDataAccess implements DataAccess {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LOG.error("Error while query SQL_SELECT_FILTERED_EMLOYEES: " + e);
+            LOG.error("Error while query SQL_SELECT_FILTERED_EMPLOYEES: " + e);
         } finally {
             disconnect(connection, result, statement);
         }
         return listEmpl;
     }
+
 
     private String convertToQueryFormat(String st) {
         if (st == null) {return null;}
@@ -774,6 +794,7 @@ public class OracleDataAccess implements DataAccess {
         return employee;
     }
 
+
     @Override
     public int getTotalCountOfEmployees() {
             Connection connection = getConnection();
@@ -799,6 +820,10 @@ public class OracleDataAccess implements DataAccess {
             return number;
     }
 
+
+
+    // А где обработка фильтров??
+    // Вместо этого метода использовать getEmployeesFiltered  !!!
     public List<Employee> getAllEmployeesByPage(int page, int range) {
 
         Connection connection = getConnection();
@@ -839,6 +864,8 @@ public class OracleDataAccess implements DataAccess {
         return employeeList;
     }
 
+
+
     public int getTotalCountOfDepartments() {
         Connection connection = getConnection();
         ResultSet resultSet = null;
@@ -861,8 +888,121 @@ public class OracleDataAccess implements DataAccess {
             disconnect(connection, resultSet, statement);
         }
         return number;
-
     }
 
+
+    /**
+     * Подсчитывает кол-во работников по заданным условиям поиска
+     *
+     * @param pName
+     * @param pJobName
+     * @param pSalaryFrom
+     * @param pSalaryTo
+     * @param pDepartmentId
+     * @param pManagerId
+     * @param pDateInFrom
+     * @param pDateInTo
+     * @param pManagerName
+     * @param pDepartmentName
+     * @return
+     */
+    @Override
+    public int countFilteredEmployees (String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
+                                      Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
+                                      String pManagerName, String pDepartmentName) {
+        Connection connection = getConnection();
+        ResultSet result = null;
+        PreparedStatement statement = null;
+        int  number_emp = 0;
+//        ArrayList<Employee> listEmpl = new ArrayList<>();
+//        Employee employee;
+        try {
+            pName           = convertToQueryFormat(pName          );
+            pJobName        = convertToQueryFormat(pJobName       );
+            pSalaryFrom     = convertToQueryFormat(pSalaryFrom    );
+            pSalaryTo       = convertToQueryFormat(pSalaryTo      );
+            pDepartmentId   = convertToQueryFormat(pDepartmentId  );
+            pManagerId      = convertToQueryFormat(pManagerId     );
+            pDateInFrom     = convertToQueryFormat(pDateInFrom    );
+            pDateInTo       = convertToQueryFormat(pDateInTo      );
+            pManagerName    = convertToQueryFormat(pManagerName   );
+            pDepartmentName = convertToQueryFormat(pDepartmentName);
+
+            statement = connection.prepareStatement(SQL_COUNT_FILTERED_EMPLOYEES);
+            statement.setString(1, pName); // :1
+            statement.setString(2, pName); // :1
+            statement.setString(3, pJobName); // :2
+            statement.setString(4, pJobName); // :2
+            if (pSalaryFrom != null) {
+                statement.setFloat(5, pSalaryFrom); // :3
+                statement.setFloat(6, pSalaryFrom); // :3
+            }
+            else {
+                statement.setNull(5, Types.FLOAT); // :3
+                statement.setNull(6, Types.FLOAT); // :3
+            }
+            if (pSalaryTo != null) {
+                statement.setFloat(7, pSalaryTo); // :4
+                statement.setFloat(8, pSalaryTo); // :4
+            }
+            else {
+                statement.setNull(7, Types.FLOAT); // :4
+                statement.setNull(8, Types.FLOAT); // :4
+            }
+
+            if (pDepartmentId != null) {
+                statement.setInt(9, pDepartmentId);  // :5
+                statement.setInt(10, pDepartmentId); // :5
+            }
+            else {
+                statement.setNull(9, Types.INTEGER);  // :5
+                statement.setNull(10, Types.INTEGER); // :5
+            }
+
+            if (pManagerId != null) {
+                statement.setInt(11, pManagerId);  // :6
+                statement.setInt(12, pManagerId);  // :6
+            }
+            else {
+                statement.setNull(11, Types.INTEGER); // :6
+                statement.setNull(12, Types.INTEGER); // :6
+            }
+
+            if (pDateInFrom != null) {
+                java.sql.Date sqlDate = new java.sql.Date(pDateInFrom.getTime());
+                statement.setDate(13, sqlDate);  // :7
+                statement.setDate(14, sqlDate);  // :7
+            }
+            else {
+                statement.setNull(13, Types.DATE); // :7
+                statement.setNull(14, Types.DATE); // :7
+            }
+
+            if (pDateInTo != null) {
+                java.sql.Date sqlDate = new java.sql.Date(pDateInTo.getTime());
+                statement.setDate(15, sqlDate);  // :8
+                statement.setDate(16, sqlDate);  // :8
+            }
+            else {
+                statement.setNull(15, Types.DATE); // :8
+                statement.setNull(16, Types.DATE); // :8
+            }
+
+            statement.setString(17, pManagerName); // :9
+            statement.setString(18, pManagerName); // :9
+            statement.setString(19, pDepartmentName); // :10
+            statement.setString(20, pDepartmentName); // :10
+            result = statement.executeQuery();
+            while (result.next()) {
+                number_emp   = result.getInt("number_emp");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOG.error("Error while query SQL_COUNT_FILTERED_EMPLOYEES: " + e);
+        } finally {
+            disconnect(connection, result, statement);
+        }
+        return number_emp;
+    }
 
 }

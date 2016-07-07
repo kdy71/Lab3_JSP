@@ -40,6 +40,7 @@
 
     <table border="1">
         <%
+            System.out.println(" ---- enter to EmployeesList.jsp ----"); // debug
             //если в реквесте параметр ренью не пустой, то нужен вывод первой страницы всех работников
             int employeesPerPage = 5;
             int pageNumber;
@@ -94,7 +95,7 @@
                 listEmployees = OracleDataAccess.getInstance().getAllEmployeesByPage(pageNumber, employeesPerPage);
             }
 
-            String ref4EditEmployee;
+//            String ref4EditEmployee;
 
             int number = ((pageNumber - 1) * employeesPerPage);
             for (Employee currEmp : listEmployees) {
@@ -151,7 +152,9 @@
                 || (request.getSession().getAttribute("afterSearch").equals("no")
                 && (request.getSession().getAttribute("hasPreviousPatterns") != null))) {
     %><a href='EmployeesList.jsp?renew=yes'><br/>Сбросить результаты поиска<br/></a><%
-    }%>
+    }
+    System.out.println(" ---- leave EmployeesList.jsp ----"); // debug
+    %>
 
 </article>
 </body>
