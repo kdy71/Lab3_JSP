@@ -47,12 +47,15 @@
 <div class="search">
     <h3><b>Поиск работника:</b></h3>
 
-    <form name="search" action='EmployeesList.jsp' method='post' accept-charset="utf-8">
+<%--    <form name="search" action='EmployeesList.jsp' method='post' accept-charset="utf-8">   --%>
+    <form name="search" action='ServletStart?action=listEmployees' method='post' accept-charset="utf-8">
 
         <%
-            System.out.println(" ---- enter to Search.jsp ----"); // debug
+            System.out.println("--------------- enter to Search.jsp ----------------"); // debug
+
             request.setCharacterEncoding("utf-8");
-            List<Employee> employeesList = new ArrayList<Employee>();
+
+            // Достаем из реквеста все паттерны
             String namePattern = request.getParameter("namePattern");
             String jobPattern = request.getParameter("jobPattern");
             String salMinPattern = request.getParameter("salMinPattern");
@@ -66,21 +69,60 @@
             String dateMaxPattern = request.getParameter("dateMaxPattern");
             Date dateMax;
 
-            if (namePattern != null  &&  namePattern.trim().equals("")) {   namePattern = null;  }
-            if (jobPattern  != null  &&  jobPattern.trim().equals(""))  {   jobPattern = null;   }
-            if (depPattern  != null  &&  depPattern.trim().equals(""))  {   depPattern = null;   }
-            if (manPattern  != null  &&  manPattern.trim().equals(""))  {   manPattern = null;   }
+            System.out.println(" -1- "); // debug
+            // Достаем из сессии паттерны (в случае, если в реквесте они пустые)
+            if (namePattern   == null) {  namePattern   = (String) request.getSession().getAttribute("namePattern");  }
+            if (jobPattern    == null) { jobPattern     = (String) request.getSession().getAttribute("jobPattern");    }
+            if (salMinPattern == null) { salMinPattern  = (String) request.getSession().getAttribute("salMinPattern"); }
+            if (salMaxPattern == null) { salMaxPattern  = (String) request.getSession().getAttribute("salMaxPattern"); }
+            if (depPattern    == null) { depPattern     = (String) request.getSession().getAttribute("depPattern"); }
+            if (manPattern    == null) { manPattern     = (String) request.getSession().getAttribute("manPattern"); }
+            if (dateMinPattern== null) { dateMinPattern = (String) request.getSession().getAttribute("dateMinPattern"); }
+            if (dateMaxPattern== null) { dateMaxPattern = (String) request.getSession().getAttribute("dateMaxPattern"); }
+            System.out.println("  - 1 - salMinPattern from Session = "+(String) request.getSession().getAttribute("salMinPattern")); // debug
+            System.out.println("  - 1 - request.getParameter(\"salMinPattern\"= "+request.getParameter("salMinPattern"));
+
             if (salMinPattern == null || salMinPattern.isEmpty()) {
                 salMin = null;
             } else {
-                salMin = Float.parseFloat(request.getParameter("salMinPattern"));
+                salMin = Float.parseFloat(salMinPattern);
             }
             if (salMaxPattern == null || salMaxPattern.isEmpty()) {
                 salMax = null;
             } else {
                 salMax = Float.parseFloat(request.getParameter("salMaxPattern"));
             }
+/*
+            if (dateMinPattern == null || dateMinPattern.isEmpty()) {
+                dateMin = null;
+            } else {
+                dateMin = UtilDates.stringToDate(dateMinPattern);
+            }
+            if (dateMaxPattern == null || dateMaxPattern.isEmpty()) {
+                dateMax = null; //
+            } else {
+                dateMax = UtilDates.stringToDate(dateMaxPattern);
+            }
+*/
+            if (namePattern != null  &&  namePattern.trim().equals("")) {   namePattern = null;  }
+            if (jobPattern  != null  &&  jobPattern.trim().equals(""))  {   jobPattern = null;   }
+            if (depPattern  != null  &&  depPattern.trim().equals(""))  {   depPattern = null;   }
+            if (manPattern  != null  &&  manPattern.trim().equals(""))  {   manPattern = null;   }
 
+            // Если была команда очистить шаблоны поиска
+            if ( "yes".equals(request.getParameter("ClearSearchPatterns"))) {
+                namePattern = null;
+                jobPattern = null;
+                salMin = null;
+                salMax = null;
+                depPattern = null;
+                manPattern = null;
+                dateMinPattern = null;
+                dateMaxPattern = null;
+            }
+
+
+            System.out.println("salMin= "+salMin); // debug
         %>
 
         <p>Имя:<br/>
@@ -120,14 +162,20 @@
         <input type='submit' value='Искать'/>
 
         <%
+            System.out.println("--- code after btSubmit ---"); // debug
             namePattern = request.getParameter("namePattern");
             jobPattern = request.getParameter("jobPattern");
             salMinPattern = request.getParameter("salMinPattern");
+            System.out.println("  - 2 - salMinPattern = "+salMinPattern); // debug
+            System.out.println("  - 2 - request.getParameter(\"salMinPattern\")= "+request.getParameter("salMinPattern"));
+
             if (salMinPattern == null || salMinPattern.isEmpty()) {
                 salMin = null;
             } else {
                 salMin = Float.parseFloat(request.getParameter("salMinPattern"));
             }
+//            System.out.println(" -2- "); // debug
+
             salMaxPattern = request.getParameter("salMaxPattern");
             if (salMaxPattern == null || salMaxPattern.isEmpty()) {
                 salMax = null;
@@ -142,6 +190,8 @@
             } else {
                 dateMin = UtilDates.stringToDate(dateMinPattern);
             }
+//            System.out.println(" -3- "); // debug
+
             dateMaxPattern = request.getParameter("dateMaxPattern");
             if (dateMaxPattern == null || dateMaxPattern.isEmpty()) {
                 dateMax = null; //
@@ -168,88 +218,6 @@
             int employeesCount = 0;
             int employeesPerPage = 5;
 
-            //ВАРИАНТ 1 ПОИСКА НЕ БЫЛО НИ РАЗУ
-            // --- Лишнее !!! ---
-            if (request.getSession().getAttribute("afterSearch").equals("no")
-                    && (request.getSession().getAttribute("hasPreviousPatterns") == null
-                    || request.getSession().getAttribute("hasPreviousPatterns").toString().isEmpty())) {
-
-//                employeesCount = OracleDataAccess.getInstance().getTotalCountOfEmployees();
-
-                //выбираем работников для нужной страницы. Помещаем в реквест
-//                employeesList = OracleDataAccess.getInstance().getAllEmployeesByPage(pageNumber, employeesPerPage);
-//                request.getSession().setAttribute("EmployeesForPage", employeesList);
-            }
-
-            // ВАРИАНТ 2 ЕСТЬ НОВЫЙ ПОИСК
-            else if (request.getSession().getAttribute("afterSearch").equals("yes")) {
-                //узнаем количество найденных по паттернам работников
-//                employeesCount = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
-//                        null, null, dateMin, dateMax, manPattern, depPattern).size();
-
-                //делаем список найденных работников для нужной страницы и помещаем в сессию
-//                List <Employee> employeesForPage = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
-//                        null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
-//                EmpListProcessor empListProcessor = new EmpListProcessor();
-//                List <Employee> employeesForPage = empListProcessor.getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
-//                        null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
-//                request.getSession().setAttribute("EmployeesForPage", employeesForPage);
-
-                // сохраняем паттерны поиска в сессии
-                request.getSession().setAttribute("namePattern", namePattern);
-                request.getSession().setAttribute("jobPattern", jobPattern);
-                request.getSession().setAttribute("salMin", salMin);
-                request.getSession().setAttribute("salMax", salMax);
-                request.getSession().setAttribute("depPattern", depPattern);
-                request.getSession().setAttribute("manPattern", manPattern);
-                request.getSession().setAttribute("dateMin", dateMin);
-                request.getSession().setAttribute("dateMax", dateMax);
-
-                //помещаем метку в сессию, что ранее был поиск и в сессии уже есть паттерны
-                request.getSession().setAttribute("hasPreviousPatterns", "yes");
-            }
-
-            //  СЕЙЧАС ПОИСКА НЕ БЫЛО, НО БЫЛ ДО ЭТОГО
-            else if (request.getSession().getAttribute("afterSearch").equals("no")
-                    && (request.getSession().getAttribute("hasPreviousPatterns").equals("yes"))) {
-                // Достаем из реквеста все паттерны
-                namePattern = request.getSession().getAttribute("namePattern").toString();
-                jobPattern = request.getSession().getAttribute("jobPattern").toString();
-                if (salMinPattern == null || salMinPattern.isEmpty()) {
-                    salMin = null;
-                } else {
-                    salMin = Float.parseFloat(request.getParameter("salMinPattern"));
-                }
-                salMaxPattern = request.getParameter("salMaxPattern");
-                if (salMaxPattern == null || salMaxPattern.isEmpty()) {
-                    salMax = null;
-                } else {
-                    salMax = Float.parseFloat(request.getParameter("salMaxPattern"));
-                }
-                depPattern = request.getSession().getAttribute("depPattern").toString();
-                manPattern = request.getSession().getAttribute("manPattern").toString();
-                dateMinPattern = request.getParameter("dateMinPattern");
-                if (dateMinPattern == null || dateMinPattern.isEmpty()) {
-                    dateMin = null;
-                } else {
-                    dateMin = UtilDates.stringToDate(dateMinPattern);
-                }
-                dateMaxPattern = request.getParameter("dateMaxPattern");
-                if (dateMaxPattern == null || dateMaxPattern.isEmpty()) {
-                    dateMax = null; //
-                } else {
-                    dateMax = UtilDates.stringToDate(dateMaxPattern);
-                }
-
-                // узнаем количество найденных работников
-//                employeesCount = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
-//                        null, null, dateMin, dateMax, manPattern, depPattern).size();
-
-                // Ищем работников по паттернам для нужной страницы. помещаем в сессию
-//                List <Employee> employeesForPage = OracleDataAccess.getInstance().getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
-//                        null, null, dateMin, dateMax, manPattern, depPattern, pageNumber, employeesPerPage);
-//                request.getSession().setAttribute("EmployeesForPage", employeesForPage);
-            }
 
 
 
@@ -257,7 +225,7 @@
 
 
 
-            System.out.println(" - 1 -"); // debug
+//            System.out.println(" - 1 -"); // debug
 
             EmpListProcessor empListProcessor = new EmpListProcessor();
             List <Employee> employeesForPage = empListProcessor.getEmployeesFiltered(namePattern, jobPattern, salMin, salMax,
@@ -266,50 +234,20 @@
             employeesCount = empListProcessor.countFilteredEmployees(namePattern, jobPattern, salMin, salMax,
                     null, null, dateMin, dateMax, manPattern, depPattern);
 
-            System.out.println(" - 2 -"); // debug
+//            System.out.println(" - 2 -"); // debug
 
-/*
             // сохраняем паттерны поиска в сессии
             request.getSession().setAttribute("namePattern", namePattern);
             request.getSession().setAttribute("jobPattern", jobPattern);
-            request.getSession().setAttribute("salMin", salMin);
+            request.getSession().setAttribute("salMinPattern", salMinPattern);
             request.getSession().setAttribute("salMax", salMax);
             request.getSession().setAttribute("depPattern", depPattern);
             request.getSession().setAttribute("manPattern", manPattern);
             request.getSession().setAttribute("dateMin", dateMin);
             request.getSession().setAttribute("dateMax", dateMax);
-*/
 
-            // Достаем из реквеста все паттерны
-/*            namePattern = request.getSession().getAttribute("namePattern").toString();
-            jobPattern = request.getSession().getAttribute("jobPattern").toString();
-            if (salMinPattern == null || salMinPattern.isEmpty()) {
-                salMin = null;
-            } else {
-                salMin = Float.parseFloat(request.getParameter("salMinPattern"));
-            }
-            System.out.println(" - 3 -"); // debug
-            salMaxPattern = request.getParameter("salMaxPattern");
-            if (salMaxPattern == null || salMaxPattern.isEmpty()) {
-                salMax = null;
-            } else {
-                salMax = Float.parseFloat(request.getParameter("salMaxPattern"));
-            }
-            depPattern = request.getSession().getAttribute("depPattern").toString();
-            manPattern = request.getSession().getAttribute("manPattern").toString();
-            dateMinPattern = request.getParameter("dateMinPattern");
-            if (dateMinPattern == null || dateMinPattern.isEmpty()) {
-                dateMin = null;
-            } else {
-                dateMin = UtilDates.stringToDate(dateMinPattern);
-            }
-            dateMaxPattern = request.getParameter("dateMaxPattern");
-            if (dateMaxPattern == null || dateMaxPattern.isEmpty()) {
-                dateMax = null; //
-            } else {
-                dateMax = UtilDates.stringToDate(dateMaxPattern);
-            }
-*/
+
+
 
 
 
@@ -324,6 +262,8 @@
 
 
     </form>
+
+    <a href='EmployeesList.jsp?ClearSearchPatterns=yes'><br/>Очистить шаблоны поиска<br/></a>
 
 </div>
 </body>

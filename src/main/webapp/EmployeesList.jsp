@@ -40,7 +40,7 @@
 
     <table border="1">
         <%
-            System.out.println(" ---- enter to EmployeesList.jsp ----"); // debug
+//            System.out.println("    ---- enter to EmployeesList.jsp ----"); // debug
             //если в реквесте параметр ренью не пустой, то нужен вывод первой страницы всех работников
             int employeesPerPage = 5;
             int pageNumber;
@@ -64,8 +64,8 @@
                 request.getSession().setAttribute("paginationController", paginationController);
             }
 
-            if (request.getSession().getAttribute("afterSearch").equals("yes")
-                    || (request.getSession().getAttribute("afterSearch").equals("no")
+            if ("yes".equals(request.getSession().getAttribute("afterSearch"))
+                    || ("no".equals(request.getSession().getAttribute("afterSearch"))
                     && (request.getSession().getAttribute("hasPreviousPatterns") != null))) {
 
                 %><h3 style="color: red">Результаты поиска:</h3><%
@@ -146,15 +146,7 @@
     %>
     <%= paginationController.makePagingLinks("EmployeesList.jsp", "")%>
 
-    <%--Link to renew list of employees.--%>
-    <%
-        if (request.getSession().getAttribute("afterSearch").equals("yes")
-                || (request.getSession().getAttribute("afterSearch").equals("no")
-                && (request.getSession().getAttribute("hasPreviousPatterns") != null))) {
-    %><a href='EmployeesList.jsp?renew=yes'><br/>Сбросить результаты поиска<br/></a><%
-    }
-    System.out.println(" ---- leave EmployeesList.jsp ----"); // debug
-    %>
+
 
 </article>
 </body>

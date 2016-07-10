@@ -19,12 +19,12 @@ public class ServletStart extends HttpServlet {
     private static final Logger LOG = LogManager.getLogger(ServletStart.class);
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("ServletStart - doPost execute..."); // debug
+        System.out.println("ServletStart - doPost execute...  action = "+request.getParameter("action")); // debug
         process(request, response);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("ServletStart - doGet execute...");  // debug
+        System.out.println("ServletStart - doGet execute...  action = "+request.getParameter("action"));  // debug
         process(request, response);
     }
 

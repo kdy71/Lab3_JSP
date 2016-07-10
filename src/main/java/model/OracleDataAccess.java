@@ -790,7 +790,7 @@ public class OracleDataAccess implements DataAccess {
 
         Employee employee = new EmployeeImpl(employeeId, name, jobName, salary,
                 departmentId, managerId, date_in, managerName, depName);
-        System.out.println(employee);
+//        System.out.println(employee);
         return employee;
     }
 

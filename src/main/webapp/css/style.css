@@ -16,7 +16,7 @@
     top: 0;
     left: 0;
     width: 1200px;
-    height: 100px;
+    height: 50px;
 
     text-align: center;
 }
@@ -27,7 +27,7 @@
 
     position: absolute;
 
-    top: 120px;
+    top: 70px;
     left: 0;
     height: 600px;
     width: 170px;
@@ -39,7 +39,7 @@ article {
 
     position: absolute;
 
-    top: 120px;
+    top: 70px;
     height: 600px;
     left: 180px;
     width: 830px;
@@ -51,7 +51,7 @@ article {
 
     position: absolute;
 
-    top: 740px;
+    top: 690px;
     left:0;
     height: 30px;
     width: 1200px;
@@ -67,7 +67,7 @@ article {
 
     position: absolute;
 
-    top: 120px;
+    top: 70px;
     height: 600px;
     left: 1030px;
     width: 170px;
@@ -81,7 +81,7 @@ article {
 
     position: absolute;
 
-    top: 120px;
+    top: 70px;
     height: 600px;
     left: 1030px;
     width: 170px;

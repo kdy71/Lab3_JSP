@@ -15,8 +15,7 @@
 <div class="menu">
 
     <b>Опции: </b><br/>
-    <a href='EmployeesList.jsp?renew=yes'>Cписок сотрудников_old<br/></a>
-<%--    <a href='ServletStart?renew=yes?action=' + Actions.EDIT_EMPLOYEE >Cписок сотрудников<br/></a> --%>
+<%--    <a href='EmployeesList.jsp?renew=yes'>Cписок сотрудников_old<br/></a>   --%>
     <a href=<%="ServletStart?action="+Actions.LIST_EMPLOYEES %>> Cписок сотрудников <br/></a>
 <%--
     <a href=<%="ServletStart?action=" + Actions.EDIT_EMPLOYEE + "&" + EmployeeModification.EMP_ID + "=" +

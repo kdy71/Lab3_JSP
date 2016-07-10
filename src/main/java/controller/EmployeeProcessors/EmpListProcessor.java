@@ -39,19 +39,6 @@ public class EmpListProcessor implements Processor {
      * Прокладка - чтоб не вызывать OracleDataAccess.getInstance().getEmployeesFiltered(...) из EmployeesList.jsp
      * Возвращает список работников, отфильтрованный по заданным параметрам.
      *
-     * @param pName
-     * @param pJobName
-     * @param pSalaryFrom
-     * @param pSalaryTo
-     * @param pDepartmentId
-     * @param pManagerId
-     * @param pDateInFrom
-     * @param pDateInTo
-     * @param pManagerName
-     * @param pDepartmentName
-     * @param page
-     * @param employeesPerPage
-     * @return
      */
     public List<Employee> getEmployeesFiltered(String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
                                                Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
@@ -67,17 +54,6 @@ public class EmpListProcessor implements Processor {
      * Прокладка - чтоб не вызывать OracleDataAccess.getInstance().countFilteredEmployees(...) из EmployeesList.jsp
      * Подсчитывает кол-во работников по заданным условиям поиска
      *
-     * @param pName
-     * @param pJobName
-     * @param pSalaryFrom
-     * @param pSalaryTo
-     * @param pDepartmentId
-     * @param pManagerId
-     * @param pDateInFrom
-     * @param pDateInTo
-     * @param pManagerName
-     * @param pDepartmentName
-     * @return
      */
     public int countFilteredEmployees (String pName, String pJobName, Float pSalaryFrom, Float pSalaryTo,
                                        Integer pDepartmentId, Integer pManagerId, Date pDateInFrom, Date pDateInTo,
